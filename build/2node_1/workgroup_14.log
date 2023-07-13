@@ -1,0 +1,21 @@
+--------------------------------------------------------------------
+WORKGROUP [14] > MPI_Recv complete : task 298420 14 55
+WORKGROUP [14] > MPI_Bcast complete : worker_rank [0] task 298420 14 55
+WORKGROUP [14]: Task working directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_1/A14
+WORKGROUP [14]: Task master directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_1
+WORKGROUP [14] > MPI_Send complete <result callback to master> : task 298420 14 57
+--------------------------------------------------------------------
+WORKGROUP [14] > MPI_Recv complete : task 298420 16 55
+WORKGROUP [14] > MPI_Bcast complete : worker_rank [0] task 298420 16 55
+WORKGROUP [14]: Task working directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_1/A16
+WORKGROUP [14]: Task master directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_1
+WORKGROUP [14] > MPI_Send complete <result callback to master> : task 298420 16 57
+--------------------------------------------------------------------
+WORKGROUP [14] > MPI_Recv complete : task 298420 32 55
+WORKGROUP [14] > MPI_Bcast complete : worker_rank [0] task 298420 32 55
+WORKGROUP [14]: Task working directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_1/A32
+WORKGROUP [14]: Task master directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_1
+WORKGROUP [14] > MPI_Send complete <result callback to master> : task 298420 32 57
+********************************************************************
+WORKGROUP [14] > MPI_Recv complete : task 1 -1476204720 666
+WORKGROUP [14] > MPI_Bcast complete : worker_rank [0] task 1 -1476204720 666

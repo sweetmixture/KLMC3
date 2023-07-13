@@ -4,11 +4,82 @@
         Date:           2023.05.25 - 
 
         Description:
+
+	05/23 : configuring taskfarm
 */
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <mpi.h>
 #include "taskfarm_def.h"
+
+/*
+#define TF_CONFIG_FILE "taskfarm.config"
+
+typedef struct TaskFarmConfiguration_{
+
+        int num_tasks;
+        int cpus_per_workgroup;
+
+}TaskFarmConfiguration;
+*/
+
+// TaskFarm Configuration
+int tf_get_taskfarm_configuration( TaskFarmConfiguration* tfc ){
+
+	FILE* fp = fopen(TF_CONFIG_FILE,"r");
+
+	char line[1024];
+	char *token;
+
+	tfc->num_tasks = -1;
+	tfc->cpus_per_workgroup = -1;
+
+	if( fp != NULL ){
+		while( fgets(line,sizeof(line),fp) != NULL ){
+			token = strtok(line," \t\n");
+			while( token != NULL ){
+	
+				// following three 'if' should be summarised as a function
+
+				// if line is comment, skip		
+				if( strcmp(token,"#") == 0 ){
+					break;
+				}
+			
+				// if line is 'ntask' try to keep the following integer as ...
+				if( strcmp(token,"ntasks") == 0 ){
+					token = strtok(NULL," \t\n");
+					printf("%s\n",token);
+					tfc->num_tasks = atoi(token);
+					printf("%d\n",tfc->num_tasks);
+					break;
+				}
+				// if line is 'cpus_per_worker' try to keep the following integer as ...
+				if( strcmp(token,"cpus_per_worker") == 0 ){
+					token = strtok(NULL," \t\n");
+					printf("%s\n",token);
+					tfc->cpus_per_workgroup = atoi(token);
+					printf("%d\n",tfc->cpus_per_workgroup);
+					break;
+				}
+
+				token = strtok(NULL," \t\n");
+			}
+		}
+		fclose(fp);
+	}
+	else{
+		return TF_FALSE;
+	}
+
+	if( tfc->num_tasks == -1 || tfc->num_tasks == -1 ){
+		return TF_FALSE;
+	}
+	return TF_TRUE;
+}
+
 
 // Comm Spliter
 int tf_config_workgroup( 
@@ -71,6 +142,7 @@ void tf_get_workgroup_config(
 	)
 {
 /*
+	// Trick to access specific cpu core
 	if( workgroup_tag == i && worker_rank == 0 ) {
 	... WorkgroupConfig workgroup_config[i].base_rank;
 */
@@ -98,6 +170,7 @@ void tf_get_workgroup_config(
 
 	/*
 		For each workgroup call 'MPI_Send' by it's head rank, send 'WorkgroupConfig' to base_root
+		N.B. after this only the base_root knows the taskfarm configuration
 	*/
 	for(int i=1;i<n_workgroup;i++){
 		if( workgroup_tag == i && worker_rank == 0 ){
@@ -107,7 +180,7 @@ void tf_get_workgroup_config(
 	}
 
 	/*
- 		Call 'MPI_Recv' by base_root 'n_workgroup' times to get 'WorkgroupConfig' except the base_root
+ 		Call 'MPI_Recv' by the base_root 'n_workgroup' times to get 'WorkgroupConfig' except the base_root
 	*/
 	for(int i=1;i<n_workgroup;i++){
 		if( brank == base_root ){

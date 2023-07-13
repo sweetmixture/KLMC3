@@ -1,4 +1,0 @@
-ifort -c *.f90
-icc -c *.c
-
-icc -o a.out *.o -lifcore // -lg2c ?? -> gnu fortran runtime lib

@@ -32,19 +32,19 @@ message(STATUS "C Compiler Version: ${C_COMPILER_VERSION}")
 
 
 # EDIT BLOCK --------------------------------------------------
-set(SRC main.c taskfarm_def.c master_worker_task.c)
+set(SRC taskfarm_main.c taskfarm_def.c master_worker_task.c timer.c)
 set(SRC_DEV ${CMAKE_SOURCE_DIR}/develop/unit_test.c)
-set(SRC_SUBPROGRAM ${CMAKE_SOURCE_DIR}/subprogram/subprogram_pi.c)
-set(SRC_FORTRAN ${CMAKE_SOURCE_DIR}/subprogram/fsubroutine_pi.F90 ${CMAKE_SOURCE_DIR}/subprogram/gulpklmc.F90)
+set(SRC_SUBPROGRAM ${CMAKE_SOURCE_DIR}/subroutines/subprogram_pi.c)
+set(SRC_FORTRAN ${CMAKE_SOURCE_DIR}/subroutines/fsubroutine_pi.F90 ${CMAKE_SOURCE_DIR}/subroutines/gulpklmc.F90)
 
 set(EXE tf.x)
 
 # header file path: include_directories( [EXECUTABLE] PUBLIC [PATH1] [PATH2] ... ) 
-#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/includes ${CMAKE_SOURCE_DIR}/develop/includes ${CMAKE_SOURCE_DIR}/subprogram/includes)
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/includes ${CMAKE_SOURCE_DIR}/develop/includes ${CMAKE_SOURCE_DIR}/subroutines/includes)
 
 include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/includes)
 include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/develop/includes)
-include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/subprogram/includes)
+include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/subroutines/includes)
 
 # Modification required: user environment dependent 
 include_directories(${EXE} PUBLIC /work/e05/e05/wkjee/Software/gulp-6.1.2/Src/Linux_MPI)	# hard link to the gulp *.mod files

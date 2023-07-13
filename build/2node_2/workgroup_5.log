@@ -1,0 +1,22 @@
+--------------------------------------------------------------------
+WORKGROUP [5] > MPI_Recv complete : task 2988a0 5 55
+WORKGROUP [5] > MPI_Bcast complete : worker_rank [0] task 2988a0 5 55
+WORKGROUP [5]: Task working directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_2/A5
+WORKGROUP [5]: Task master directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_2
+WORKGROUP [5] > MPI_Send complete <result callback to master> : task 2988a0 5 57
+--------------------------------------------------------------------
+WORKGROUP [5] > MPI_Recv complete : task 2988a0 13 55
+WORKGROUP [5] > MPI_Bcast complete : worker_rank [0] task 2988a0 13 55
+WORKGROUP [5]: Task working directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_2/A13
+WORKGROUP [5]: Task master directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_2
+WORKGROUP [5] > MPI_Send complete <result callback to master> : task 2988a0 13 57
+--------------------------------------------------------------------
+WORKGROUP [5] > MPI_Recv complete : task 2988a0 23 55
+WORKGROUP [5] > MPI_Bcast complete : worker_rank [0] task 2988a0 23 55
+WORKGROUP [5]: Task working directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_2/A23
+WORKGROUP [5]: Task master directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_2
+WORKGROUP [5] > MPI_Send complete <result callback to master> : task 2988a0 23 57
+--------------------------------------------------------------------
+WORKGROUP [5] > MPI_Recv complete : task 2988a0 26 55
+WORKGROUP [5] > MPI_Bcast complete : worker_rank [0] task 2988a0 26 55
+WORKGROUP [5]: Task working directory: /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/2node_2/A26

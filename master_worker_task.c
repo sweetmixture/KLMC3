@@ -1,3 +1,11 @@
+/*
+        Author:         Woongkyu Jee / woong.jee.16@ucl.ac.uk
+        Affiliation:    University College London
+        Date:           2023.05.25 - 
+
+        Description:
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +17,7 @@
 #include "taskfarm_def.h"	// WorkgroupConfig (struct)
 #include "master_worker_task.h"	// function_task (struct) result_pacakge (struct)
 
-#include "subprogram.h"		// subprogram_pi( MPI_Comm* workgroup_comm, int rand_seed )
+#include "subroutines.h"		// subprogram_pi( MPI_Comm* workgroup_comm, int rand_seed )
 
 // set_task()
 // get_next_task()
@@ -78,6 +86,7 @@ void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupC
 	int sent_task_count = 0;
 	// 'task_count' passed from the main
 	function_task* task_array = malloc(task_count*sizeof(function_task));
+
 	for(int i=0;i<task_count;i++){
 
 		// some systemcalls to generate file structure

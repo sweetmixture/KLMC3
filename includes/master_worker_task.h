@@ -1,3 +1,12 @@
+/*
+        Author:         Woongkyu Jee / woong.jee.16@ucl.ac.uk
+        Affiliation:    University College London
+        Date:           2023.05.25 - 
+
+        Description:
+*/
+
+
 #ifndef MASTER_WORKER_TASK
 #define MASTER_WORKER_TASK
 
@@ -6,7 +15,6 @@
 #define TASK_INIT     55
 #define TASK_EXECUTED 56
 #define TASK_FINISHED 57
-
 #define TASK_DIETAG  666
 
 typedef void (*taskfunction_ptr)( const MPI_Comm* , int* );
@@ -16,7 +24,9 @@ typedef void (*gulp_taskfunction_ptr)( const MPI_Comm* , char*, int*, int* );
 typedef struct function_task_{
 
 	// taskfunction_ptr fp;
+	taskfunction_ptr tfp;
 	gulp_taskfunction_ptr fp;
+
 	int task_id;
 	int worker_id;
 	char task_iopath[512];
