@@ -8,7 +8,7 @@
 	07/23 : added 
 */
 
-
+#include <stdio.h>
 #include <sys/time.h>
 #include <time.h>
                         

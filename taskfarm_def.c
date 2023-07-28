@@ -51,17 +51,17 @@ int tf_get_taskfarm_configuration( TaskFarmConfiguration* tfc ){
 				// if line is 'ntask' try to keep the following integer as ...
 				if( strcmp(token,"ntasks") == 0 ){
 					token = strtok(NULL," \t\n");
-					printf("%s\n",token);
+					//printf("%s\n",token);
 					tfc->num_tasks = atoi(token);
-					printf("%d\n",tfc->num_tasks);
+					//printf("%d\n",tfc->num_tasks);
 					break;
 				}
 				// if line is 'cpus_per_worker' try to keep the following integer as ...
 				if( strcmp(token,"cpus_per_worker") == 0 ){
 					token = strtok(NULL," \t\n");
-					printf("%s\n",token);
+					//printf("%s\n",token);
 					tfc->cpus_per_workgroup = atoi(token);
-					printf("%d\n",tfc->cpus_per_workgroup);
+					//printf("%d\n",tfc->cpus_per_workgroup);
 					break;
 				}
 

@@ -1,3 +1,0 @@
-/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/CMakeFiles/rebuild_cache.dir
-/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/CMakeFiles/edit_cache.dir
-/work/e05/e05/wkjee/Software/master-worker-C-Fortran-Python/mpi/C/master_worker/archer2_klmcgulp/build/CMakeFiles/tf.x.dir
