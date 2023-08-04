@@ -81,7 +81,7 @@ void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupC
 	int task_id;
 	function_task* task_array = malloc(task_count*sizeof(function_task));
 
-	for(int i=0;i<=task_count;i++){
+	for(int i=0;i<task_count;i++){
 	
 		// task_id = * (in A*.gin)
 		task_id = i + task_start;
