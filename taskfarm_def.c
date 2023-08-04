@@ -56,6 +56,23 @@ int tf_get_taskfarm_configuration( TaskFarmConfiguration* tfc ){
 					//printf("%d\n",tfc->num_tasks);
 					break;
 				}
+
+				if( strcmp(token,"task_start") == 0 ){
+					token = strtok(NULL," \t\n");
+					//printf("%s\n",token);
+					tfc->task_start = atoi(token);
+					//printf("%d\n",tfc->num_tasks);
+					break;
+				}
+
+				if( strcmp(token,"task_end") == 0 ){
+					token = strtok(NULL," \t\n");
+					//printf("%s\n",token);
+					tfc->task_end = atoi(token);
+					//printf("%d\n",tfc->num_tasks);
+					break;
+				}
+
 				// if line is 'cpus_per_worker' try to keep the following integer as ...
 				if( strcmp(token,"cpus_per_worker") == 0 ){
 					token = strtok(NULL," \t\n");
@@ -67,7 +84,8 @@ int tf_get_taskfarm_configuration( TaskFarmConfiguration* tfc ){
 
 				token = strtok(NULL," \t\n");
 			}
-		}
+		}// finish reading 'taskfarm.config'
+		tfc->num_tasks = tfc->task_end - tfc->task_start + 1;
 		fclose(fp);
 	}
 	else{

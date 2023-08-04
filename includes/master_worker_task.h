@@ -32,6 +32,9 @@ typedef struct function_task_{
 	char task_iopath[512];
 	char task_rootpath[512];
 
+	// task info
+	char syscmd[1024];				// command to copy *.gin file to working directory: task_iopath
+
 	int task_status;
 
 }function_task;
@@ -51,7 +54,8 @@ typedef struct result_package_{
 }result_package;
 
 
-void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_count );
+//void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_count );
+void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_start, const int task_end );
 
 void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Comm* workgroup_comm, const int n_workgroup, const int workgroup_tag );
 

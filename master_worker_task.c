@@ -19,17 +19,6 @@
 
 #include "subroutines.h"		// subprogram_pi( MPI_Comm* workgroup_comm, int rand_seed )
 
-// set_task()
-// get_next_task()
-// get_task_result()
-// logger
-
-// reference 1 - testprogram
-// extern void fortran_subprogram_pi( const MPI_Comm* , int* ); // in subprogram.h
-/* subroutine fortran_subprogram_pi( comm, task_id ) bind(C,name="fortran_subprogram_pi")
- * integer(c_int), intent(inout) :: comm, task_id
- */
-
 // reference 2 - gulpklmc<prototype>
 //extern void gulpklmc( const MPI_Comm*, char*, int*, int* );
 /* subroutine gulpklmc( MPI_comm_klmc, klmc_task_iopath, klmc_task_id, klmc_worker_id ) bind (C,name="gulpklmc")
@@ -38,6 +27,11 @@
  * integer,             intent(in) :: klmc_task_id
  * integer,             intent(in) :: klmc_worker_id
  */
+
+/*
+	04082023:	1. File generation internal function
+*/
+
 
 
 function_task* get_next_task( function_task* task_array, const int task_count, int* sent_task_count )
@@ -52,7 +46,8 @@ function_task* get_next_task( function_task* task_array, const int task_count, i
 }
 
 
-void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_count )
+//void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_count )
+void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_start, const int task_end )
 {
 	FILE* iomaster = NULL;
 	iomaster = fopen("master.log","w");
@@ -80,14 +75,16 @@ void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupC
 	strcat(source_dir,"/run/");
 
 
-
-
 	// initilise tasks
 	int sent_task_count = 0;
-	// 'task_count' passed from the main
+	const int task_count = task_end - task_start + 1;
+	int task_id;
 	function_task* task_array = malloc(task_count*sizeof(function_task));
 
-	for(int i=0;i<task_count;i++){
+	for(int i=0;i<=task_count;i++){
+	
+		// task_id = * (in A*.gin)
+		task_id = i + task_start;
 
 		// some systemcalls to generate file structure
 		// 1. create directories
@@ -96,54 +93,42 @@ void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupC
 		// mkdir + copying inputfile to the directories
 		memset(filetmp,0,sizeof(filetmp));
 		memset(dirtmp,0,sizeof(dirtmp));
-
-		sprintf(filetmp,"A%d.gin",i);
-		sprintf(dirtmp,"A%d",i);
-		
+		sprintf(filetmp,"A%d.gin",task_id);
+		sprintf(dirtmp,"A%d",task_id);
 		memset(inputfile_tmp,0,sizeof(inputfile_tmp));
 		strcpy(inputfile_tmp,root);
 		strcat(inputfile_tmp,"/run/");
-		strcat(inputfile_tmp,filetmp);				// file_tmp:   saves name of the inputfile (e.g. AXXX.gin)
+		strcat(inputfile_tmp,filetmp);						// inputfile_tmp: /path/to/A*.gin
 		memset(rundir_tmp,0,sizeof(rundir_tmp));
 		strcpy(rundir_tmp,root);
 		strcat(rundir_tmp,"/");
-		strcat(rundir_tmp,dirtmp);				// rundir_tmp: saves name of the run directory
+		strcat(rundir_tmp,dirtmp);							// rundir_tmp	: /path/to/	(i.e., working directory)
 
-		mkdir(rundir_tmp,0777);
-		
 		// 1. setup command (copying)
 		memset(togulpklmc,0,sizeof(togulpklmc));
 		memset(systemcmd,0,sizeof(systemcmd));
 		strcpy(systemcmd,"cp ");
 		strcat(systemcmd,inputfile_tmp);
 		strcat(systemcmd," ");
-
 		strcpy(togulpklmc,rundir_tmp);
 		strcat(togulpklmc,"/gulp_klmc.gin");
-
 		strcat(systemcmd,togulpklmc);
-		system(systemcmd);
-		// printf("working path: %s\n",rundir_tmp);
+		strcpy(task_array[i].syscmd,systemcmd);				// systemcmd	: cp inputfile_tmp rundir_tmp/gulp_klmc.gin
+
 
 		// 2. setup command (AXX.gin -> gulp_klmc.gin)
-		// ================================================
-		
-		// calling dummy fortran subprogram
-		// memset(task_array[i].task_iopath,0,sizeof(task_array[i].task_iopath));
+			// memset(task_array[i].task_iopath,0,sizeof(task_array[i].task_iopath));
 		memset(task_array[i].task_iopath,' ',sizeof(task_array[i].task_iopath));
 		task_array[i].fp = gulpklmc;
-		//task_array[i].fp = fortran_subprogram_pi;
-		task_array[i].task_id = i;
+		task_array[i].task_id = task_id;
 		task_array[i].task_status = TASK_INIT;
 
 		/* ! Note:
-			sizeof: 'task_iopath' and 'rundir_tmp' must be in match
+			sizeof: 'task_iopath' and 'rundir_tmp' must be in match // setup task working directory <Important!!!> - rundir_tmp -> length 512 - error !
 		*/
-		// setup task working directory <Important!!!> - rundir_tmp -> length 512 - error !
-		sprintf(task_array[i].task_iopath,"%s",rundir_tmp);
-		// strcpy(task_array[i].task_iopath,rundir_tmp);
+		//sprintf(task_array[i].task_iopath,"%s",rundir_tmp);
+		strcpy(task_array[i].task_iopath,rundir_tmp);		// task_array[i].task_iopath = rundir_tmp
 		fprintf(iomaster,"MASTER> working path: %s\n",task_array[i].task_iopath);
-
 		// setup task root path
 		strcpy(task_array[i].task_rootpath,root);
 
@@ -290,28 +275,33 @@ void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Com
 					return;
 				}
 
-				//execution
-				task.task_status = TASK_EXECUTED;
-				//if( worker_rank == 0 ){ printf("before run / status %d\n",task.task_status); }
-
+				// Create working directory and put relevant *.gin
+				if( worker_rank == 0 ){
+					mkdir(task.task_iopath,0777);	// mkdir working_directory
+					system(task.syscmd);			// copy *.gin
+				}
+				MPI_Barrier(*workgroup_comm);		// need to wait until mkdir / system done otherwise 'chdir' following cannot be done properly
 
 				// get into the working dir
 				chdir(task.task_iopath);
 				getcwd(cwd,sizeof(cwd));
+
 				if( worker_rank == 0 ){
 					fprintf(ioworkgroup,"WORKGROUP [%d]: Task working directory: %s\n",workgroup_tag,cwd);
 					fflush(ioworkgroup);
 				}
 				MPI_Barrier(*workgroup_comm);
 			
-				//extern void gulpklmc( const MPI_Comm*, char*, int*, int* );
+				/*	* * *
+					Launch GULP : extern void gulpklmc( const MPI_Comm*, char*, int*, int* );
+				*	* * */
+				task.task_status = TASK_EXECUTED;
 				task.fp(workgroup_comm,task.task_iopath,&task.task_id,&task.worker_id);
-				//task.fp(workgroup_comm,&task.task_id);
 
-			
 				// get out from the working dir <important> to keep gulpmain from the race condition of getting channel 'gulptmp_*' - wkjee 11 July 2023 added
 				chdir(task.task_rootpath);
 				getcwd(cwd,sizeof(cwd));
+
 				if( worker_rank == 0 ){
 					fprintf(ioworkgroup,"WORKGROUP [%d]: Task master directory: %s\n",workgroup_tag,cwd);
 					fflush(ioworkgroup);

@@ -24,6 +24,8 @@
 typedef struct TaskFarmConfiguration_{
 
 	int num_tasks;
+	int task_start;
+	int task_end;
 	int cpus_per_workgroup;
 
 }TaskFarmConfiguration;

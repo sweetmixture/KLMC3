@@ -55,7 +55,10 @@ int main(int argc, char* argv[])
 	ierr = tf_get_taskfarm_configuration( &tfc );
 	if( ierr == TF_TRUE ){
 		if( brank == 0 ){
-			fprintf(stdout,"MASTER - TaskFarmMain> requested ntasks / cpus_per_workgroup : %d / %d\n", tfc.num_tasks, tfc.cpus_per_workgroup);
+			fprintf(stdout,"MASTER - TaskFarmMain> cpus_per_workgroup : %d\n", tfc.cpus_per_workgroup);
+			fprintf(stdout,"MASTER - TaskFarmMain> requested ntasks   : %d\n", tfc.num_tasks);
+			fprintf(stdout,"MASTER - TaskFarmMain> task id start      : %d\n", tfc.task_start);
+			fprintf(stdout,"MASTER - TaskFarmMain> task id end        : %d\n", tfc.task_end);
 			fflush(stdout);
 		}
 	}
@@ -91,7 +94,8 @@ int main(int argc, char* argv[])
 
 	/* taskfarm main */
 	if( brank == mastergroup_brank ){
-		master_worker_task_call_master( &BaseComm, &workgroup_config[0], n_workgroup, tfc.num_tasks );
+		//master_worker_task_call_master( &BaseComm, &workgroup_config[0], n_workgroup, tfc.num_tasks );
+		master_worker_task_call_master( &BaseComm, &workgroup_config[0], n_workgroup, tfc.task_start, tfc.task_end );
 		fprintf(stdout,"MASTER - TaskFarmMain> Finalising MASTER > \n");
 	}
 	else{
