@@ -30,5 +30,6 @@ extern void gulpklmc( const MPI_Comm*, char*, int*, int* );
  * integer,             intent(in) :: klmc_worker_id
  */
 
+// extern void aimsklmc()
 
 #endif

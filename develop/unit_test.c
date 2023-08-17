@@ -62,8 +62,8 @@ void unittest_tf_get_workgroup_config(
 
 	for(int i=0;i<n_workgroup;i++){
 		if( workgroup_tag == i  && worker_rank == 0 ){
-			printf("[ i, wg_comm_tag, wg_comm_size, worker_rank, base_rank ] : [ %d, %d, %d, %d, %d ]\n", \
-				i, wc[i].workgroup_tag, wc[i].workgroup_size, wc[i].worker_rank, brank );
+			//printf("[ i, wg_comm_tag, wg_comm_size, worker_rank, base_rank ] : [ %d, %d, %d, %d, %d ]\n", i, wc[i].workgroup_tag, wc[i].workgroup_size, wc[i].worker_rank, brank );
+			printf("[ i, wg_comm_tag, wg_comm_size, base_rank ] : [ %d, %d, %d, %d ]\n", i, wc[i].workgroup_tag, wc[i].workgroup_size, brank );
 		}
 	}
 

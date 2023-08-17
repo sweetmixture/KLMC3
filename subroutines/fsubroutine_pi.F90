@@ -99,8 +99,9 @@ subroutine fortran_subprogram_pi( comm, task_id ) bind(C,name="fortran_subprogra
 
   ! file close
   if ( rank == 0 ) then
-    write(1,'(a, a, a, a, a, I4, a, I4 )',advance="no") "start: ", trim(adjustl(start_timestamp)), " end: ", trim(adjustl(end_timestamp)), &
-                      " task_id: ", task_id, " n_tasks: ", size 
+    write(1,'(a, a, a, a, a, I4, a, I4 )',advance="no") "start: ", &
+        trim(adjustl(start_timestamp)), " end: ", trim(adjustl(end_timestamp)), &
+        " task_id: ", task_id, " n_tasks: ", size 
     ! write(1,'(a, a, a, a )') "start: ", start_timestamp, " end: ", end_timestamp
     write(1,'(" result: ", f12.10, " elapsed_time: ", f12.8)') pi_res, mpi_elapsed_t
     close(1)

@@ -46,7 +46,6 @@ function_task* get_next_task( function_task* task_array, const int task_count, i
 }
 
 
-//void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_count )
 void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_start, const int task_end )
 {
 	FILE* iomaster = NULL;

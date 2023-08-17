@@ -17,9 +17,17 @@
 #define TASK_FINISHED 57
 #define TASK_DIETAG  666
 
-typedef void (*taskfunction_ptr)( const MPI_Comm* , int* );
+typedef void (*taskfunction_ptr)(
+	const MPI_Comm* ,
+	int*
+);
 
-typedef void (*gulp_taskfunction_ptr)( const MPI_Comm* , char*, int*, int* );
+typedef void (*gulp_taskfunction_ptr)(
+	const MPI_Comm* ,
+	char*,
+	int*,
+	int*
+);
 
 typedef struct function_task_{
 
@@ -54,10 +62,20 @@ typedef struct result_package_{
 }result_package;
 
 
-//void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_count );
-void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_start, const int task_end );
+void master_worker_task_call_master(
+	const MPI_Comm* base_comm,
+	const WorkgroupConfig* wc,
+	const int n_workgroup,
+	const int task_start,
+	const int task_end
+);
 
-void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Comm* workgroup_comm, const int n_workgroup, const int workgroup_tag );
+void master_worker_task_call_workgroup(
+	const MPI_Comm* base_comm,
+	const MPI_Comm* workgroup_comm,
+	const int n_workgroup,
+	const int workgroup_tag
+);
 
 
 #endif

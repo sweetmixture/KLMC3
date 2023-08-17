@@ -10,26 +10,26 @@ include_directories(${MPI_INCLUDE_PATH})
 
 # ---------------------------------------------------------------------------------------
 # USER_MODIFICATION: Modification required: user environment dependent - gulp *.o, *.mod, *.a
-set(GULPROOT /work/e05/e05/wkjee/Software/gulpklmc/temporal/KLMC3-libgulp-6.1.2)
-# USER_MODIFICATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+set(GULPROOT /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.04082023/KLMC3-libgulp-6.1.2_gnu)
 set(GULPOBJ ${GULPROOT}/Src/Linux_MPI)
 set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)
 
 # CRAY SYSTEM: ARCHER2
 # cray (C) - cc, (Fortran) - ftn
-#set(CMAKE_C_COMPILER cc)
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
-#set(CMAKE_Fortran_COMPILER ftn)
-#set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
+set(CMAKE_C_COMPILER cc)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
+set(CMAKE_Fortran_COMPILER ftn)
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3 -fallow-argument-mismatch -ffree-line-length-512")
 
 # INTEL SYSTEM
 # intel (C) - mpicc, (Fortran) - mpif90
-set(CMAKE_C_COMPILER mpicc)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3 -mcmodel=large")
-set(CMAKE_Fortran_COMPILER mpif90)
-set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
-set(LINK_MKL "-lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
-set(LINK_CORE "-lifcore -lifport")
+#set(CMAKE_C_COMPILER mpicc)
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3 -mcmodel=large")
+#set(CMAKE_Fortran_COMPILER mpif90)
+#set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
+#set(LINK_MKL "-lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
+#set(LINK_CORE "-lifcore -lifport")
+# USER_MODIFICATION: End modification
 
 # ---------------------------------------------------------------------------------------
 # Get C compiler version - nothing to do with actual compilation ------------------------
@@ -47,9 +47,9 @@ set(SRC_DEV ${CMAKE_SOURCE_DIR}/develop/unit_test.c)
 
 # APP SOURCE
 set(SRC_SUBPROGRAM ${CMAKE_SOURCE_DIR}/subroutines/subprogram_pi.c)
-set(SRC_FORTRAN ${CMAKE_SOURCE_DIR}/subroutines/fsubroutine_pi.F90
-        ${CMAKE_SOURCE_DIR}/subroutines/gulpklmc.F90
-        ${CMAKE_SOURCE_DIR}/subroutines/gulpklmc_initmax.F90
+set(SRC_FORTRAN ${CMAKE_SOURCE_DIR}/subroutines/fsubroutine_pi.F90 
+		${CMAKE_SOURCE_DIR}/subroutines/gulpklmc.F90
+		${CMAKE_SOURCE_DIR}/subroutines/gulpklmc_initmax.F90
 )
 
 set(EXE tf.x)
@@ -75,20 +75,13 @@ add_executable(${EXE} ${SRC} ${SRC_DEV} ${SRC_SUBPROGRAM} ${SRC_FORTRAN})
 
 # USER_MODIFICATION
 # CRAY STSTEM
-#target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF})
+target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF})
 # INTEL SYSTEM
-target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${LINK_MKL})
+#target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${LINK_MKL})
 # USER_MODIFICATION END
 
 # finalise 
 set_target_properties(${EXE} PROPERTIES LINKER_LANGUAGE C)
-
-
-
-
-
-
-
 
 # -------------------------------------------------------------
 # Print MPI library

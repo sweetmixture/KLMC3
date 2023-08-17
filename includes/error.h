@@ -6,3 +6,13 @@
         Description:
 */
 
+#ifndef __TASKFARM_ERROR
+#define __TAKSFARM_ERROR
+
+
+#define FAIL    1
+#define SUCCESS 0
+
+
+
+#endif
