@@ -14,7 +14,7 @@ set(GULPROOT /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.040
 set(GULPOBJ ${GULPROOT}/Src/Linux_MPI)
 set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)
 
-# CRAY SYSTEM: ARCHER2
+# CRAY SYSTEM: ARCHER2 : GNU
 # cray (C) - cc, (Fortran) - ftn
 set(CMAKE_C_COMPILER cc)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
@@ -42,14 +42,23 @@ message(STATUS "GULPFGNFF:" ${GULPGFNFF})
 # ---------------------------------------------------------------------------------------
 
 # TASKFARM SOURCE
-set(SRC taskfarm.c taskfarm_def.c master_worker_task.c timer.c read_input.c)
+set(SRC
+    taskfarm.c
+        taskfarm_def.c
+            read_input.c
+        master_worker_task.c
+        timer.c
+        print_message.c
+)
 set(SRC_DEV ${CMAKE_SOURCE_DIR}/develop/unit_test.c)
 
 # APP SOURCE
-set(SRC_SUBPROGRAM ${CMAKE_SOURCE_DIR}/subroutines/subprogram_pi.c)
-set(SRC_FORTRAN ${CMAKE_SOURCE_DIR}/subroutines/fsubroutine_pi.F90 
-		${CMAKE_SOURCE_DIR}/subroutines/gulpklmc.F90
-		${CMAKE_SOURCE_DIR}/subroutines/gulpklmc_initmax.F90
+set(SRC_SUBPROGRAM
+	${CMAKE_SOURCE_DIR}/subroutines/subprogram_pi.c)
+set(SRC_FORTRAN
+	${CMAKE_SOURCE_DIR}/subroutines/fsubroutine_pi.F90 
+	${CMAKE_SOURCE_DIR}/subroutines/gulpklmc.F90
+	${CMAKE_SOURCE_DIR}/subroutines/gulpklmc_initmax.F90
 )
 
 set(EXE tf.x)

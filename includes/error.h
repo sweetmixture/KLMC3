@@ -10,9 +10,5 @@
 #define __TAKSFARM_ERROR
 
 
-#define FAIL    1
-#define SUCCESS 0
-
-
 
 #endif

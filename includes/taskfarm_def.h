@@ -9,21 +9,30 @@
 #ifndef __TASKFARM_DEF
 #define __TASKFARM_DEF
 
-#define TF_WORKTAG 777
-#define TF_DIETAG  666
-#define TF_CPUS_PER_WORKER 16
+// MPI_TAGS: TASK_ : task related
+#define TASK_INIT 55
+#define TASK_EXECUTED 56
+#define TASK_FINISHED 57
+#define TASK_DIETAG 666
+#define TASK_WORKTAG 777
 
-//#define TF_TRUE   1	deprecated -> using bool type
-//#define TF_FALSE  0
+// file path: TF_ : taskfarm related
+#define TF_CONFIG_FILE "taskfarm.config"		// taskfarm configuration file
+#define TF_MAIN_FILE   "taskfarm.log"
 
-// file path
-#define TF_CONFIG_FILE "taskfarm.config"
-
-
-#include <stdbool.h>
 #include <mpi.h>
+#include <stdbool.h>
 
 typedef struct TaskFarmConfiguration_{
+	
+	/* * *
+
+		mpi related
+
+	* * */
+	int bsize;		// global : base rank size
+	int brank;		// local  : my rank
+	int mrank;		// global : master rank
 
 	/* * *
 

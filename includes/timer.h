@@ -7,8 +7,8 @@
 */
 
 
-#ifndef _TIMER
-#define _TIMER
+#ifndef __TASKFARM_TIMER
+#define __TASKFARM_TIMER
 
 double get_time();
 

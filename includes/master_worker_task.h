@@ -7,15 +7,11 @@
 */
 
 
-#ifndef MASTER_WORKER_TASK
-#define MASTER_WORKER_TASK
+#ifndef __TASKFARM_MASTER_WORKER
+#define __TASKFARM_MASTER_WORKER
 
-#include <mpi.h>
-
-#define TASK_INIT     55
-#define TASK_EXECUTED 56
-#define TASK_FINISHED 57
-#define TASK_DIETAG  666
+#include <mpi.h>			// using MPI related
+#include "taskfarm_def.h"	// using WorkgroupConfig
 
 typedef void (*taskfunction_ptr)(
 	const MPI_Comm* ,

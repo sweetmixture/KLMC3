@@ -38,9 +38,14 @@ int main(int argc, char* argv[])
 	MPI_Comm WorkgroupComm;
 	TaskFarmConfiguration tfc;
 
-	const int mastergroup_brank = bsize - 1;	// last CPU is always dedicated to 'master' 
+	const int mrank = bsize - 1;	// last CPU is always dedicated to 'master' 
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	// PREPARATION 
+	tfc.bsize = bsize;
+	tfc.brank = brank;
+	tfc.mrank = mrank;
 
 	// 1 STEP : READ INPUT
 	berr = tf_get_taskfarm_configuration( &tfc );
@@ -92,7 +97,7 @@ int main(int argc, char* argv[])
 
 	//unittest_tf_get_workgroup_config(&BaseComm,&WorkgroupComm,&wgc[0],tfc.n_workgroup,tfc.workgroup_tag);
 	//exit(1);
-	if( brank == mastergroup_brank ){
+	if( brank == mrank ){
 		start_t = get_time();
 		getCurrentDateTime(currentTime);
 		fprintf(stdout,"MASTER - TaskFarmMain> Workgroup Configuration Done\n");
@@ -103,7 +108,7 @@ int main(int argc, char* argv[])
 	//exit(0);
 
 	/* taskfarm main */
-	if( brank == mastergroup_brank ){
+	if( brank == mrank ){
 		//master_worker_task_call_master( &BaseComm, &wgc[0], tfc.n_workgroup, tfc.num_tasks );
 		master_worker_task_call_master( &BaseComm, &wgc[0], tfc.n_workgroup, tfc.task_start, tfc.task_end );
 		fprintf(stdout,"MASTER - TaskFarmMain> Finalising MASTER > \n");
@@ -116,7 +121,7 @@ int main(int argc, char* argv[])
 	// wait all cpus
 	MPI_Barrier(BaseComm);
 
-	if( brank == mastergroup_brank ){
+	if( brank == mrank ){
 		end_t = get_time();
 		getCurrentDateTime(currentTime);
 		fprintf(stdout,"MASTER - TaskFarmMain> All Task Done at: %s / total_elapsed_t: %24.12lf\n",currentTime,end_t - start_t);

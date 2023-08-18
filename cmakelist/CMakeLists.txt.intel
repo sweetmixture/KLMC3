@@ -42,7 +42,14 @@ message(STATUS "GULPFGNFF:" ${GULPGFNFF})
 # ---------------------------------------------------------------------------------------
 
 # TASKFARM SOURCE
-set(SRC taskfarm.c taskfarm_def.c master_worker_task.c timer.c read_input.c)
+set(SRC 
+    taskfarm.c
+        taskfarm_def.c
+            read_input.c
+        master_worker_task.c
+        timer.c
+        print_message.c
+)
 set(SRC_DEV ${CMAKE_SOURCE_DIR}/develop/unit_test.c)
 
 # APP SOURCE

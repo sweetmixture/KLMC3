@@ -7,8 +7,8 @@
 
 */
 
-#ifndef __READ_INPUT
-#define __READ_INPUT
+#ifndef __TASKFARM_READ_INPUT
+#define __TASKFARM_READ_INPUT
 
 #include <stdbool.h>
 
