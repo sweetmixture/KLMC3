@@ -10,5 +10,35 @@
 #define __TAKSFARM_ERROR
 
 
+/* * *
+ * taskfarm_def.c
+ * * */
+
+#include <mpi.h>
+#include "taskfarm_def.h"
+
+bool error_taskfarm_filenotfound(
+    const MPI_Comm* base_comm
+);
+
+bool error_taskfarm_configuration( 
+    const MPI_Comm* base_comm,
+    TaskFarmConfiguration* tfc	// IN-OUT
+);
+
+bool error_taskfarm_commsplit_nproc_check(
+    const MPI_Comm* base_comm,
+	TaskFarmConfiguration* tfc  // IN-OUT
+);
+
+
+/* * *
+ * utilities
+ * * */
+
+bool error_file_exists( 
+    const char* filename 
+);
+
 
 #endif

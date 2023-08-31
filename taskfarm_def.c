@@ -14,8 +14,6 @@
 
             08/23: Refactoring * * *
 
-
-
 */
 #include <stdio.h>
 #include <string.h>
@@ -26,14 +24,14 @@
 #include "taskfarm_def.h"
 #include "read_input.h"
 
-//#include "print_message.h"	// addition 18.08.23
+#include "error.h"
 
 /* * *
 	only use in this source
 * * */
-bool tf_configuration_check(
-	const TaskFarmConfiguration* tfc	// IN
-);
+
+
+
 
 
 /* * *
@@ -44,71 +42,63 @@ bool tf_configuration_check(
 
 * * */
 bool tf_get_taskfarm_configuration(
+	const MPI_Comm* base_comm,
 	TaskFarmConfiguration* tfc			// IN-OUT
 )
 {
-	bool if_success = false;
-
+	int brank, bsize;
+	bool berr;
     FILE* fp = NULL;
-    bool bntasks          = false;
-    bool btask_start      = false;
-    bool btask_end        = false;
-    bool bcpus_per_worker = false;
-    bool bapp_name        = false;
 
-    // Operation Start
-    fp = fopen(TF_CONFIG_FILE,"r");
+	MPI_Comm_size(*base_comm,&bsize);
+	MPI_Comm_rank(*base_comm,&brank);
+
+	/* * *
+	 * Set up MPI related variables
+	 * * */
+	tfc->bsize = bsize;
+	tfc->brank = brank;
+	tfc->mrank = bsize - 1;
+	// Set up end;
+
+    fp = fopen(TF_CONFIG_FILE,"r");		// READ-IN INITIAL TASKFARM CONFIGURATION 
 
     if( fp == NULL ){
-
-        // Erro message
-
-        // Assertion
-
-        return if_success;
+		/* * *
+		 * Error <finder> : configuratio file not found
+		 * * */
+		berr = error_taskfarm_filenotfound(base_comm);				
+        return berr;
     }
     else{
 
-        // Init taskfarm-configuration
-        strcpy(tfc->application," no application specified ");
-
-        tfc->num_tasks = -1;
-        tfc->task_start = -1;
-        tfc->task_end = -1;
+        /* * *
+		 * Init taskfarm-configuration
+		 * * */
+        strcpy(tfc->application, "-1");
+        tfc->task_start         = -1;
+        tfc->task_end           = -1;
         tfc->cpus_per_workgroup = -1;
-
         // Init end;
 
         // 'string' : InputFile Read
-        bapp_name        = read_input_spatternfinder( fp, "application"    , &(tfc->application[0])     );
+        read_input_spatternfinder( fp, "application"    , &(tfc->application[0])     );
 
         // 'integer': InputFile Read
-        bntasks          = read_input_ipatternfinder( fp, "ntasks"         , &(tfc->num_tasks)          );
-        btask_start      = read_input_ipatternfinder( fp, "task_start"     , &(tfc->task_start)         );
-        btask_end        = read_input_ipatternfinder( fp, "task_end"       , &(tfc->task_end)           );
-        bcpus_per_worker = read_input_ipatternfinder( fp, "cpus_per_worker", &(tfc->cpus_per_workgroup) );
+        read_input_ipatternfinder( fp, "task_start"     , &(tfc->task_start)         );
+        read_input_ipatternfinder( fp, "task_end"       , &(tfc->task_end)           );
+        read_input_ipatternfinder( fp, "cpus_per_worker", &(tfc->cpus_per_workgroup) );
 
-
-        // devtmp
-        //fprintf(stdout," bapp_name        : %s\n", bapp_name        ? "true":"false");
-
-        //fprintf(stdout," bntasks          : %s\n", bntasks          ? "true":"false");
-        //fprintf(stdout," btask_start      : %s\n", btask_start      ? "true":"false");
-        //fprintf(stdout," btask_end        : %s\n", btask_end        ? "true":"false");
-        //fprintf(stdout," bcpus_per_worker : %s\n", bcpus_per_worker ? "true":"false");
         fclose(fp);
 
-        // error check
-		//if_success = tf_configuration_check( tfc );
+		/* * *
+		 * Error <finder> : possible error in configuration file
+		 * * */
+		berr = error_taskfarm_configuration(base_comm,tfc);
 
-		// DEV
-		if_success = true;
-        return if_success;
+		return berr;
     }
-
 }
-
-
 
 /*
  *
@@ -121,38 +111,43 @@ bool tf_config_workgroup(
     TaskFarmConfiguration* tfc              // IN-OUT
 )
 {
-    bool if_success = false;
+    bool berr = true;
     
+	// temporal variables (mpi)
     int brank,bsize; 
 
+	// temporal variables
     int n_workgroup;
     int workgroup_tag;
     int workgroup_size;
     int worker_rank;
 
-    const int n_workers_per_workgroup = tfc->cpus_per_workgroup;
-
     MPI_Comm_size(*base_comm,&bsize);
     MPI_Comm_rank(*base_comm,&brank);
-    
-    // Possible Error Check 
-
-
+	MPI_Get_processor_name(&(tfc->proc_name[0]),&(tfc->proc_name_len));
+	
+	/* * *
+		OMP_NUM_THREADS	check -> warning
+		nproc			check -> error (if avaiable cpus count = 1 : cannot configure workgroups)
+		nproc balance	check -> warning
+	* * */
+	berr = error_taskfarm_commsplit_nproc_check(base_comm,tfc);
+	if( !berr ){
+		return berr;
+	}
 
     /* * *
         MPI_COMM SPLIT START  
     * * */
-
-    // initial set: workgroup-tag for each CPU
-    workgroup_tag =  brank / n_workers_per_workgroup;
+    workgroup_tag =  brank / tfc->cpus_per_workgroup;	// Initial set: workgroup-tag for each CPU
 
     /*
         rank                    => mpi_rank
-        n_workers_per_workgroup => number of cpus allocated per workgroup
+		tfc->cpus_per_workgroup => number of cpus allocated per workgroup
 
         EXAMPLE>
 
-        CPU.ID  |   rank  / n_workers_per_workgroup         |   tag
+        CPU.ID  |   rank  / tfc->cpus_per_workgroup         |   tag
             0   |       0 / 2                               |    0
             1   |       1 / 2                               |    0
             2   |       2 / 2                               |    1
@@ -164,135 +159,158 @@ bool tf_config_workgroup(
            10   |      10 / 2                               |    5
     */    
 
-
     /* * *
         calculate: number of workgroups for a given number of CPUs
     * * */
-    if( bsize % n_workers_per_workgroup == 0 ){
-        n_workgroup = bsize / n_workers_per_workgroup;
+    if( bsize % tfc->cpus_per_workgroup == 0 ){
+        n_workgroup = bsize / tfc->cpus_per_workgroup;
         n_workgroup++;
         /* case - 1: no residual cpus to be the 'master'
             last cpu in last workgroup -> 'master'          */
     }
-    else if( bsize % n_workers_per_workgroup == 1 ){                        
-        n_workgroup = bsize / n_workers_per_workgroup;
+    else if( bsize % tfc->cpus_per_workgroup == 1 ){                        
+        n_workgroup = bsize / tfc->cpus_per_workgroup;
         n_workgroup++;
         /* case - 2: 1 residual cpu in the last workgroup
             last workgroup -> 'master'                      */
     }
     else{                                                                   
-        n_workgroup = bsize / n_workers_per_workgroup + 1; // '+1' means additional workgroup formed by the residual CPUs
+        n_workgroup = bsize / tfc->cpus_per_workgroup + 1; // '+1' means additional workgroup formed by the residual CPUs
         n_workgroup++;
         /* case - 3: >1 residual cpus in the last workgroup
             split last workgroup (workgroup_size-1 / 1) and the last workgroup -> 'master'  */
     }
 
-    // final set: workgroup tag
-    if( ((brank + 1) == bsize) && ((bsize % n_workers_per_workgroup) != 1) ){
+    /* * *
+		final set: workgroup tag
+	* * */
+    if( ((brank + 1) == bsize) && ((bsize % tfc->cpus_per_workgroup) != 1) ){
         
         // ((brank + 1) == bsize)                           => if this is 'last CPU'
-        // ((bsize % n_workers_per_workgroup) != 1)         => if this is 'last CPU' and sinlge CPU workgroup
+        // ((bsize % tfc->cpus_per_workgroup) != 1)         => if this is 'last CPU' and sinlge CPU workgroup
         workgroup_tag = workgroup_tag + 1;  //              => +1 to its workgroup_tag, in order to use as 'master'
     }
 
-    // split: base_comm (=MPI_COMM_WORLD) -> workgroup_comm
+    /* * *
+		split: base_comm (=MPI_COMM_WORLD) -> workgroup_comm
+
+		note. processors with same 'tag' (workgroup_tag) carries same 'workgroup_comm'
+	* * */
     MPI_Comm_split(*base_comm, workgroup_tag, brank, workgroup_comm);
     MPI_Comm_size(*workgroup_comm,&workgroup_size);
     MPI_Comm_rank(*workgroup_comm,&worker_rank);
 
-    // final set: taskframconfig parameters
+    /* * *
+		final set: taskframconfig parameters
+	* * */
     tfc->n_workgroup = n_workgroup;             // global this include 'workgroup# + 1 (master)'
     tfc->workgroup_tag = workgroup_tag;         // local
     tfc->workgroup_size = workgroup_size;       // local
     tfc->worker_rank = worker_rank;             // local
 
-// do check required
-    if_success = true;
-
-    MPI_Barrier(*base_comm);
-
-    return if_success;
+    return berr;
 }
-
-
 
 /*
  *  For the split workgroup communicators: configuring the workgroups
  *  - setting tags for workgroup configurations
+ *
+ *		Trick to access specific processor (rank)
+ *
+ *			if( workgroup_tag == i && worker_rank == 0 ){
+ *				wgc_global[i].base_rank // <WorkgroupConfig arr>
  */
 bool tf_get_workgroup_config(
     const MPI_Comm* base_comm,          // IN
     const MPI_Comm* workgroup_comm,     // IN
     const TaskFarmConfiguration* tfc,   // IN
-    WorkgroupConfig* workgroup_config   // IN-OUT
+    WorkgroupConfig* wgc_global   // IN-OUT
 )
 {
-    bool if_success = false;
-    // Trick to access specific cpu core
-    // if( workgroup_tag == i && worker_rank == 0 ) {
-    //     WorkgroupConfig workgroup_config[i].base_rank;
-    //
-    int base_root = 0;
+    bool berr = true;
+
+    const int base_root = 0;
+    const int n_workgroup = tfc->n_workgroup;		// global	// Number of MPI_SubComms : master(1) + workgroups(n) -> 1+n
+    const int workgroup_tag = tfc->workgroup_tag;	// local
 
     int brank,bsize;
     int workgroup_size;
     int worker_rank;
-    const int n_workgroup = tfc->n_workgroup;
-    const int workgroup_tag = tfc->workgroup_tag;
 
     MPI_Request request;
     MPI_Status status;
 
-    WorkgroupConfig wgc;
+    WorkgroupConfig wgc_local;	// local workgroup configuration
 
-    // action starts
+    // * * *action starts
 
-    MPI_Comm_rank(*base_comm,&brank);
     MPI_Comm_size(*base_comm,&bsize);
+    MPI_Comm_rank(*base_comm,&brank);
     
     MPI_Comm_size(*workgroup_comm,&workgroup_size);
     MPI_Comm_rank(*workgroup_comm,&worker_rank);
 
-    wgc.base_size = bsize;                  // global
-    wgc.base_rank = brank;                  // local
-    wgc.workgroup_tag = workgroup_tag;      // local
-    wgc.workgroup_size = workgroup_size;    // local
+											// at this point!
+    wgc_local.base_size = bsize;                  // global
+    wgc_local.base_rank = brank;                  // local
+    wgc_local.workgroup_tag = workgroup_tag;      // local
+    wgc_local.workgroup_size = workgroup_size;    // local
 
-    /*
-        For each workgroup call 'MPI_Send' by it's head rank, send 'WorkgroupConfig' to base_root
-        N.B. after this only the base_root knows the taskfarm configuration : 'MPI_TAG' set
-    */
+	MPI_Barrier(*base_comm);
+
+	/* * *
+		Messaging : from each workgroup
+	* * */
     for(int i=1;i<n_workgroup;i++){
         if( workgroup_tag == i && worker_rank == 0 ){
-            MPI_Send(&wgc,sizeof(WorkgroupConfig),MPI_CHAR,base_root,i,*base_comm);
-            //printf("SEND> workgroup_tag: %d worker_rank: %d / %d (worgroup_size) base_rank: %d\n",workgroup_tag,worker_rank,workgroup_size,brank);
+		/* 
+			from the 'head_rank(0)' of 'workgroup(i)', send it's information :
+
+				(1) base_size			-> DO REALLY NEED THIS?
+				(2) base_rank
+				(3) workgroup_tag
+				(4) workgroup_size
+
+			to 'base_root' (base_rank = 0 )
+
+			note. message from 'workgroup(i)' is identified by the MPI_Send 'tag(i)'
+
+			1. (3) and (4) could be useful
+		*/
+            MPI_Send(&wgc_local,sizeof(WorkgroupConfig),MPI_CHAR,base_root,i,*base_comm);
         }
     }
 
-    /*
-        Call 'MPI_Recv' by the base_root 'n_workgroup' times to get 'WorkgroupConfig' except the base_root : 'MPI_TAG' set
-    */
-    for(int i=1;i<n_workgroup;i++){
-        if( brank == base_root ){
-                MPI_Recv(&workgroup_config[i],sizeof(WorkgroupConfig),MPI_CHAR,MPI_ANY_SOURCE,i,*base_comm,&status);
-                //printf("workgroup_tag: %d worker_rank: %d base_rank: %d\n",workgroup_config[i].workgroup_tag,workgroup_config[i].worker_rank,workgroup_config[i].base_rank);
+	/* * *
+		Receiving : by base_root
+	* * */
+	for(int i=1;i<n_workgroup;i++){
+		if( brank == base_root ){
+			/*
+				message (wgc_local) from 'head_rank(0)' of 'workgroup(i)' with identifier(i) <MPI_TAG>
+
+				received to 'wgc_global[i]' by base_root (base_rank = 0)
+			*/
+			MPI_Recv(&wgc_global[i],sizeof(WorkgroupConfig),MPI_CHAR,MPI_ANY_SOURCE,i,*base_comm,&status);
         }
     }
 
-    /*
-        in-place copying 'WorkgroupConfig(wgc)'
-    */
+    /* * *
+        In-place copying (i=0) : wgc_global[0] <- wgc_local
+    * * */
     if ( workgroup_tag == 0 && worker_rank == 0 ){
-        workgroup_config[0] = wgc;
-        //MPI_ISend(&wgc,sizeof(WorkgroupConfig),MPI_CHAR,base_root,workgroup_tag,*base_comm);
+        wgc_global[0] = wgc_local;
     }
     MPI_Barrier(*base_comm);
-    MPI_Bcast(&workgroup_config[0],sizeof(WorkgroupConfig)*n_workgroup,MPI_CHAR,base_root,*base_comm);
 
-    // DO SOME CHECK 
-    if_success = true;
+    MPI_Bcast(&wgc_global[0],sizeof(WorkgroupConfig)*n_workgroup,MPI_CHAR,base_root,*base_comm);
+	/*
+		after MPI_Bcast, from any processors (ranks), they can see 'n'th workgroup information :
 
-    return if_success;
+			(1) base_rank  of the group(n)'s head (sub_rank 0)
+			(2) group_tag  of the group(n)
+			(3) group_size of the group(n)
+	*/
+
+    return berr;
 }
-
-

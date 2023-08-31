@@ -28,9 +28,8 @@ bool isInteger( const char* str ){
 * * */
 
 // <int> pattern finder
-bool read_input_ipatternfinder( FILE* fp, const char* pattern, int* ret ){
+void read_input_ipatternfinder( FILE* fp, const char* pattern, int* ret ){
 
-	bool if_success = false;
 	char  line[1024];
 	char* token = NULL;
 
@@ -60,11 +59,9 @@ bool read_input_ipatternfinder( FILE* fp, const char* pattern, int* ret ){
 				if( token == NULL ){
 
 					// error message?
-
 					// dev tmp
-					printf("ipattern expected following arg not found after: %s\n",pattern);
-
-					return if_success; // false
+					// printf("ipattern expected following arg not found after: %s\n",pattern);
+					return;
 				}
 				// token !NULL
 				else{
@@ -72,32 +69,27 @@ bool read_input_ipatternfinder( FILE* fp, const char* pattern, int* ret ){
 					if( !isInteger(token) ){
 
 						// dev tmp
-						printf("ipattern expected following arg is not an integer: %s\n",pattern);
-
-						return if_success;
+						// printf("ipattern expected following arg is not an integer: %s\n",pattern);
+						return;
 					}
 					// token <int>
 					else{
 						*ret = (int)strtol(token,NULL,10);
-						if_success = true;
-						return if_success;
+						return;
 					}
 				}
 			}
-
 			// 2 - 2: move to next token in the line
 			token = strtok(NULL," \t\n");
 		}
 	}
-
-	return if_success;
+	return;
 }
 
 
 // <char*> pattern finder
-bool read_input_spatternfinder( FILE* fp, const char* pattern, char* ret ){
+void read_input_spatternfinder( FILE* fp, const char* pattern, char* ret ){
 
-	bool if_success = false;
 	char  line[1024];
 	char* token = NULL;
 
@@ -127,19 +119,16 @@ bool read_input_spatternfinder( FILE* fp, const char* pattern, char* ret ){
 				if( token == NULL ){
 
 					// error message?
-
 					// dev tmp
-					printf("spattern: expected following arg not found after: %s\n",pattern);
-
-					return if_success; // false
+					// printf("spattern: expected following arg not found after: %s\n",pattern);
+					return;
 				}
 				// token !NULL
 				else{
 
 					memset(ret,0,sizeof(*ret));
 					strcpy(ret,token);
-					if_success = true;
-					return if_success;
+					return;
 				}
 			}
 
@@ -148,5 +137,5 @@ bool read_input_spatternfinder( FILE* fp, const char* pattern, char* ret ){
 		}
 	}
 
-	return if_success;
+	return;
 }

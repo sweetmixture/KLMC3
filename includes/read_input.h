@@ -10,10 +10,18 @@
 #ifndef __TASKFARM_READ_INPUT
 #define __TASKFARM_READ_INPUT
 
-#include <stdbool.h>
+#include <stdio.h>
 
-bool read_input_ipatternfinder( FILE* fp, const char* pattern, int* ret );
+void read_input_ipatternfinder(
+	FILE* fp,
+	const char* pattern,
+	int* ret
+);
 
-bool read_input_spatternfinder( FILE* fp, const char* pattern, char* ret );
+void read_input_spatternfinder(
+	FILE* fp,
+	const char* pattern,
+	char* ret
+);
 
 #endif

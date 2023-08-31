@@ -5,33 +5,19 @@
 
         Description:
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
-
 #include <mpi.h>
 
 #include "master_worker_task.h"
-#include "subroutines.h"		// subprogram_pi( MPI_Comm* workgroup_comm, int rand_seed )
+#include "subroutines.h"
 
-// reference 2 - gulpklmc<prototype>
-//extern void gulpklmc( const MPI_Comm*, char*, int*, int* );
-/* subroutine gulpklmc( MPI_comm_klmc, klmc_task_iopath, klmc_task_id, klmc_worker_id ) bind (C,name="gulpklmc")
- * integer,             intent(in) :: MPI_Comm
- * characeter(len=256), intent(in) :: klmc_task_iopath
- * integer,             intent(in) :: klmc_task_id
- * integer,             intent(in) :: klmc_worker_id
- */
-
-/*
-	04082023:	1. File generation internal function
-*/
-
-
-
+/* * *
+ * use only in this source
+ * * */
 function_task* get_next_task( function_task* task_array, const int task_count, int* sent_task_count )
 {
 	//printf("task_count / sent_task_count : %d / %d\n",task_count,*sent_task_count);
@@ -44,87 +30,128 @@ function_task* get_next_task( function_task* task_array, const int task_count, i
 }
 
 
-void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupConfig* wc, const int n_workgroup, const int task_start, const int task_end )
-{
+
+
+/* * * * *
+
+	Master function
+
+		task configure / distribution /  ...
+
+		updates: 
+
+* * * * */
+void master_worker_task_call_master(
+	const MPI_Comm* base_comm,
+	const TaskFarmConfiguration* tfc,
+	const WorkgroupConfig* wgc
+){
+	bool berr = true;
+
+	/* * *
+		Files
+	* * */
+	char root[512];						// working			directory
+	char source_dir[512];				// inputfile		directory
 	FILE* iomaster = NULL;
-	iomaster = fopen("master.log","w");
 
-	const int master_tag = n_workgroup - 1;
- 	
-	/* access to a head (base_rank) of each workgroup: wc[i].base_rank / i: 0 - master_tag  */
+	/* * *
+		Tasks
+	* * */
+	int task_id;
+	int sent_task_count = 0;
+	const int task_count = tfc->num_tasks;
+	const int master_tag = tfc->n_workgroup - 1;
+	function_task* task_array = malloc(task_count*sizeof(function_task));
 
-	char systemcmd[1024];
 
-	char root[512];	// const
-	char source_dir[512]; // const
-
-	char inputfile_tmp[512];
-	char rundir_tmp[512];
-	char filetmp[64];
-	char dirtmp[64];
-
-	char togulpklmc[512];
-
-	// set root
+	// set root path
 	getcwd(root,sizeof(root));
-	// set source_dir
+	// set inputfile path
 	strcpy(source_dir,root);
 	strcat(source_dir,"/run/");
 
+// used variables ----------------------------------------
 
-	// initilise tasks
-	int sent_task_count = 0;
-	const int task_count = task_end - task_start + 1;
-	int task_id;
-	function_task* task_array = malloc(task_count*sizeof(function_task));
+	// log file 'master'
+	iomaster = fopen(_LOGFILE_MASTER_,"w");
 
+	if( iomaster == NULL ){
+
+		// error check
+		// return berr
+	}
+	else{
+
+		// do some writing
+	}
+
+	char rundir[64];				// e.g. A123
+	char rundir_path[512];			// e.g. /root/A123
+
+	char inputfile[64];				// e.g. A123.gin
+	char inputfile_path[512];		// e.g. /root/run/A123.gin
+
+	char systemcmd[1024];
+	char togulpklmc[512];
+
+	/* * * * *
+	 * TASK CONFIGURATION
+	 * * * * */
 	for(int i=0;i<task_count;i++){
 	
-		// task_id = * (in A*.gin)
-		task_id = i + task_start;
+		task_id = i + tfc->task_start;	// syntax bash > "A${task_id}.gin"
 
-		// some systemcalls to generate file structure
-		// 1. create directories
-		// 2. copy gulp input files into the directory
+		if( strcmp(tfc->application,"gulp") == 0 ){
 
-		// mkdir + copying inputfile to the directories
-		memset(filetmp,0,sizeof(filetmp));
-		memset(dirtmp,0,sizeof(dirtmp));
-		sprintf(filetmp,"A%d.gin",task_id);
-		sprintf(dirtmp,"A%d",task_id);
-		memset(inputfile_tmp,0,sizeof(inputfile_tmp));
-		strcpy(inputfile_tmp,root);
-		strcat(inputfile_tmp,"/run/");
-		strcat(inputfile_tmp,filetmp);						// inputfile_tmp: /path/to/A*.gin
-		memset(rundir_tmp,0,sizeof(rundir_tmp));
-		strcpy(rundir_tmp,root);
-		strcat(rundir_tmp,"/");
-		strcat(rundir_tmp,dirtmp);							// rundir_tmp	: /path/to/	(i.e., working directory)
+			sprintf(inputfile,"A%d.gin",task_id);
+			sprintf(rundir,"A%d",task_id);
+
+			// 1. set inputfile_path
+			memset(inputfile_path,0,sizeof(inputfile_path));
+			strcpy(inputfile_path,root);
+			strcat(inputfile_path,"/run/");
+			strcat(inputfile_path,inputfile);
+
+			// 2. set rundir_path
+			memset(rundir_path,0,sizeof(rundir_path));
+			strcpy(rundir_path,root);
+			strcat(rundir_path,"/");
+			strcat(rundir_path,rundir);
+
+			// 3. set commands
+
+// 31.08.23 Refactoring Progressing ... ------------------------------------------------------------------------------------------------------------------------------------------
+
+		}
 
 		// 1. setup command (copying)
 		memset(togulpklmc,0,sizeof(togulpklmc));
 		memset(systemcmd,0,sizeof(systemcmd));
-		strcpy(systemcmd,"cp ");
-		strcat(systemcmd,inputfile_tmp);
-		strcat(systemcmd," ");
-		strcpy(togulpklmc,rundir_tmp);
+
+		strcpy(togulpklmc,rundir_path);
 		strcat(togulpklmc,"/gulp_klmc.gin");
+
+		strcpy(systemcmd,"cp ");
+		strcat(systemcmd,inputfile_path);
+		strcat(systemcmd," ");
 		strcat(systemcmd,togulpklmc);
-		strcpy(task_array[i].syscmd,systemcmd);				// systemcmd	: cp inputfile_tmp rundir_tmp/gulp_klmc.gin
+
+		strcpy(task_array[i].syscmd,systemcmd);				// systemcmd	: cp inputfile_path rundir_path/gulp_klmc.gin
 
 
 		// 2. setup command (AXX.gin -> gulp_klmc.gin)
-			// memset(task_array[i].task_iopath,0,sizeof(task_array[i].task_iopath));
 		memset(task_array[i].task_iopath,' ',sizeof(task_array[i].task_iopath));
+
 		task_array[i].fp = gulpklmc;
 		task_array[i].task_id = task_id;
 		task_array[i].task_status = TASK_INIT;
 
 		/* ! Note:
-			sizeof: 'task_iopath' and 'rundir_tmp' must be in match // setup task working directory <Important!!!> - rundir_tmp -> length 512 - error !
+			sizeof: 'task_iopath' and 'rundir_path' must be in match // setup task working directory <Important!!!> - rundir_path -> length 512 - error !
 		*/
-		//sprintf(task_array[i].task_iopath,"%s",rundir_tmp);
-		strcpy(task_array[i].task_iopath,rundir_tmp);		// task_array[i].task_iopath = rundir_tmp
+		//sprintf(task_array[i].task_iopath,"%s",rundir_path);
+		strcpy(task_array[i].task_iopath,rundir_path);		// task_array[i].task_iopath = rundir_path
 		fprintf(iomaster,"MASTER> working path: %s\n",task_array[i].task_iopath);
 		// setup task root path
 		strcpy(task_array[i].task_rootpath,root);
@@ -134,6 +161,10 @@ void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupC
 	fprintf(iomaster," Task configuration\n");
 	fprintf(iomaster,"=============================================================================\n");
 	fflush(iomaster);
+
+
+// 31.08.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
+
 
 	// messaging tasks
 	MPI_Status status;
@@ -148,10 +179,10 @@ void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupC
 
 		if( task == NULL ){ break; }
 		//printf("send_count / task fp / id / status : %d %p %d %d\n",sent_task_count,task->fp,task->task_id,task->task_status);
-		MPI_Isend(task,sizeof(function_task),MPI_CHAR,wc[n].base_rank,TASK_WORKTAG,*base_comm,&request);
+		MPI_Isend(task,sizeof(function_task),MPI_CHAR,wgc[n].base_rank,TASK_WORKTAG,*base_comm,&request);
 		MPI_Wait(&request,&status);
 
-		fprintf(iomaster,"MASTER> Initial task send > MPI_Isend complete: master -> %d (base-rank) with [ tag, size ] = [ %d, %d ] - task_id: %d \n",wc[n].base_rank,wc[n].workgroup_tag,wc[n].workgroup_size,task->task_id);
+		fprintf(iomaster,"MASTER> Initial task send > MPI_Isend complete: master -> %d (base-rank) with [ tag, size ] = [ %d, %d ] - task_id: %d \n",wgc[n].base_rank,wgc[n].workgroup_tag,wgc[n].workgroup_size,task->task_id);
 	}
 	fflush(iomaster);
 
@@ -185,9 +216,9 @@ void master_worker_task_call_master( const MPI_Comm* base_comm, const WorkgroupC
 			function_task end_task;
 			end_task.task_status = TASK_DIETAG;
 
-			MPI_Send(&end_task,sizeof(function_task),MPI_CHAR,wc[n].base_rank,TASK_DIETAG,*base_comm);
-			//MPI_Send(0,0,MPI_CHAR,wc[n].base_rank,TASK_DIETAG,*base_comm);
-			fprintf(iomaster,"MASTER - DIETAG > MPI_Send complete: master -> %d (base-rank)\n",wc[n].base_rank);
+			MPI_Send(&end_task,sizeof(function_task),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
+			//MPI_Send(0,0,MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
+			fprintf(iomaster,"MASTER - DIETAG > MPI_Send complete: master -> %d (base-rank)\n",wgc[n].base_rank);
 	}
 
 	free(task_array);

@@ -19,6 +19,8 @@
 // file path: TF_ : taskfarm related
 #define TF_CONFIG_FILE "taskfarm.config"		// taskfarm configuration file
 #define TF_MAIN_FILE   "taskfarm.log"
+#define TF_APPLICATION_GULP    "gulp"
+#define TF_APPLICATION_FHIAIMS "fhiaims"
 
 #include <mpi.h>
 #include <stdbool.h>
@@ -33,6 +35,13 @@ typedef struct TaskFarmConfiguration_{
 	int bsize;		// global : base rank size
 	int brank;		// local  : my rank
 	int mrank;		// global : master rank
+
+	char proc_name[MPI_MAX_PROCESSOR_NAME];	// local : my process id
+	int proc_name_len;						// local : my process id length
+
+	// sys info
+	bool omp_num_threads_set;	// global
+	int omp_num_threads;		// global
 
 	/* * *
 
@@ -79,7 +88,7 @@ typedef struct WorkgroupConfig_{
 				WorkgroupConfig[n] : contains information of 'n'th workgroup
 
 					base_size<int>		: BaseComm size
-					base_rank<int>		: BaseComm rank -> this is 'PARTICULARLY USEFUL' when setting communication: 'master' <-> 'workergroup'
+					base_rank<int>		: BaseComm rank -> this is 'PARTICULARLY USEFUL' when setting communications: 'master' <-> 'workergroup'
 					workgroup_tag<int>  : workgroup tag of 'n'th workgroup : (simply) = n
 					workgroup_size<int> : size (#CPUs)  of 'n'th workgroup
 
@@ -98,6 +107,7 @@ typedef struct WorkgroupConfig_{
 * * */
 
 bool tf_get_taskfarm_configuration(
+	const MPI_Comm* base_comm,		// IN
 	TaskFarmConfiguration* tfc		// IN-OUT
 );
 
@@ -111,7 +121,7 @@ bool tf_get_workgroup_config(
 	const MPI_Comm* base_comm,				// IN
 	const MPI_Comm* workgroup_comm,			// IN
 	const TaskFarmConfiguration* tfc, 		// IN
-	WorkgroupConfig* workgroup_config		// IN-OUT
+	WorkgroupConfig* wgc_global				// IN-OUT
 );
 
 // general function pointer get library(?) function

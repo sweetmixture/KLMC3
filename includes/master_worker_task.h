@@ -10,6 +10,8 @@
 #ifndef __TASKFARM_MASTER_WORKER
 #define __TASKFARM_MASTER_WORKER
 
+#define _LOGFILE_MASTER_ "master.log"
+
 #include <mpi.h>			// using MPI related
 #include "taskfarm_def.h"	// using WorkgroupConfig
 
@@ -25,6 +27,7 @@ typedef void (*gulp_taskfunction_ptr)(
 	int*
 );
 
+/* TASK PACKAGE */
 typedef struct function_task_{
 
 	// taskfunction_ptr fp;
@@ -33,16 +36,20 @@ typedef struct function_task_{
 
 	int task_id;
 	int worker_id;
-	char task_iopath[512];
-	char task_rootpath[512];
+	char task_iopath[512];			// application launch directory
+	char task_rootpath[512];		// taskfarm root directory
 
 	// task info
 	char syscmd[1024];				// command to copy *.gin file to working directory: task_iopath
+
+	int system_cmd_cnt;				// number of valid system commands
+	char system_cmd[8][1024];		// system command buffer
 
 	int task_status;
 
 }function_task;
 
+/* RESULT PACKAGE */
 typedef struct result_package_{
 
 	int task_id;
@@ -58,12 +65,14 @@ typedef struct result_package_{
 }result_package;
 
 
+/* * * * *
+ * functions
+ * * * * */
+
 void master_worker_task_call_master(
-	const MPI_Comm* base_comm,
-	const WorkgroupConfig* wc,
-	const int n_workgroup,
-	const int task_start,
-	const int task_end
+    const MPI_Comm* base_comm,
+    const TaskFarmConfiguration* tfc,
+    const WorkgroupConfig* wc
 );
 
 void master_worker_task_call_workgroup(
