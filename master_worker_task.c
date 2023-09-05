@@ -14,23 +14,91 @@
 
 #include "master_worker_task.h"
 #include "subroutines.h"
+#include "error.h"
+#include "timer.h"
 
 /* * *
  * use only in this source
  * * */
-function_task* get_next_task( function_task* task_array, const int task_count, int* sent_task_count )
-{
-	//printf("task_count / sent_task_count : %d / %d\n",task_count,*sent_task_count);
-	if( *sent_task_count >= task_count ) return NULL;
-
-	function_task* task = &task_array[*sent_task_count];
+TaskEnvelope* get_next_TaskEnvelope(
+	TaskEnvelope* task_array,
+	const int task_count,
+	int* sent_task_count
+){
+	if( *sent_task_count >= task_count ){
+		return NULL;
+	}
+	TaskEnvelope* task = &task_array[*sent_task_count];
 	(*sent_task_count)++;
 
 	return task;
 }
 
+/*
+	set TaskEnvelope ( instructions to 'workgroup' )
+ */
+void set_TaskEnvelope(
+    const int task_id,
+    const char* app,
+    MasterWorkspace* mws,
+    TaskEnvelope* task
+){
+	// APPLICATION GULP
+    if( strcmp(app,"gulp") == 0 ){
 
+        mws->inputfile_count = 1;                       // set inputfile count: gulp (1) *
 
+        sprintf(mws->inputfile[0],"A%d.gin",task_id);   // set input file name		// e.g. 'A123.gin'
+        sprintf(mws->rundir,"A%d",task_id);             // set app run directory	// e.g. 'A123'
+
+        // 1. set mws 'inputfile path'
+        memset(mws->inputfile_path[0],0,sizeof(mws->inputfile_path[0]));
+        strcpy(mws->inputfile_path[0],mws->inputsource_dir);						// e.g. '/root/run'
+		strcat(mws->inputfile_path[0],"/");											// e.g. '/root/run/'
+        strcat(mws->inputfile_path[0],mws->inputfile[0]);							// e.g. '/root/run/A123.gin'
+
+        // 2. set mws 'rundir_path'
+        memset(mws->rundir_path,0,sizeof(mws->rundir_path));
+        strcpy(mws->rundir_path,mws->root);											// e.g. '/root/
+		strcat(mws->rundir_path,"/");												// e.g. '/root/
+        strcat(mws->rundir_path,mws->rundir);										// e.g. '/root/run'
+
+        /* ------------------------------------------------------------------- */
+        // 3. set TaskEnvelope 'task'
+        task->cmd_count = 1;								// mws->inputfile_count;
+
+        for(int i=0;i<task->cmd_count;i++){
+            memset(task->cmd[i],0,sizeof(task->cmd[i]));
+			memset(task->inputfile_path[i],0,sizeof(task->inputfile_path[i]));
+        }
+
+		strcpy(task->application,"gulp");					// Application
+		task->app_ptr = gulpklmc;							// set 'gulp_main()' subroutine
+		task->task_id = task_id;							// set task_id
+        strcpy(task->task_iopath,mws->rundir_path);			// set task_iopath
+        strcpy(task->task_rootpath,mws->root);				// set task_rootpath
+        task->task_status = TASK_INIT;						// set task_status
+
+		task->inputfile_count = mws->inputfile_count;
+        // gulp main input copy command
+        strcpy(task->cmd[0],"cp ");							// cp
+        strcat(task->cmd[0],mws->inputfile_path[0]);		// cp /abs/path/inputfile_path/
+        strcat(task->cmd[0]," ");							// cp /abs/path/inputfile_path/ 
+        strcat(task->cmd[0],mws->rundir_path);				// cp /abs/path/inputfile_path/	/abs/path/rundir_path
+        strcat(task->cmd[0],"/gulp_klmc.gin");				// cp /abs/path/inputfile_path/ /abs/path/rundir_paht/gulp_klmc.gin
+
+		strcpy(task->inputfile_path[0],mws->inputfile_path[0]);	// set task inputfile_path (absolute)
+        
+        return;
+    }
+    
+	// APPLICATION FHIAIMS
+    if( strcmp(app,"fhiaims") == 0 ){
+        
+ 		// Not Implemented 01.09.23       
+        return;
+    }
+}
 
 /* * * * *
 
@@ -41,164 +109,121 @@ function_task* get_next_task( function_task* task_array, const int task_count, i
 		updates: 
 
 * * * * */
-void master_worker_task_call_master(
+bool master_worker_task_call_master(
 	const MPI_Comm* base_comm,
 	const TaskFarmConfiguration* tfc,
 	const WorkgroupConfig* wgc
 ){
 	bool berr = true;
+	char currentTime[64];
 
 	/* * *
 		Files
 	* * */
-	char root[512];						// working			directory
-	char source_dir[512];				// inputfile		directory
 	FILE* iomaster = NULL;
+	MasterWorkspace mws;
 
 	/* * *
 		Tasks
 	* * */
 	int task_id;
-	int sent_task_count = 0;
+	int sent_task_count  = 0;
 	const int task_count = tfc->num_tasks;
 	const int master_tag = tfc->n_workgroup - 1;
-	function_task* task_array = malloc(task_count*sizeof(function_task));
+	TaskEnvelope* task_array = malloc(task_count*sizeof(TaskEnvelope));
 
+	/* * * END VARIABLES * * */
 
-	// set root path
-	getcwd(root,sizeof(root));
-	// set inputfile path
-	strcpy(source_dir,root);
-	strcat(source_dir,"/run/");
+	// Get basic filesystem environment: (1) root path (2) input source path
+	getcwd(mws.root,sizeof(mws.root));
+	strcpy(mws.inputsource_dir,mws.root);
+	strcat(mws.inputsource_dir,"/run");
 
-// used variables ----------------------------------------
-
-	// log file 'master'
+	// Try: open log file 'master.log'
 	iomaster = fopen(_LOGFILE_MASTER_,"w");
 
+	// Channel 'iomaster' open check
 	if( iomaster == NULL ){
 
-		// error check
-		// return berr
+		// termination message : REFACTORING REQ ----------------------------------------------------------------
+		for(int n=0;n<master_tag;n++){
+        	TaskEnvelope end_task;
+        	end_task.task_status = TASK_DIETAG;
+        	MPI_Send(&end_task,sizeof(TaskEnvelope),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
+        	//MPI_Send(0,0,MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
+        	fprintf(iomaster,"MASTER - DIETAG > MPI_Send complete: master -> %d (base-rank)\n",wgc[n].base_rank);
+			fflush(iomaster);
+		}
+		// ------------------------------------------------------------------------------------------------------
+		berr = false;
+		return berr;
 	}
-	else{
-
-		// do some writing
-	}
-
-	char rundir[64];				// e.g. A123
-	char rundir_path[512];			// e.g. /root/A123
-
-	char inputfile[64];				// e.g. A123.gin
-	char inputfile_path[512];		// e.g. /root/run/A123.gin
-
-	char systemcmd[1024];
-	char togulpklmc[512];
+	//else : continue ...
 
 	/* * * * *
 	 * TASK CONFIGURATION
 	 * * * * */
 	for(int i=0;i<task_count;i++){
 	
-		task_id = i + tfc->task_start;	// syntax bash > "A${task_id}.gin"
+		task_id = i + tfc->task_start;	// syntax -> "A${task_id}.gin"
 
-		if( strcmp(tfc->application,"gulp") == 0 ){
+		set_TaskEnvelope( task_id, tfc->application, &mws, &(task_array[i]) );
 
-			sprintf(inputfile,"A%d.gin",task_id);
-			sprintf(rundir,"A%d",task_id);
-
-			// 1. set inputfile_path
-			memset(inputfile_path,0,sizeof(inputfile_path));
-			strcpy(inputfile_path,root);
-			strcat(inputfile_path,"/run/");
-			strcat(inputfile_path,inputfile);
-
-			// 2. set rundir_path
-			memset(rundir_path,0,sizeof(rundir_path));
-			strcpy(rundir_path,root);
-			strcat(rundir_path,"/");
-			strcat(rundir_path,rundir);
-
-			// 3. set commands
-
-// 31.08.23 Refactoring Progressing ... ------------------------------------------------------------------------------------------------------------------------------------------
-
-		}
-
-		// 1. setup command (copying)
-		memset(togulpklmc,0,sizeof(togulpklmc));
-		memset(systemcmd,0,sizeof(systemcmd));
-
-		strcpy(togulpklmc,rundir_path);
-		strcat(togulpklmc,"/gulp_klmc.gin");
-
-		strcpy(systemcmd,"cp ");
-		strcat(systemcmd,inputfile_path);
-		strcat(systemcmd," ");
-		strcat(systemcmd,togulpklmc);
-
-		strcpy(task_array[i].syscmd,systemcmd);				// systemcmd	: cp inputfile_path rundir_path/gulp_klmc.gin
-
-
-		// 2. setup command (AXX.gin -> gulp_klmc.gin)
-		memset(task_array[i].task_iopath,' ',sizeof(task_array[i].task_iopath));
-
-		task_array[i].fp = gulpklmc;
-		task_array[i].task_id = task_id;
-		task_array[i].task_status = TASK_INIT;
-
-		/* ! Note:
-			sizeof: 'task_iopath' and 'rundir_path' must be in match // setup task working directory <Important!!!> - rundir_path -> length 512 - error !
-		*/
-		//sprintf(task_array[i].task_iopath,"%s",rundir_path);
-		strcpy(task_array[i].task_iopath,rundir_path);		// task_array[i].task_iopath = rundir_path
-		fprintf(iomaster,"MASTER> working path: %s\n",task_array[i].task_iopath);
-		// setup task root path
-		strcpy(task_array[i].task_rootpath,root);
+		// < PRINT S/T >
+		// fprintf(iomaster,"MASTER> working path: %s\n",task_array[i].task_iopath);
 
 	}
-	fprintf(iomaster,"=============================================================================\n");
-	fprintf(iomaster," Task configuration\n");
-	fprintf(iomaster,"=============================================================================\n");
+	fprintf(iomaster," * * * \n");
+	fprintf(iomaster," Task envelopes setting done\n");
+	fprintf(iomaster," * * * \n");
 	fflush(iomaster);
 
+// 05.09.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
+// master_worker_task.h
 
-// 31.08.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
-
-
-	// messaging tasks
+	/*
+		 messaging tasks variables
+	*/
 	MPI_Status status;
 	MPI_Request request;
-
-	function_task* task;
-	result_package res;
+	TaskEnvelope* task;
+	TaskResultEnvelope taskres;
 	
-	// Initial task messaging 
+	/* * * * *
+		Initial task messaging 
+	 * * * * */
 	for(int n=0;n<master_tag;n++){
-		task = get_next_task(task_array,task_count,&sent_task_count);
 
-		if( task == NULL ){ break; }
-		//printf("send_count / task fp / id / status : %d %p %d %d\n",sent_task_count,task->fp,task->task_id,task->task_status);
-		MPI_Isend(task,sizeof(function_task),MPI_CHAR,wgc[n].base_rank,TASK_WORKTAG,*base_comm,&request);
+		task = get_next_TaskEnvelope(task_array,task_count,&sent_task_count);
+
+		if( task == NULL ){
+			break;
+		}
+
+		MPI_Isend(task,sizeof(TaskEnvelope),MPI_CHAR,wgc[n].base_rank,TASK_WORKTAG,*base_comm,&request);
 		MPI_Wait(&request,&status);
 
-		fprintf(iomaster,"MASTER> Initial task send > MPI_Isend complete: master -> %d (base-rank) with [ tag, size ] = [ %d, %d ] - task_id: %d \n",wgc[n].base_rank,wgc[n].workgroup_tag,wgc[n].workgroup_size,task->task_id);
+		getCurrentDateTime(currentTime);
+
+		fprintf(iomaster," %.30s TaskEnvelope sent | task_id %6d > workgroup %5d | size %5d | head_procid %6d\n", currentTime,task->task_id,wgc[n].workgroup_tag,wgc[n].workgroup_size,wgc[n].base_rank);
 	}
 	fflush(iomaster);
+	// Initial task messaging end
 
-	task = get_next_task(task_array,task_count,&sent_task_count);
+	/* * * * *
+		task messaging
+	 * * * * */
+	task = get_next_TaskEnvelope(task_array,task_count,&sent_task_count);
 
 	while( task != NULL ){
 
-		MPI_Recv(&res,sizeof(result_package),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
-		fprintf(iomaster,"MASTER> MPI_Recv complete: from %d - task_id: %d \n",status.MPI_SOURCE,res.task_id);
+		MPI_Recv(&taskres,sizeof(TaskResultEnvelope),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
+		fprintf(iomaster," MPI_Recv complete: from %d - task_id: %d \n",status.MPI_SOURCE,taskres.task_id);
 
-		// logging 'res'
+		MPI_Send(task,sizeof(TaskEnvelope),MPI_CHAR,status.MPI_SOURCE,TASK_WORKTAG,*base_comm);	// using ... MPI handle ... MPI_Status stauts -> MPI_SOURCE (send back to right previous 'recv' source)
+		fprintf(iomaster," MPI_Send complete: master -> %d (base-rank) - task_id: %d\n",status.MPI_SOURCE,task->task_id);
 
-		MPI_Send(task,sizeof(function_task),MPI_CHAR,status.MPI_SOURCE,TASK_WORKTAG,*base_comm);	// using ... MPI handle ... MPI_Status stauts -> MPI_SOURCE (send back to right previous 'recv' source)
-		fprintf(iomaster,"MASTER> MPI_Send complete: master -> %d (base-rank) - task_id: %d\n",status.MPI_SOURCE,task->task_id);
-
-		task = get_next_task(task_array,task_count,&sent_task_count);
+		task = get_next_TaskEnvelope(task_array,task_count,&sent_task_count);
 		
 		fflush(iomaster);
 	}
@@ -206,25 +231,25 @@ void master_worker_task_call_master(
 	// Final Recv
 	for(int n=0;n<master_tag;n++){
 
-		MPI_Recv(&res,sizeof(result_package),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
-		fprintf(iomaster,"MASTER> MPI_Recv complete: from %d - task_id: %d \n",status.MPI_SOURCE,res.task_id);
+		MPI_Recv(&taskres,sizeof(TaskResultEnvelope),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
+		fprintf(iomaster," MPI_Recv complete: from %d - task_id: %d \n",status.MPI_SOURCE,taskres.task_id);
 	}
 
 	// Termination message
 	for(int n=0;n<master_tag;n++){
 
-			function_task end_task;
+			TaskEnvelope end_task;
 			end_task.task_status = TASK_DIETAG;
 
-			MPI_Send(&end_task,sizeof(function_task),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
+			MPI_Send(&end_task,sizeof(TaskEnvelope),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
 			//MPI_Send(0,0,MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
-			fprintf(iomaster,"MASTER - DIETAG > MPI_Send complete: master -> %d (base-rank)\n",wgc[n].base_rank);
+			fprintf(iomaster," MPI_Send (DIE-TAG) complete: master -> %d (base-rank)\n",wgc[n].base_rank);
 	}
 
 	free(task_array);
 	fclose(iomaster);
 
-	return;
+	return berr;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------
@@ -246,22 +271,22 @@ void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Com
 	MPI_Status status;
 	MPI_Request request;
 
-	// recv buffer
-	function_task task;
-	// result
-	result_package res;
+	TaskEnvelope task;
+	TaskResultEnvelope taskres;
 
 	// workgroup logger
 	FILE* ioworkgroup = NULL;
 	char ioworkgroup_log_files[128];
 	sprintf(ioworkgroup_log_files,"workgroup_%d.log",workgroup_tag);
 
+	/*
+		Open 'workgroup' log files
+	*/
 	for(int n=0;n<workgroup_count;n++){
 		if( n == workgroup_tag && worker_rank == 0 ){
 			ioworkgroup = fopen(ioworkgroup_log_files,"w");
 		}
 	}
-	// workgroup logger
 
 	// iopath control
 	char cwd[512];
@@ -272,28 +297,56 @@ void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Com
 
 			// task recv - head process of each workgroup
 			if( n == workgroup_tag && worker_rank == 0 ){
-				MPI_Recv(&task,sizeof(function_task),MPI_CHAR,master_base_rank,MPI_ANY_TAG,*base_comm,&status);
+				MPI_Recv(&task,sizeof(TaskEnvelope),MPI_CHAR,master_base_rank,MPI_ANY_TAG,*base_comm,&status);
 
 				if( status.MPI_TAG == TASK_WORKTAG ){
-					//printf("WORKGROUP [%d] > MPI_Recv complete : task %p %d %d\n",workgroup_tag,task.fp,task.task_id,task.task_status);
+
+					fprintf(ioworkgroup,"--------------------------------------------------------------------------------\n");
+					fprintf(ioworkgroup," * TaskEnvelope recv - workgroup %d\n",workgroup_tag);
+					fprintf(ioworkgroup," task_id         : %d\n",task.task_id);
+					fprintf(ioworkgroup," application     : %s ( %p )\n",task.application,task.app_ptr);
+					fprintf(ioworkgroup," task_status     : %d (work-tag)\n",task.task_status);
+					fprintf(ioworkgroup," task_iopath     : %s\n",task.task_iopath);
+					fprintf(ioworkgroup," inputfile count : %d\n",task.inputfile_count);
+					fprintf(ioworkgroup,"     * shell instructions\n");
+					for(int i=0;i<task.cmd_count;i++){
+					fprintf(ioworkgroup,"     %2d | %s\n",task.cmd_count,task.cmd[i]);
+					fflush(ioworkgroup);
+					}
+					fprintf(ioworkgroup,"\n");
+					fflush(ioworkgroup);
+
+				/* deprecated 05.09.23
+
+					//printf("WORKGROUP [%d] > MPI_Recv complete : task %p %d %d\n",workgroup_tag,task.app_ptr,task.task_id,task.task_status);
 					fprintf(ioworkgroup,"--------------------------------------------------------------------\n");
-					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Recv complete : task %p %d %d\n",workgroup_tag,task.fp,task.task_id,task.task_status);
+					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Recv complete : task %p %d %d\n",workgroup_tag,task.app_ptr,task.task_id,task.task_status);
+					fflush(ioworkgroup);
+				*/
 				}
 				else if( status.MPI_TAG == TASK_DIETAG ){
+
+					fprintf(ioworkgroup,"--------------------------------------------------------------------------------\n");
+					fprintf(ioworkgroup," * TaskEnvelope recv - workgroup %d\n",workgroup_tag);
+// 05.09.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
+// master_worker_task.h
+				/* deprecated 05.09.23
 					//printf("WORKGROUP [%d] > MP_Recv DIETAG complete\n",workgroup_tag);
 					fprintf(ioworkgroup,"********************************************************************\n");
-					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Recv complete : task %p %d %d\n",workgroup_tag,task.fp,task.task_id,task.task_status);
+					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Recv complete : task %p %d %d\n",workgroup_tag,task.app_ptr,task.task_id,task.task_status);
+					fflush(ioworkgroup);
+				*/
 				}
 			}
 
 			// workgroup interanl bcast - task
 			if( n == workgroup_tag ){
 
-				MPI_Bcast(&task,sizeof(function_task),MPI_CHAR,0,*workgroup_comm);
+				MPI_Bcast(&task,sizeof(TaskEnvelope),MPI_CHAR,0,*workgroup_comm);
 
 				if( worker_rank == 0 ){
-					//printf("WORKGROUP [%d] > MPI_Bcast complete : worker_rank [%d] task %p %d %d\n",workgroup_tag,worker_rank,task.fp,task.task_id,task.task_status);
-					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Bcast complete : worker_rank [%d] task %p %d %d\n",workgroup_tag,worker_rank,task.fp,task.task_id,task.task_status);
+					//printf("WORKGROUP [%d] > MPI_Bcast complete : worker_rank [%d] task %p %d %d\n",workgroup_tag,worker_rank,task.app_ptr,task.task_id,task.task_status);
+					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Bcast complete : worker_rank [%d] task %p %d %d\n",workgroup_tag,worker_rank,task.app_ptr,task.task_id,task.task_status);
 					fflush(ioworkgroup);
 				}
 				// set workgroup tag
@@ -306,7 +359,23 @@ void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Com
 				// Create working directory and put relevant *.gin
 				if( worker_rank == 0 ){
 					mkdir(task.task_iopath,0777);	// mkdir working_directory
-					system(task.syscmd);			// copy *.gin
+
+					// execute commands -- 01.09.23 temporal added (replace REQ)
+					for(int i=0;i<task.cmd_count;i++){
+
+						// Target FileExists Check REQ
+						bool fileExists = error_file_exists( task.inputfile_path[i] );
+						if( fileExists ){
+							fprintf(ioworkgroup,"WORKGROUP [%d]: inptufile %d exists: %s\n",workgroup_tag,i,task.inputfile_path[i]);
+							fflush(ioworkgroup);
+						}
+						else{
+							fprintf(ioworkgroup,"WORKGROUP [%d]: inptufile %d NOTexists: %s\n",workgroup_tag,i,task.inputfile_path[i]);
+							fflush(ioworkgroup);
+						}
+						// Call system preset scripts
+						system(task.cmd[i]);
+					}
 				}
 				MPI_Barrier(*workgroup_comm);		// need to wait until mkdir / system done otherwise 'chdir' following cannot be done properly
 
@@ -324,7 +393,7 @@ void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Com
 					Launch GULP : extern void gulpklmc( const MPI_Comm*, char*, int*, int* );
 				*	* * */
 				task.task_status = TASK_EXECUTED;
-				task.fp(workgroup_comm,task.task_iopath,&task.task_id,&task.worker_id);
+				task.app_ptr(workgroup_comm,task.task_iopath,&task.task_id,&task.worker_id);
 
 				// get out from the working dir <important> to keep gulpmain from the race condition of getting channel 'gulptmp_*' - wkjee 11 July 2023 added
 				chdir(task.task_rootpath);
@@ -339,16 +408,20 @@ void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Com
 				task.task_status = TASK_FINISHED;
 				//if( worker_rank == 0 ){ printf("after  run / status %d\n",task.task_status); }
 
-				// setup result;
-				res.task_status = TASK_FINISHED;
-				res.task_id = task.task_id;
-				res.worker_id = task.worker_id;
+				/*
+					 set TaskResultEnvelope
+				*/
+				taskres.task_status = TASK_FINISHED;
+				taskres.task_id = task.task_id;
+				taskres.worker_id = task.worker_id;
 
 				// send back to Master
 				if( worker_rank == 0 ){
-					MPI_Send(&res,sizeof(result_package),MPI_CHAR,master_base_rank,res.task_status,*base_comm);
-					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Send complete <result callback to master> : task %p %d %d\n",workgroup_tag,task.fp,task.task_id,task.task_status);
+					MPI_Send(&taskres,sizeof(TaskResultEnvelope),MPI_CHAR,master_base_rank,taskres.task_status,*base_comm);
+					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Send complete <result callback to master> : task %p %d %d\n",workgroup_tag,task.app_ptr,task.task_id,task.task_status);
+					fflush(ioworkgroup);
 				}
+				MPI_Barrier(*workgroup_comm);
 			}
 		}
 	}

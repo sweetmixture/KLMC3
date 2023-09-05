@@ -179,7 +179,9 @@ int main(int argc, char* argv[])
 	 * TASK FARM MAIN START
 	 * * * * **/
 	if( tfc.brank == tfc.mrank ){
-		master_worker_task_call_master( &BaseComm, &tfc, &wgc_global[0] );
+
+		berr = master_worker_task_call_master( &BaseComm, &tfc, &wgc_global[0] );
+
 // -------------------------------------------------------------------------------- -> 31.08 REFACTORING
 		//fprintf(stdout,"MASTER - TaskFarmMain> Finalising MASTER > \n");
 	}

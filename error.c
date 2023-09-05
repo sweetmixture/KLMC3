@@ -194,7 +194,7 @@ bool error_taskfarm_commsplit_nproc_check(
 bool error_file_exists(
 	const char* filename
 ){
-	if( access(filename,F_OK) ){
+	if( access(filename,F_OK) == 0 ){
 		return true;
 	}
 	else{

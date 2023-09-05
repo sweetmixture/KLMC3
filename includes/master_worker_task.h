@@ -20,56 +20,91 @@ typedef void (*taskfunction_ptr)(
 	int*
 );
 
-typedef void (*gulp_taskfunction_ptr)(
+typedef void (*app_execute_ptr)(
 	const MPI_Comm* ,
 	char*,
 	int*,
 	int*
 );
 
-/* TASK PACKAGE */
-typedef struct function_task_{
+/* TASK ENVELOPE */
+typedef struct TaskEnvelope_{
 
-	// taskfunction_ptr fp;
-	taskfunction_ptr tfp;
-	gulp_taskfunction_ptr fp;
+	/*
+		application
+	*/
+	char application[32];
+	app_execute_ptr app_ptr;		// application function(or subroutine) function pointer
 
-	int task_id;
-	int worker_id;
+	/*
+		task related
+	*/
+	int  task_id;
 	char task_iopath[512];			// application launch directory
 	char task_rootpath[512];		// taskfarm root directory
 
-	// task info
-	char syscmd[1024];				// command to copy *.gin file to working directory: task_iopath
+	/*
+		prep commands for launcing 'app_ptr'
+	*/
+	int  cmd_count;					// number of copy commands for inputfiles
+	char cmd[16][1024];				// copy commands
+	int  inputfile_count;
+	char inputfile_path[16][512];	// in order to check if file exists
 
-	int system_cmd_cnt;				// number of valid system commands
-	char system_cmd[8][1024];		// system command buffer
-
+	/*
+		task status related : will be used later by 'worker'
+	*/
 	int task_status;
-
-}function_task;
-
-/* RESULT PACKAGE */
-typedef struct result_package_{
-
-	int task_id;
 	int worker_id;
-	int task_status;
 
-	char start_t[40];
-	char end_t[40];
+}TaskEnvelope;
+
+/* TASK RESULT ENVELOPE */
+typedef struct TaskResultEnvelope_{
+
+	int task_id;					// which task this was?
+	int worker_id;					// task done by which 'workder (or workgroup)'
+	int task_status;				// task_status
+
+	// * ws [40]
+	char start_t[64];				// task_start time (DateTime)
+	char end_t[64];					// task_end   time (DateTime)
 
 	double elapsed_t;
 	double value;
 
-}result_package;
+}TaskResultEnvelope;
 
+
+/* * * * *
+ * strcuts for convenient management
+ * * * * */
+
+typedef struct MasterWorkspace_{
+
+	/*
+		Parameters
+	*/
+	char root[512];						// Parameter : TaskFarm Root
+	char inputsource_dir[512];			// Parameter : InputSource Directory
+	
+	/*
+		Variables ( workspace )
+	*/
+	char rundir[64];
+	char rundir_path[512];
+
+	int  inputfile_count;
+	char inputfile[8][64];
+	char inputfile_path[8][512];
+
+}MasterWorkspace;
 
 /* * * * *
  * functions
  * * * * */
 
-void master_worker_task_call_master(
+bool master_worker_task_call_master(
     const MPI_Comm* base_comm,
     const TaskFarmConfiguration* tfc,
     const WorkgroupConfig* wc
