@@ -7,7 +7,7 @@
 */
 
 #ifndef __TASKFARM_PRINT_MESSAGE
-#define __TAKSFARM_PRINT_MESSAGE
+#define __TASKFARM_PRINT_MESSAGE
 
 #include <stdio.h>
 #include <string.h>

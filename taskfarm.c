@@ -181,14 +181,12 @@ int main(int argc, char* argv[])
 	if( tfc.brank == tfc.mrank ){
 
 		berr = master_worker_task_call_master( &BaseComm, &tfc, &wgc_global[0] );
-
 // -------------------------------------------------------------------------------- -> 31.08 REFACTORING
-		//fprintf(stdout,"MASTER - TaskFarmMain> Finalising MASTER > \n");
 	}
 	else{
 		master_worker_task_call_workgroup( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
-		//fprintf(stdout,"WORKER - TaskFarmMain> Finalising Workgroups: base_rank : %d - workgroup_tag %d -  wr / ws: %d / %d \n",tfc.brank,tfc.workgroup_tag,tfc.worker_rank,tfc.workgroup_size);
 	}
+
 	/* * * * *
 	 * TASK FARM MAIN END
 	 * * * * */

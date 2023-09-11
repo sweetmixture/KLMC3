@@ -7,7 +7,7 @@
 */
 
 #ifndef __TASKFARM_ERROR
-#define __TAKSFARM_ERROR
+#define __TASKFARM_ERROR
 
 
 /* * *

@@ -145,34 +145,32 @@ bool master_worker_task_call_master(
 	// Channel 'iomaster' open check
 	if( iomaster == NULL ){
 
+		fprintf(iomaster,"Error: failed to open a log file for the master workgroup. Terminating all workgroups ...\n");
+
 		// termination message : REFACTORING REQ ----------------------------------------------------------------
 		for(int n=0;n<master_tag;n++){
+
         	TaskEnvelope end_task;
         	end_task.task_status = TASK_DIETAG;
         	MPI_Send(&end_task,sizeof(TaskEnvelope),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
-        	//MPI_Send(0,0,MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
-        	fprintf(iomaster,"MASTER - DIETAG > MPI_Send complete: master -> %d (base-rank)\n",wgc[n].base_rank);
+			getCurrentDateTime(currentTime);
+			fprintf(iomaster," %.30s MPI_Send | completed | master         > workgroup %5d : size %5d : head_procid %6d\n", currentTime,wgc[n].workgroup_tag,wgc[n].workgroup_size,wgc[n].base_rank);
 			fflush(iomaster);
+
 		}
 		// ------------------------------------------------------------------------------------------------------
 		berr = false;
 		return berr;
-	}
-	//else : continue ...
+	}//else : continue ...
 
-	/* * * * *
-	 * TASK CONFIGURATION
-	 * * * * */
+	/* * *
+	   TASK CONFIGURATION
+	 * * */
 	for(int i=0;i<task_count;i++){
-	
 		task_id = i + tfc->task_start;	// syntax -> "A${task_id}.gin"
-
 		set_TaskEnvelope( task_id, tfc->application, &mws, &(task_array[i]) );
-
-		// < PRINT S/T >
-		// fprintf(iomaster,"MASTER> working path: %s\n",task_array[i].task_iopath);
-
 	}
+
 	fprintf(iomaster," * * * \n");
 	fprintf(iomaster," Task envelopes setting done\n");
 	fprintf(iomaster," * * * \n");
@@ -195,7 +193,6 @@ bool master_worker_task_call_master(
 	for(int n=0;n<master_tag;n++){
 
 		task = get_next_TaskEnvelope(task_array,task_count,&sent_task_count);
-
 		if( task == NULL ){
 			break;
 		}
@@ -205,7 +202,19 @@ bool master_worker_task_call_master(
 
 		getCurrentDateTime(currentTime);
 
-		fprintf(iomaster," %.30s TaskEnvelope sent | task_id %6d > workgroup %5d | size %5d | head_procid %6d\n", currentTime,task->task_id,wgc[n].workgroup_tag,wgc[n].workgroup_size,wgc[n].base_rank);
+		/* pre-set for message sending */
+		fprintf(iomaster," >>>>>>>> task send (initial)\n");
+		fprintf(iomaster," %.30s MPI_Send | completed\n",currentTime);
+		fprintf(iomaster," * message > base_rank: %5d\n",wgc[n].base_rank);
+		fprintf(iomaster," | workgroup : %6d | size        : %5d\n",wgc[n].workgroup_tag,wgc[n].workgroup_size);
+		fprintf(iomaster," | task_id   : %6d | task_status : %5d\n",task->task_id,task->task_status);
+		fprintf(iomaster," * task contents\n");
+		fprintf(iomaster," application    : %s\n",task->application);
+		fprintf(iomaster," task_outpath   : %s\n",task->task_iopath);
+		fprintf(iomaster," * shell commands : %d\n",task->cmd_count);
+		for(int i=0;i<task->cmd_count;i++){
+		fprintf(iomaster," | %2d | %s\n",i+1,task->cmd[i]);
+		}
 	}
 	fflush(iomaster);
 	// Initial task messaging end
@@ -218,32 +227,94 @@ bool master_worker_task_call_master(
 	while( task != NULL ){
 
 		MPI_Recv(&taskres,sizeof(TaskResultEnvelope),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
-		fprintf(iomaster," MPI_Recv complete: from %d - task_id: %d \n",status.MPI_SOURCE,taskres.task_id);
+		getCurrentDateTime(currentTime);
+
+		/* pre-set for message recving */
+		fprintf(iomaster," <<<<<<<< task result recv (task-farming)\n");
+		fprintf(iomaster," %.30s MPI_Recv | completed\n",currentTime);
+		fprintf(iomaster," * message < base_rank: %5d\n",status.MPI_SOURCE);
+		fprintf(iomaster," | workgroup : %6d | size        : %5d\n",wgc[taskres.workgroup_tag].workgroup_tag,wgc[taskres.workgroup_tag].workgroup_size);
+		fprintf(iomaster," | task_id   : %6d | task_status : %5d\n",taskres.task_id,taskres.task_status); 
+		fprintf(iomaster," * task result\n");
+		fprintf(iomaster," | task starts : %.30s | task ends : %.30s\n",taskres.start_t,taskres.end_t);
+		fprintf(iomaster," | elapsed_t   : %.8f\n",taskres.elapsed_t);
+		// warning handling start
+		if( !taskres.inputfile_check ){
+		fprintf(iomaster," * warning | inputfile not found, application was not launched\n");
+		}
+		// warning handling end
 
 		MPI_Send(task,sizeof(TaskEnvelope),MPI_CHAR,status.MPI_SOURCE,TASK_WORKTAG,*base_comm);	// using ... MPI handle ... MPI_Status stauts -> MPI_SOURCE (send back to right previous 'recv' source)
-		fprintf(iomaster," MPI_Send complete: master -> %d (base-rank) - task_id: %d\n",status.MPI_SOURCE,task->task_id);
+		getCurrentDateTime(currentTime);
 
+		/* pre-set for message sending */
+		fprintf(iomaster," >>>>>>>> task send (task-farming)\n");
+		fprintf(iomaster," %.30s MPI_Send | completed\n",currentTime);
+		fprintf(iomaster," * message > base_rank: %5d\n",wgc[taskres.workgroup_tag].base_rank);
+		fprintf(iomaster," | workgroup : %6d | size        : %5d\n",wgc[taskres.workgroup_tag].workgroup_tag,wgc[taskres.workgroup_tag].workgroup_size);
+		fprintf(iomaster," | task_id   : %6d | task_status : %5d\n",task->task_id,task->task_status);
+		fprintf(iomaster," * task contents\n");
+		fprintf(iomaster," application    : %s\n",task->application);
+		fprintf(iomaster," task_outpath   : %s\n",task->task_iopath);
+		fprintf(iomaster," * shell commands : %d\n",task->cmd_count);
+		for(int i=0;i<task->cmd_count;i++){
+		fprintf(iomaster," | %2d | %s\n",i+1,task->cmd[i]);
+		}
 		task = get_next_TaskEnvelope(task_array,task_count,&sent_task_count);
 		
 		fflush(iomaster);
 	}
 
-	// Final Recv
+	// Final Recv : debugging 07.09.23 - HANG occurs : waiting a message from some 'workgroups' never sending message back since they are on running GULP (generating too many Errors, which never end).23
 	for(int n=0;n<master_tag;n++){
 
 		MPI_Recv(&taskres,sizeof(TaskResultEnvelope),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
-		fprintf(iomaster," MPI_Recv complete: from %d - task_id: %d \n",status.MPI_SOURCE,taskres.task_id);
+		getCurrentDateTime(currentTime);
+
+		/* pre-set for message recving */
+		fprintf(iomaster," <<<<<<<< task result recv (final)\n");
+		fprintf(iomaster," %.30s MPI_Recv | completed\n",currentTime);
+		fprintf(iomaster," * message < base_rank: %5d\n",status.MPI_SOURCE);
+		fprintf(iomaster," | workgroup : %6d | size        : %5d\n",wgc[taskres.workgroup_tag].workgroup_tag,wgc[taskres.workgroup_tag].workgroup_size);
+		fprintf(iomaster," | task_id   : %6d | task_status : %5d\n",taskres.task_id,taskres.task_status); 
+		fprintf(iomaster," * task result\n");
+		fprintf(iomaster," | task starts : %.30s | task ends : %.30s\n",taskres.start_t,taskres.end_t);
+		fprintf(iomaster," | elapsed_t   : %.8f\n",taskres.elapsed_t);
+
+		// warning handling start
+		if( !taskres.inputfile_check ){
+		fprintf(iomaster," * warning | inputfile not found, application was not launched\n");
+		}
+		// warning handling end
+		fflush(iomaster);
 	}
+
+// 08.09.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
+// master_worker_task.h
+	fprintf(iomaster," * * * * * * * * * * *\n");
+	fprintf(iomaster," * Finalising\n");
+	fprintf(iomaster," * * * * * * * * * * *\n");
+	fflush(iomaster);
 
 	// Termination message
 	for(int n=0;n<master_tag;n++){
 
-			TaskEnvelope end_task;
-			end_task.task_status = TASK_DIETAG;
+		TaskEnvelope end_task;
+		end_task.task_id = -1;
+		end_task.task_status = TASK_DIETAG;
 
-			MPI_Send(&end_task,sizeof(TaskEnvelope),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
-			//MPI_Send(0,0,MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
-			fprintf(iomaster," MPI_Send (DIE-TAG) complete: master -> %d (base-rank)\n",wgc[n].base_rank);
+		MPI_Send(&end_task,sizeof(TaskEnvelope),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
+		getCurrentDateTime(currentTime);
+
+		/* pre-set for message send */
+		fprintf(iomaster," >>>>>>>> kill workgroups\n");
+		fprintf(iomaster," %.30s MPI_Send | completed\n",currentTime);
+		fprintf(iomaster," * message > base_rank: %5d\n",wgc[n].base_rank);
+		fprintf(iomaster," | workgroup : %6d | size        : %5d\n",wgc[n].workgroup_tag,wgc[n].workgroup_size);
+		fprintf(iomaster," | task_id   : %6d | task_status : %5d\n",end_task.task_id,end_task.task_status);
+
+		//fprintf(iomaster," MPI_Send (DIE-TAG) complete: master -> %d (base-rank)\n",wgc[n].base_rank);
+		fflush(iomaster);
 	}
 
 	free(task_array);
@@ -252,10 +323,17 @@ bool master_worker_task_call_master(
 	return berr;
 }
 
-// ----------------------------------------------------------------------------------------------------------------------
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Comm* workgroup_comm, const int n_workgroup, const int workgroup_tag )
 {
+	bool taskError;
+
+	char currentTime[64];
+	const int max_recv_cycle = 9999999;	
+
 	int brank,bsize;
 	int workgroup_size,worker_rank;
 
@@ -291,134 +369,196 @@ void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Com
 	// iopath control
 	char cwd[512];
 
-	for(;;){
+	for(int cycle=0;cycle<max_recv_cycle;cycle++){
 
 		for(int n=0;n<workgroup_count;n++){
 
-			// task recv - head process of each workgroup
+			// TaskEnvelope Recv : by each head rank (0) of 'workgroups'
 			if( n == workgroup_tag && worker_rank == 0 ){
+
+				/* 
+					Note. 07.09.23 : all workgroups will wait here (when all the tasks are done) for 'DIE' message from 'master'.
+				*/
 				MPI_Recv(&task,sizeof(TaskEnvelope),MPI_CHAR,master_base_rank,MPI_ANY_TAG,*base_comm,&status);
+				getCurrentDateTime(currentTime);
 
 				if( status.MPI_TAG == TASK_WORKTAG ){
 
-					fprintf(ioworkgroup,"--------------------------------------------------------------------------------\n");
-					fprintf(ioworkgroup," * TaskEnvelope recv - workgroup %d\n",workgroup_tag);
-					fprintf(ioworkgroup," task_id         : %d\n",task.task_id);
-					fprintf(ioworkgroup," application     : %s ( %p )\n",task.application,task.app_ptr);
-					fprintf(ioworkgroup," task_status     : %d (work-tag)\n",task.task_status);
-					fprintf(ioworkgroup," task_iopath     : %s\n",task.task_iopath);
-					fprintf(ioworkgroup," inputfile count : %d\n",task.inputfile_count);
-					fprintf(ioworkgroup,"     * shell instructions\n");
+					fprintf(ioworkgroup," <<<<<<<< task recv\n");// workgroup-tag : %d\n",workgroup_tag);
+					fprintf(ioworkgroup," %.30s MPI_Recv | completed\n",currentTime);
+					fprintf(ioworkgroup," application      : %s ( %p )\n",task.application,task.app_ptr);
+					fprintf(ioworkgroup," task_id          : %d\n",task.task_id);
+					fprintf(ioworkgroup," task_status      : %d (work-tag)\n",task.task_status);
+					fprintf(ioworkgroup," task_iopath      : %s\n",task.task_iopath);
+					fprintf(ioworkgroup," inputfile count  : %d\n",task.inputfile_count);
+					fprintf(ioworkgroup," * shell commands : %d\n",task.cmd_count);
 					for(int i=0;i<task.cmd_count;i++){
-					fprintf(ioworkgroup,"     %2d | %s\n",task.cmd_count,task.cmd[i]);
-					fflush(ioworkgroup);
+					fprintf(ioworkgroup," | %2d | %s\n",task.cmd_count,task.cmd[i]);
 					}
-					fprintf(ioworkgroup,"\n");
 					fflush(ioworkgroup);
 
-				/* deprecated 05.09.23
-
-					//printf("WORKGROUP [%d] > MPI_Recv complete : task %p %d %d\n",workgroup_tag,task.app_ptr,task.task_id,task.task_status);
-					fprintf(ioworkgroup,"--------------------------------------------------------------------\n");
-					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Recv complete : task %p %d %d\n",workgroup_tag,task.app_ptr,task.task_id,task.task_status);
-					fflush(ioworkgroup);
-				*/
 				}
 				else if( status.MPI_TAG == TASK_DIETAG ){
 
-					fprintf(ioworkgroup,"--------------------------------------------------------------------------------\n");
-					fprintf(ioworkgroup," * TaskEnvelope recv - workgroup %d\n",workgroup_tag);
+					fprintf(ioworkgroup," <<<<<<<< kill workgroups\n");// : workgroup-tag : %d\n",workgroup_tag);
+					fprintf(ioworkgroup," %.30s MPI_Recv | completed\n",currentTime);
+					fprintf(ioworkgroup," task_status      : %d (die-tag)\n",task.task_status);
+					fflush(ioworkgroup);
 // 05.09.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
 // master_worker_task.h
-				/* deprecated 05.09.23
-					//printf("WORKGROUP [%d] > MP_Recv DIETAG complete\n",workgroup_tag);
-					fprintf(ioworkgroup,"********************************************************************\n");
-					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Recv complete : task %p %d %d\n",workgroup_tag,task.app_ptr,task.task_id,task.task_status);
-					fflush(ioworkgroup);
-				*/
 				}
 			}
-
-			// workgroup interanl bcast - task
+			/* * *
+				after identifying task type
+			* * */
 			if( n == workgroup_tag ){
 
-				MPI_Bcast(&task,sizeof(TaskEnvelope),MPI_CHAR,0,*workgroup_comm);
+				if( workgroup_size > 1 ){	// call 'MPI_Bcast()' if workgroup size > 1
 
-				if( worker_rank == 0 ){
-					//printf("WORKGROUP [%d] > MPI_Bcast complete : worker_rank [%d] task %p %d %d\n",workgroup_tag,worker_rank,task.app_ptr,task.task_id,task.task_status);
-					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Bcast complete : worker_rank [%d] task %p %d %d\n",workgroup_tag,worker_rank,task.app_ptr,task.task_id,task.task_status);
-					fflush(ioworkgroup);
+					MPI_Bcast(&task,sizeof(TaskEnvelope),MPI_CHAR,0,*workgroup_comm);
+					getCurrentDateTime(currentTime);
+				
+					if( worker_rank == 0 ){
+						fprintf(ioworkgroup," %.30s MPI_Bcast| completed - internal task messaging within workgroup\n",currentTime);
+						fflush(ioworkgroup);
+					}	
 				}
-				// set workgroup tag
-				task.worker_id = n;
-		
+
+				task.workgroup_tag = n;	// used when launching application
+
+				// -------- closing workgroups : if workgroup closure message
 				if( task.task_status == TASK_DIETAG ){
+
+					if( worker_rank == 0 ){
+						fprintf(ioworkgroup," * * * call return * * *\n");
+						fflush(ioworkgroup);		
+						fclose(ioworkgroup);		// closing iochannel
+					}
+					MPI_Barrier(*workgroup_comm);
 					return;
 				}
+				// -------- closing workgroups end
 
-				// Create working directory and put relevant *.gin
-				if( worker_rank == 0 ){
+				/* * *
+					workgroup in action - task_status != TASK_DIETAG
+				* * */
+
+				/* 1. create working directory and check if relevanat file exists */
+				if( worker_rank == 0 ){	// instructions by 'head' processor of workgroup
+					fprintf(ioworkgroup," * file check\n");
 					mkdir(task.task_iopath,0777);	// mkdir working_directory
+				}
+				
+				/* 2. inputfile check */
+				for(int i=0;i<task.inputfile_count;i++){
 
-					// execute commands -- 01.09.23 temporal added (replace REQ)
-					for(int i=0;i<task.cmd_count;i++){
+					taskres.inputfile_check = error_file_exists( task.inputfile_path[i] );
 
-						// Target FileExists Check REQ
-						bool fileExists = error_file_exists( task.inputfile_path[i] );
-						if( fileExists ){
-							fprintf(ioworkgroup,"WORKGROUP [%d]: inptufile %d exists: %s\n",workgroup_tag,i,task.inputfile_path[i]);
-							fflush(ioworkgroup);
+					if( taskres.inputfile_check ){
+						if( worker_rank == 0 ){
+							fprintf(ioworkgroup," | file %2d | found: %s\n",i+1,task.inputfile_path[i]);
+							system(task.cmd[i]);	// do shell instruction
 						}
-						else{
-							fprintf(ioworkgroup,"WORKGROUP [%d]: inptufile %d NOTexists: %s\n",workgroup_tag,i,task.inputfile_path[i]);
-							fflush(ioworkgroup);
-						}
-						// Call system preset scripts
-						system(task.cmd[i]);
 					}
+					else{
+						if( worker_rank == 0 ){
+							fprintf(ioworkgroup," | file %2d | NotFoundErr : %s\n",i+1,task.inputfile_path[i]);
+						}
+						break;
+					}
+				}
+
+				if( worker_rank == 0 ){
+					fprintf(ioworkgroup," * file check end\n");
+					fflush(ioworkgroup);
 				}
 				MPI_Barrier(*workgroup_comm);		// need to wait until mkdir / system done otherwise 'chdir' following cannot be done properly
 
-				// get into the working dir
+	/*
+		Application Launch Section
+	*/
+				// workgroup processors : move into the working dir
 				chdir(task.task_iopath);
-				getcwd(cwd,sizeof(cwd));
 
+	// deprecated 11.09.23
+	/*
+				getcwd(cwd,sizeof(cwd));
 				if( worker_rank == 0 ){
 					fprintf(ioworkgroup,"WORKGROUP [%d]: Task working directory: %s\n",workgroup_tag,cwd);
 					fflush(ioworkgroup);
 				}
 				MPI_Barrier(*workgroup_comm);
-			
-				/*	* * *
-					Launch GULP : extern void gulpklmc( const MPI_Comm*, char*, int*, int* );
-				*	* * */
-				task.task_status = TASK_EXECUTED;
-				task.app_ptr(workgroup_comm,task.task_iopath,&task.task_id,&task.worker_id);
 
-				// get out from the working dir <important> to keep gulpmain from the race condition of getting channel 'gulptmp_*' - wkjee 11 July 2023 added
+				task.task_status = TASK_EXECUTED;	// really need this ? wkjee 11.09.23
+	*/
+
+			/* * *
+				application launching : e.g., extern void application( const MPI_Comm*, char*, int*, int* );
+			* * */
+				getCurrentDateTime(taskres.start_t);
+				taskres.elapsed_t = get_time();
+
+				if( taskres.inputfile_check ){
+					task.app_ptr(workgroup_comm,task.task_iopath,&task.task_id,&task.workgroup_tag);
+				}
+				getCurrentDateTime(taskres.end_t);
+				taskres.elapsed_t = get_time() - taskres.elapsed_t;
+
+				MPI_Barrier(*workgroup_comm);
+			/*  application launching done */
+
+				// get out from the working dir <important> to keep gulpmain from being in race condition of getting channel 'gulptmp_*' - wkjee 11 July 2023 added
 				chdir(task.task_rootpath);
-				getcwd(cwd,sizeof(cwd));
 
+	// deprecated 11.09.23
+	/*
+				getcwd(cwd,sizeof(cwd));
 				if( worker_rank == 0 ){
 					fprintf(ioworkgroup,"WORKGROUP [%d]: Task master directory: %s\n",workgroup_tag,cwd);
 					fflush(ioworkgroup);
 				}
 				MPI_Barrier(*workgroup_comm);
+				task.task_status = TASK_FINISHED;	// really need this ? wkjee 11.09.23
+	*/
 
-				task.task_status = TASK_FINISHED;
-				//if( worker_rank == 0 ){ printf("after  run / status %d\n",task.task_status); }
 
-				/*
-					 set TaskResultEnvelope
-				*/
+			/* * *
+				set taskres <TaskResultEnvelope>
+			* * **/
 				taskres.task_status = TASK_FINISHED;
 				taskres.task_id = task.task_id;
-				taskres.worker_id = task.worker_id;
+				taskres.workgroup_tag = task.workgroup_tag;
+				//taskres.inputfile_check -> done above
 
-				// send back to Master
+				/* * *
+					error starts (logging)
+				* * */
+				if( worker_rank == 0 ){
+
+					int error_count = 1;
+
+					fprintf(ioworkgroup," * warnings\n");
+					// 1. file check
+					if( !taskres.inputfile_check ){
+						fprintf(ioworkgroup," | %2d | inputfile not found\n",error_count);
+						error_count++;
+					}
+					fprintf(ioworkgroup," * warnings end\n");
+					fflush(ioworkgroup);
+				}
+				/* * *
+					 error end
+				* * */
+
+				/* * *
+					task result send back > master
+				* * */
 				if( worker_rank == 0 ){
 					MPI_Send(&taskres,sizeof(TaskResultEnvelope),MPI_CHAR,master_base_rank,taskres.task_status,*base_comm);
-					fprintf(ioworkgroup,"WORKGROUP [%d] > MPI_Send complete <result callback to master> : task %p %d %d\n",workgroup_tag,task.app_ptr,task.task_id,task.task_status);
+					getCurrentDateTime(currentTime);
+
+					fprintf(ioworkgroup," >>>>>>>> task result send\n");
+					fprintf(ioworkgroup," %.30s MPI_Send | completed\n",currentTime);
 					fflush(ioworkgroup);
 				}
 				MPI_Barrier(*workgroup_comm);
@@ -431,6 +571,7 @@ void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Com
 		if( n == workgroup_tag && worker_rank == 0 ){
 			fclose(ioworkgroup);
 		}
+		MPI_Barrier(*workgroup_comm);
 	}
 	// workgroup logger
 

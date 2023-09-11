@@ -54,24 +54,27 @@ typedef struct TaskEnvelope_{
 	/*
 		task status related : will be used later by 'worker'
 	*/
-	int task_status;
-	int worker_id;
+	int task_status;	// tell workgroup what to do ? 11.09.23 wkjee - only used when 'workgroup' reads in task type (if this is a task or die-tag)
+	int workgroup_tag;	// will be used as a parameter when launching application
 
 }TaskEnvelope;
 
 /* TASK RESULT ENVELOPE */
 typedef struct TaskResultEnvelope_{
 
-	int task_id;					// which task this was?
-	int worker_id;					// task done by which 'workder (or workgroup)'
-	int task_status;				// task_status
-
-	// * ws [40]
+	int task_status;				// task_status ?
+	int task_id;					// which task this was ?
+	int workgroup_tag;				// task done by which workgroup ?
+	/*
+		time
+	*/
 	char start_t[64];				// task_start time (DateTime)
 	char end_t[64];					// task_end   time (DateTime)
-
 	double elapsed_t;
-	double value;
+	/*
+		error handling
+	*/
+	bool inputfile_check;
 
 }TaskResultEnvelope;
 
