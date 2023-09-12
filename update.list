@@ -6,14 +6,53 @@
 #       Description:
 #
 
- * 07.23
+ # * - 31.07.23
 
-	1.
+	1. mainly 'libridising GULP 6.1.2'
 
-	2.
+	2. 'gulpklmc_initmax.F90' is added : in order to re-initialise internal GULP variables before each gulp calculations -> essential for running taskfarm on Intel system
 
- * 08.23 
+	3. portability test done : CRAY CCE / GNU - ARCHER 2 : INTEL - YOUNG # should follow GNU for using FHI-AIMS on the taskfarm (only available option on ARCHER2).
 
-	1.
+ # * 01.08.23 - 12.09.23 
 
-	2.
+	1. refactoring entire source code
+	
+		! read_input.c          < new      > : in order to seperate read input 'taskfarm.config'
+		! print_message.c       < new      > : printing error messages (used in error.c) / printing messages in 'taskfarm.c' -> main
+		! error.c               < new      > : overall error/warning controls
+		! taskfarm.c            < refactor > :
+		! taskfarm_def.c        < refactor > :
+		! master_worker_task.c  < refactor > :
+
+		! + corresponding header files
+
+		* refactoring -> for integration KLMC fortran subroutines later.
+
+		* three major changes (visible) :
+
+			(1) showing nodes and CPUs (processors) configuration : printed out to 'stdout' channel.
+			(2) error handling : showing details of errors where they occured : printed out to 'stderr' channel.
+			(3) details of task messaging log - see 'master.log' and 'workgroup_X.log'.
+				- timing (elapsed / task start - i.e. gulp launch)
+				- shell intstructions
+				- task_id / workgroup_tag
+				- MPI_* function timings ...
+
+		* '!!! NEXT REFACTORING DIRECTION !!!' :
+
+			(1) keep the current features as it is. keep it as an indenpedent mode, for using pre-prepared GULP input files.
+
+			(2) automation of managing tasks : task including * required input files / file count * required commands (i.e. shell instructions) / command count ...
+
+			(3) TaskEnvlope / TaskResultEnvelope : types of TaskEnvelopes ? 'really necessary?'
+			
+
+	2. 'Essenetial tasks', which are 'not done'
+
+		* Modification of 'stopnow.F90' in KLMC3_libgulp : issue found when too many 'optcyc' used if 'core-shell distance' type of error occurs -> taskfarm will hang (wasting time),
+		  or possibility of crash if requested time is not enough to reach the final 'optcyc' to return gulpmain(). -> # KNOWN ISSUE
+
+		* Analogous error when using FHI-AIMS - subroutine aims() - the main subroutine.
+          It is possible to call aims() multilple times using a type of library calls but this issue must be tackled first.
+

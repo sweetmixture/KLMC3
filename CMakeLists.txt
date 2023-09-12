@@ -64,10 +64,15 @@ set(SRC_FORTRAN
 
 set(EXE tf.x)
 
-include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/includes)
-include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/develop/includes)
-include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/subroutines/includes)
-include_directories(${EXE} PUBLIC ${GULPOBJ})
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/includes)
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/develop/includes)
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/subroutines/includes)
+#include_directories(${EXE} PUBLIC ${GULPOBJ})
+
+include_directories(${CMAKE_SOURCE_DIR}/includes)
+include_directories(${CMAKE_SOURCE_DIR}/develop/includes)
+include_directories(${CMAKE_SOURCE_DIR}/subroutines/includes)
+include_directories(${GULPOBJ})
 
 # Find libgulpklmc.a libpGFNFF.a
 find_library(
