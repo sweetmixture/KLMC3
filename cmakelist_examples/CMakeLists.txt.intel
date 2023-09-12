@@ -93,13 +93,6 @@ target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GUL
 # finalise 
 set_target_properties(${EXE} PROPERTIES LINKER_LANGUAGE C)
 
-
-
-
-
-
-
-
 # -------------------------------------------------------------
 # Print MPI library
 # find_package(MPI REQUIRED) # find twice causing error - July 7 2023 wkjee

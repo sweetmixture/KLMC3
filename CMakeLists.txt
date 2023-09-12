@@ -10,8 +10,7 @@ include_directories(${MPI_INCLUDE_PATH})
 
 # ---------------------------------------------------------------------------------------
 # USER_MODIFICATION: Modification required: user environment dependent - gulp *.o, *.mod, *.a
-#set(GULPROOT /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.04082023/KLMC3-libgulp-6.1.2_gnu)
-set(GULPROOT /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.04082023/KLMC3-libgulp-6.1.2)
+set(GULPROOT /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3-libgulp-6.1.2/)
 set(GULPOBJ ${GULPROOT}/Src/Linux_MPI)
 set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)
 
