@@ -179,9 +179,6 @@ bool ready_input_call_master(
 	fprintf(iomaster," * * * \n");
 	fflush(iomaster);
 
-// 05.09.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
-// master_worker_ready_input.h
-
 	/*
 		 messaging tasks variables
 	*/
@@ -292,8 +289,6 @@ bool ready_input_call_master(
 		fflush(iomaster);
 	}
 
-// 08.09.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
-// master_worker_ready_input.h
 	fprintf(iomaster," * * * * * * * * * * *\n");
 	fprintf(iomaster," * Finalising\n");
 	fprintf(iomaster," * * * * * * * * * * *\n");
@@ -330,7 +325,6 @@ bool ready_input_call_master(
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-//void master_worker_task_call_workgroup(
 void ready_input_call_workgroups(
 	const MPI_Comm* base_comm,
 	const MPI_Comm* workgroup_comm,
@@ -360,6 +354,8 @@ void ready_input_call_workgroups(
 	TaskEnvelope task;
 	TaskResultEnvelope taskres;
 
+	char cwd[512];
+
 	// workgroup logger
 	FILE* ioworkgroup = NULL;
 	char ioworkgroup_log_files[128];
@@ -374,16 +370,11 @@ void ready_input_call_workgroups(
 		}
 	}
 
-	// iopath control
-	char cwd[512];
-
 	for(int cycle=0;cycle<max_recv_cycle;cycle++){
 
 		for(int n=0;n<workgroup_count;n++){
-
 			// TaskEnvelope Recv : by each head rank (0) of 'workgroups'
 			if( n == workgroup_tag && worker_rank == 0 ){
-
 				/* 
 					Note. 07.09.23 : all workgroups will wait here (when all the tasks are done) for 'DIE' message from 'master'.
 				*/
@@ -412,8 +403,6 @@ void ready_input_call_workgroups(
 					fprintf(ioworkgroup," %.30s MPI_Recv | completed\n",currentTime);
 					fprintf(ioworkgroup," task_status      : %d (die-tag)\n",task.task_status);
 					fflush(ioworkgroup);
-// 05.09.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
-// master_worker_task.h
 				}
 			}
 			/* * *
@@ -431,7 +420,6 @@ void ready_input_call_workgroups(
 						fflush(ioworkgroup);
 					}	
 				}
-
 				task.workgroup_tag = n;	// used when launching application
 
 				// -------- closing workgroups : if workgroup closure message
@@ -487,19 +475,6 @@ void ready_input_call_workgroups(
 	*/
 				// workgroup processors : move into the working dir
 				chdir(task.task_iopath);
-
-	// deprecated 11.09.23
-	/*
-				getcwd(cwd,sizeof(cwd));
-				if( worker_rank == 0 ){
-					fprintf(ioworkgroup,"WORKGROUP [%d]: Task working directory: %s\n",workgroup_tag,cwd);
-					fflush(ioworkgroup);
-				}
-				MPI_Barrier(*workgroup_comm);
-
-				task.task_status = TASK_EXECUTED;	// really need this ? wkjee 11.09.23
-	*/
-
 			/* * *
 				application launching : e.g., extern void application( const MPI_Comm*, char*, int*, int* );
 			* * */
@@ -517,18 +492,6 @@ void ready_input_call_workgroups(
 
 				// get out from the working dir <important> to keep gulpmain from being in race condition of getting channel 'gulptmp_*' - wkjee 11 July 2023 added
 				chdir(task.task_rootpath);
-
-	// deprecated 11.09.23
-	/*
-				getcwd(cwd,sizeof(cwd));
-				if( worker_rank == 0 ){
-					fprintf(ioworkgroup,"WORKGROUP [%d]: Task master directory: %s\n",workgroup_tag,cwd);
-					fflush(ioworkgroup);
-				}
-				MPI_Barrier(*workgroup_comm);
-				task.task_status = TASK_FINISHED;	// really need this ? wkjee 11.09.23
-	*/
-
 
 			/* * *
 				set taskres <TaskResultEnvelope>
@@ -581,7 +544,7 @@ void ready_input_call_workgroups(
 		}
 		MPI_Barrier(*workgroup_comm);
 	}
-	// workgroup logger
+	// workgroup logger end
 
 	return;
 }
