@@ -10,7 +10,7 @@ include_directories(${MPI_INCLUDE_PATH})
 
 # ---------------------------------------------------------------------------------------
 # USER_MODIFICATION: Modification required: user environment dependent - gulp *.o, *.mod, *.a
-set(GULPROOT /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.04082023/KLMC3-libgulp-6.1.2_gnu)
+set(GULPROOT /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3-libgulp-6.1.2/)
 set(GULPOBJ ${GULPROOT}/Src/Linux_MPI)
 set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)
 
@@ -46,7 +46,7 @@ set(SRC
     taskfarm.c
         taskfarm_def.c
             read_input.c
-        master_worker_task.c
+		master_worker_ready_input.c
         timer.c
         print_message.c
 		error.c
@@ -64,10 +64,15 @@ set(SRC_FORTRAN
 
 set(EXE tf.x)
 
-include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/includes)
-include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/develop/includes)
-include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/subroutines/includes)
-include_directories(${EXE} PUBLIC ${GULPOBJ})
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/includes)
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/develop/includes)
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/subroutines/includes)
+#include_directories(${EXE} PUBLIC ${GULPOBJ})
+
+include_directories(${CMAKE_SOURCE_DIR}/includes)
+include_directories(${CMAKE_SOURCE_DIR}/develop/includes)
+include_directories(${CMAKE_SOURCE_DIR}/subroutines/includes)
+include_directories(${GULPOBJ})
 
 # Find libgulpklmc.a libpGFNFF.a
 find_library(

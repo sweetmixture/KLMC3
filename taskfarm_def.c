@@ -89,6 +89,14 @@ bool tf_get_taskfarm_configuration(
         read_input_ipatternfinder( fp, "task_end"       , &(tfc->task_end)           );
         read_input_ipatternfinder( fp, "cpus_per_worker", &(tfc->cpus_per_workgroup) );
 
+/* * * Modification required 12.09.23 : wkjee
+
+	Mode pattern reader
+
+	(1) simply using pre-prepared input files
+
+* * */
+
         fclose(fp);
 
 		/* * *

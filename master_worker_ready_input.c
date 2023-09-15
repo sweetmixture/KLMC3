@@ -12,12 +12,13 @@
 #include <sys/stat.h>
 #include <mpi.h>
 
-#include "master_worker_task.h"
+#include "master_worker_ready_input.h"
 #include "subroutines.h"
 #include "error.h"
 #include "timer.h"
 
 /* * *
+ * get next TaskEnvelope
  * use only in this source
  * * */
 TaskEnvelope* get_next_TaskEnvelope(
@@ -34,9 +35,10 @@ TaskEnvelope* get_next_TaskEnvelope(
 	return task;
 }
 
-/*
-	set TaskEnvelope ( instructions to 'workgroup' )
- */
+/* * *
+ * set TaskEnvelope ( instructions to 'workgroup' )
+ * used only in this source
+ * * */
 void set_TaskEnvelope(
     const int task_id,
     const char* app,
@@ -109,7 +111,8 @@ void set_TaskEnvelope(
 		updates: 
 
 * * * * */
-bool master_worker_task_call_master(
+//bool master_worker_task_call_master(
+bool ready_input_call_master(
 	const MPI_Comm* base_comm,
 	const TaskFarmConfiguration* tfc,
 	const WorkgroupConfig* wgc
@@ -177,7 +180,7 @@ bool master_worker_task_call_master(
 	fflush(iomaster);
 
 // 05.09.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
-// master_worker_task.h
+// master_worker_ready_input.h
 
 	/*
 		 messaging tasks variables
@@ -290,7 +293,7 @@ bool master_worker_task_call_master(
 	}
 
 // 08.09.23 Refactoring Target ------------------------------------------------------------------------------------------------------------------------------------------
-// master_worker_task.h
+// master_worker_ready_input.h
 	fprintf(iomaster," * * * * * * * * * * *\n");
 	fprintf(iomaster," * Finalising\n");
 	fprintf(iomaster," * * * * * * * * * * *\n");
@@ -327,8 +330,13 @@ bool master_worker_task_call_master(
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-void master_worker_task_call_workgroup( const MPI_Comm* base_comm, const MPI_Comm* workgroup_comm, const int n_workgroup, const int workgroup_tag )
-{
+//void master_worker_task_call_workgroup(
+void ready_input_call_workgroups(
+	const MPI_Comm* base_comm,
+	const MPI_Comm* workgroup_comm,
+	const int n_workgroup,
+	const int workgroup_tag
+){
 	bool taskError;
 
 	char currentTime[64];

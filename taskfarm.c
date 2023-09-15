@@ -13,7 +13,10 @@
 #include <mpi.h>
 
 #include "taskfarm_def.h"
-#include "master_worker_task.h"
+
+// Types of 'master-worker' implementation
+#include "master_worker_ready_input.h"
+
 #include "print_message.h"
 #include "timer.h"
 
@@ -179,12 +182,13 @@ int main(int argc, char* argv[])
 	 * TASK FARM MAIN START
 	 * * * * **/
 	if( tfc.brank == tfc.mrank ){
-
-		berr = master_worker_task_call_master( &BaseComm, &tfc, &wgc_global[0] );
+		//berr = master_worker_task_call_master( &BaseComm, &tfc, &wgc_global[0] );
+		berr = ready_input_call_master( &BaseComm, &tfc, &wgc_global[0] );
 // -------------------------------------------------------------------------------- -> 31.08 REFACTORING
 	}
 	else{
-		master_worker_task_call_workgroup( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
+		//master_worker_task_call_workgroup( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
+		ready_input_call_workgroups( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
 	}
 
 	/* * * * *

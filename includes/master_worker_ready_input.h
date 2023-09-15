@@ -7,8 +7,8 @@
 */
 
 
-#ifndef __TASKFARM_MASTER_WORKER
-#define __TASKFARM_MASTER_WORKER
+#ifndef __MASTER_WORKER_READY_INPUT
+#define __MASTER_WORKER_READY_INPUT
 
 #define _LOGFILE_MASTER_ "master.log"
 
@@ -107,13 +107,15 @@ typedef struct MasterWorkspace_{
  * functions
  * * * * */
 
-bool master_worker_task_call_master(
+//bool master_worker_task_call_master(
+bool ready_input_call_master(
     const MPI_Comm* base_comm,
     const TaskFarmConfiguration* tfc,
     const WorkgroupConfig* wc
 );
 
-void master_worker_task_call_workgroup(
+//void master_worker_task_call_workgroup(
+void ready_input_call_workgroups(
 	const MPI_Comm* base_comm,
 	const MPI_Comm* workgroup_comm,
 	const int n_workgroup,

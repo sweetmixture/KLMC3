@@ -46,7 +46,7 @@ set(SRC
     taskfarm.c
         taskfarm_def.c
             read_input.c
-        master_worker_task.c
+		master_worker_ready_input.c
         timer.c
         print_message.c
 		error.c
