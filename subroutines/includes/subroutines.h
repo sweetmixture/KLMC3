@@ -12,23 +12,23 @@
 
 #include <mpi.h>
 
+/* * * * *
+ * C TEST PROGRAM
+ * * * * */
 void subprogram_pi( const MPI_Comm* comm, const int pid );
 
-/* FORTRAN */
-
+/* * * * *
+ * FORTRAN TEST PROGRAM
+ * * * * */
 extern void fortran_subprogram_pi( const MPI_Comm* , int* );
 /* subroutine fortran_subprogram_pi( comm, task_id ) bind(C,name="fortran_subprogram_pi")
  * integer(c_int), intent(inout) :: comm, task_id
  */
 
 
-
-
-
 /* * * * *
  *	APPLICATIONS
  * * * * */
-
 extern void gulpklmc( const MPI_Comm*, char*, int*, int* );
 /* subroutine gulpklmc( MPI_comm_klmc, klmc_task_iopath, klmc_task_id, klmc_worker_id ) bind (C,name="gulpklmc")
  * integer,             intent(in) :: MPI_Comm

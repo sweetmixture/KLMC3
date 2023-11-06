@@ -202,7 +202,9 @@ int main(int argc, char* argv[])
 	end_t = get_time();
 	getCurrentDateTime(currentTime);
 
-	// PRINT <stdout>
+	/* * *
+		finalising taskfarm
+	* * */
 	print_stdout(tfc.brank,"\n");
 	sprintf(msg," TaskFarm ends at   : %s\n",currentTime); print_stdout(tfc.brank,msg);
 	sprintf(msg," Elapsed time (s)   : %.8lf\n",end_t - start_t); print_stdout(tfc.brank,msg);

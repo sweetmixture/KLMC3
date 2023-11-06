@@ -45,9 +45,7 @@ void set_TaskEnvelope(
     MasterWorkspace* mws,
     TaskEnvelope* task
 ){
-	/* * *
-	 * APPLICATION GULP
-	 * * */
+	// APPLICATION GULP
     if( strcmp(app,"gulp") == 0 ){
 
         mws->inputfile_count = 1;                       // set inputfile count: gulp (1) *
@@ -67,6 +65,7 @@ void set_TaskEnvelope(
 		strcat(mws->rundir_path,"/");												// e.g. '/root/
         strcat(mws->rundir_path,mws->rundir);										// e.g. '/root/run'
 
+        /* ------------------------------------------------------------------- */
         // 3. set TaskEnvelope 'task'
         task->cmd_count = 1;								// mws->inputfile_count;
 
@@ -94,9 +93,6 @@ void set_TaskEnvelope(
         
         return;
     }
-	/* * *
-	 * APPLICATION GULP --------------------------------------------------------------------------------------------------------
-	 * * */
     
 	// APPLICATION FHIAIMS
     if( strcmp(app,"fhiaims") == 0 ){
@@ -104,19 +100,8 @@ void set_TaskEnvelope(
  		// Not Implemented 01.09.23       
         return;
     }
-
-
-	/* * *
-	 * APPLICATION PYTHON ------------------------------------------------------------------------------------------------------
-	 * * */
-	if( strcmp(app,"python") == 0 ){
-
-		return;
-	}
-	/* * *
-	 * APPLICATION PYTHON ------------------------------------------------------------------------------------------------------
-	 * * */
 }
+
 /* * * * *
 
 	Master function
@@ -184,24 +169,13 @@ bool ready_input_call_master(
 	/* * *
 	   TASK CONFIGURATION
 	 * * */
-	getCurrentDateTime(currentTime);
-	fprintf(iomaster," * * * \n");
-	fprintf(iomaster," %.30s Task envelopes setting start",currentTime);
-	fprintf(iomaster," * * * \n");
-
 	for(int i=0;i<task_count;i++){
 		task_id = i + tfc->task_start;	// syntax -> "A${task_id}.gin"
-
-		// devtmp: set this case as 'application == gulp' ?
 		set_TaskEnvelope( task_id, tfc->application, &mws, &(task_array[i]) );
-
-		// devtmp: using mode python?
-		// set_TaskEnvelope
 	}
 
-	getCurrentDateTime(currentTime);
 	fprintf(iomaster," * * * \n");
-	fprintf(iomaster," %.30s Task envelopes setting finish",currentTime);
+	fprintf(iomaster," Task envelopes setting done\n");
 	fprintf(iomaster," * * * \n");
 	fflush(iomaster);
 

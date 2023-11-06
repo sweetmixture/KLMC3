@@ -60,12 +60,17 @@
 
 	1. keep 'master_worker_task.c' for using the 'pre-prepared input' method
 
-  # * 03.11.23
+  # * xx.11.23
+
+	0. bugfix - allocating single processor workgroups
+
+		see: 11.2023 bugfix: taskfarm_def.c
 
 	1. AlGaN examples added to Examples
 
 	2. Start adding Python interface
 
+       * compatibility with Python3.X (during the developement, Python 3.11 will be used)
 
 
 

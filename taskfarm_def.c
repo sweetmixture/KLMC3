@@ -172,7 +172,12 @@ bool tf_config_workgroup(
     * * */
     if( bsize % tfc->cpus_per_workgroup == 0 ){
         n_workgroup = bsize / tfc->cpus_per_workgroup;
-        n_workgroup++;
+
+		// 11.2023 bugfix: case cpus_per_workgroup == 1
+		if( tfc->cpus_per_workgroup > 1 ){
+        	n_workgroup++;
+		}
+
         /* case - 1: no residual cpus to be the 'master'
             last cpu in last workgroup -> 'master'          */
     }
@@ -194,9 +199,16 @@ bool tf_config_workgroup(
 	* * */
     if( ((brank + 1) == bsize) && ((bsize % tfc->cpus_per_workgroup) != 1) ){
         
-        // ((brank + 1) == bsize)                           => if this is 'last CPU'
-        // ((bsize % tfc->cpus_per_workgroup) != 1)         => if this is 'last CPU' and sinlge CPU workgroup
-        workgroup_tag = workgroup_tag + 1;  //              => +1 to its workgroup_tag, in order to use as 'master'
+		/* Explain:
+        	((brank + 1) == bsize)							=> if this is 'last CPU'
+         	((bsize % tfc->cpus_per_workgroup) != 1)		=> if this is 'last CPU' and sinlge CPU workgroup	*/
+
+		// 11.2023 bugfix: case cpus_per_workgroup == 1
+		if( tfc->cpus_per_workgroup > 1 ){
+        	workgroup_tag = workgroup_tag + 1;  //			=> +1 to its workgroup_tag, in order to use as 'master'
+		}
+
+		// tmp -> this if{} will not work if cpus_per_workgroup == 1
     }
 
     /* * *

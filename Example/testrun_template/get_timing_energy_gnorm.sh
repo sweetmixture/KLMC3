@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sta=0
-end=99
+end=200
 
 for ((i=$sta; i<=$end; i++)); do
     stt=$(grep "Job Started" ./A${i}/*gout)
@@ -10,6 +10,6 @@ for ((i=$sta; i<=$end; i++)); do
 	# Final energy =
 	# Final Gnorm  =
 	energy=$(grep "Final energy = " ./A${i}/*gout | awk '{print $4}')
-	gnorm=$(grep "Final Gnorm = " ./A${i}/*gout | awk '{print $4}')
+	gnorm=$(grep "Final Gnorm  = " ./A${i}/*gout | awk '{print $4}')
     printf "%3d%64.48s%64.48s%16.9lf%16.9lf\n" ${i} "${stt}" "${en}" "${energy}" "${gnorm}"
 done

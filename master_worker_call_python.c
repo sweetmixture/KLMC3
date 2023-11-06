@@ -186,7 +186,7 @@ bool ready_input_call_master(
 	 * * */
 	getCurrentDateTime(currentTime);
 	fprintf(iomaster," * * * \n");
-	fprintf(iomaster," %.30s Task envelopes setting start",currentTime);
+	fprintf(iomaster," %.30s Task envelopes setting start",currentTime)
 	fprintf(iomaster," * * * \n");
 
 	for(int i=0;i<task_count;i++){
@@ -201,7 +201,7 @@ bool ready_input_call_master(
 
 	getCurrentDateTime(currentTime);
 	fprintf(iomaster," * * * \n");
-	fprintf(iomaster," %.30s Task envelopes setting finish",currentTime);
+	fprintf(iomaster," %.30s Task envelopes setting finish",currentTime)
 	fprintf(iomaster," * * * \n");
 	fflush(iomaster);
 
