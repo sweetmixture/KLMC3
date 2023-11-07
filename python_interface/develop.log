@@ -1,0 +1,23 @@
+#
+# 07.11.2023
+#
+	basic interface implementation <python serial>
+
+		1. init/final python interpreter environment
+
+		2. call python method/function
+
+		-- Unittest Done
+			* conditional compilation cmake / if PYTHON_INTERFACE=ON/OFF
+			* seperating python environment activation/deactivation
+			* loading python module
+			* execution of python function/class_method
+
+			ARCHER2 testing location: /work/e05/e05/wkjee/Software/gulpklmc/CPython/cmake_compile_condition_fullseparation2
+
+		-- Structure 'python_interface'
+		* ./include
+				python_interface.h
+					python_serial.h : (1) call_python_serial.c / (2) python_serial_initfinal.c
+
+	* * * * * *
