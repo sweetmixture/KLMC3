@@ -510,6 +510,15 @@ void ready_input_call_workgroups(
 				if( taskres.inputfile_check ){
 					task.app_ptr(workgroup_comm,task.task_iopath,&task.task_id,&task.workgroup_tag);
 				}
+	
+				// DEBUGGING
+				//if( worker_rank == 0 ){
+				//	fprintf(ioworkgroup," DEBUGGING: AFTER GULP RUN\n");
+				//	fflush(ioworkgroup);
+				//}
+				//MPI_Barrier(*workgroup_comm);		// need to wait until mkdir / system done otherwise 'chdir' following cannot be done properly
+				// DEBUGGING END
+
 				getCurrentDateTime(taskres.end_t);
 				taskres.elapsed_t = get_time() - taskres.elapsed_t;
 
