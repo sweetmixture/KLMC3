@@ -28,7 +28,11 @@ bool isInteger( const char* str ){
 * * */
 
 // <int> pattern finder
-void read_input_ipatternfinder( FILE* fp, const char* pattern, int* ret ){
+void read_input_ipatternfinder(
+	FILE* fp,						// IN
+	const char* pattern,			// IN
+	int* ret						// IN-OUT
+){
 
 	char  line[1024];
 	char* token = NULL;

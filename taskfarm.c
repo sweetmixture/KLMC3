@@ -83,6 +83,17 @@ int main(int argc, char* argv[])
 		else if( strcmp(tfc.application,"fhiaims") == 0 ){
 			print_stdout(tfc.brank,"11.23\n");
 		}
+#ifdef USE_PYTHON
+		/* --------------------------------------------
+		    08.11.2023
+		    If Python used
+		   -------------------------------------------- */
+		else if( strcmp(tfc.application,"python") == 0 ){
+			sprintf(msg," Python Module Path : %s\n",tfc.python_module_path); print_stdout(tfc.brank,msg);
+			sprintf(msg," Python Module Name : %s\n",tfc.python_module_name); print_stdout(tfc.brank,msg);
+			sprintf(msg," Python Method      : %s\n",tfc.python_method_name); print_stdout(tfc.brank,msg);
+		}
+#endif
 		print_stdout(tfc.brank,"\n");
 		sprintf(msg," Request number of tasks         :       %d\n",tfc.num_tasks); print_stdout(tfc.brank,msg);
 		sprintf(msg," task start index                :       %d\n",tfc.task_start); print_stdout(tfc.brank,msg);
@@ -188,7 +199,18 @@ int main(int argc, char* argv[])
 	}
 	else{
 		//master_worker_task_call_workgroup( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
-		ready_input_call_workgroups( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
+
+		/* * *
+			taskfarm - gulp/fhiaims using ready_input default
+		* * */
+		if( strcmp(tfc.application,"gulp") == 0 ){
+			ready_input_call_workgroups( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
+		}
+#ifdef USE_PYTHON
+		if( strcmp(tfc.application,"python") == 0 ){
+			// call python
+		}
+#endif
 	}
 
 	/* * * * *

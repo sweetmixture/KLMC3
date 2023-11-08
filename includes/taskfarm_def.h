@@ -32,16 +32,16 @@ typedef struct TaskFarmConfiguration_{
 		mpi related
 
 	* * */
-	int bsize;		// global : base rank size
-	int brank;		// local  : my rank
-	int mrank;		// global : master rank
+	int bsize;								// global : base rank size
+	int brank;								// local  : my rank
+	int mrank;								// global : master rank
 
 	char proc_name[MPI_MAX_PROCESSOR_NAME];	// local : my process id
 	int proc_name_len;						// local : my process id length
 
 	// sys info
-	bool omp_num_threads_set;	// global
-	int omp_num_threads;		// global
+	bool omp_num_threads_set;				// global
+	int omp_num_threads;					// global
 
 	/* * *
 
@@ -51,22 +51,33 @@ typedef struct TaskFarmConfiguration_{
 		local	: differ by a chosen CPU
 
 	* * */
-	int n_workgroup;		// global : workgroup number = worker-groups(n) + master(1)
-	int workgroup_tag;		// local  : my workgroup tag	 : i.e., group tag  I belong to
-	int workgroup_size;		// local  : my workgroup size	 : i.e., group size I belong to
-	int worker_rank;		// local  : my rank in workgroup : i.e., my rank in the workgroup I belong to
+	int n_workgroup;						// global : workgroup number = worker-groups(n) + master(1)
+	int workgroup_tag;						// local  : my workgroup tag	 : i.e., group tag  I belong to
+	int workgroup_size;						// local  : my workgroup size	 : i.e., group size I belong to
+	int worker_rank;						// local  : my rank in workgroup : i.e., my rank in the workgroup I belong to
 
 	/* * * 
 
 		task related
 
 	* * */
-	char application[64];
+	char application[64];					// global
 
-	int num_tasks;
-	int task_start;
-	int task_end;
-	int cpus_per_workgroup;
+	int num_tasks;							// global
+	int task_start;							// global
+	int task_end;							// global
+	int cpus_per_workgroup;					// global
+
+#ifdef USE_PYTHON
+	/* --------------------------------------------
+	    08.11.2023
+	    If Python used
+	   -------------------------------------------- */
+	char python_module_path[512];			// global 
+	char python_module_name[512];			// global 
+	char python_method_name[512];			// global
+
+#endif
 
 }TaskFarmConfiguration;
 

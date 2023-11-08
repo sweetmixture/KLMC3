@@ -82,23 +82,39 @@ bool tf_get_taskfarm_configuration(
         // Init end;
 
         // 'string' : InputFile Read
-        read_input_spatternfinder( fp, "application"    , &(tfc->application[0])     );
+        read_input_spatternfinder(fp, "application"    , &(tfc->application[0])     );
+		// DEVPYTHON - anyway here application will read keyword, which could be ... python: nothing should be touched here?
+
 
         // 'integer': InputFile Read
-        read_input_ipatternfinder( fp, "task_start"     , &(tfc->task_start)         );
-        read_input_ipatternfinder( fp, "task_end"       , &(tfc->task_end)           );
-        read_input_ipatternfinder( fp, "cpus_per_worker", &(tfc->cpus_per_workgroup) );
+        read_input_ipatternfinder(fp, "task_start"     , &(tfc->task_start)         );
+        read_input_ipatternfinder(fp, "task_end"       , &(tfc->task_end)           );
+        read_input_ipatternfinder(fp, "cpus_per_worker", &(tfc->cpus_per_workgroup) );
+		/* * * Modification required 12.09.23 : wkjee
+			Mode pattern reader
+			(1) simply using pre-prepared input files
+		* * */
 
-/* * * Modification required 12.09.23 : wkjee
 
-	Mode pattern reader
+#ifdef USE_PYTHON
+		/* --------------------------------------------
+			08.11.2023
+			If Python used
+		   -------------------------------------------- */
+		if( strcmp(tfc->application,"python") == 0 ){
+			/* if python is used as application: (1) read python module path / (2) python method/function name */
+			read_input_spatternfinder(fp,"python_module_path", &(tfc->python_module_path[0]));
+			read_input_spatternfinder(fp,"python_module_name", &(tfc->python_module_name[0]));
+			read_input_spatternfinder(fp,"python_method", &(tfc->python_method_name[0]));
 
-	(1) simply using pre-prepared input files
-
-* * */
+			// relevant error handling required ?
+		}
+#endif
 
         fclose(fp);
-
+/* * *
+	Final Error Handler
+* * */
 		/* * *
 		 * Error <finder> : possible error in configuration file
 		 * * */
