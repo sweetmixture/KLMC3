@@ -10,17 +10,25 @@
 #define __TASKFARM_DEF
 
 // MPI_TAGS: TASK_ : task related
-#define TASK_INIT 55
-#define TASK_EXECUTED 56
-#define TASK_FINISHED 57
-#define TASK_DIETAG 666
-#define TASK_WORKTAG 777
+#define TASK_INIT 		55
+#define TASK_EXECUTED 	56
+#define TASK_FINISHED 	57
+#define TASK_DIETAG 	666
+#define TASK_WORKTAG 	777
 
 // file path: TF_ : taskfarm related
-#define TF_CONFIG_FILE "taskfarm.config"		// taskfarm configuration file
-#define TF_MAIN_FILE   "taskfarm.log"
-#define TF_APPLICATION_GULP    "gulp"
-#define TF_APPLICATION_FHIAIMS "fhiaims"
+#define TF_CONFIG_FILE 			"taskfarm.config"		// taskfarm configuration file
+#define TF_MAIN_FILE   			"taskfarm.log"
+#define TF_APPLICATION_GULP    	"gulp"
+#define TF_APPLICATION_FHIAIMS 	"fhiaims"
+
+#ifdef USE_PYTHON
+/* --------------------------------------------
+    08.11.2023
+    If Python used
+   -------------------------------------------- */
+#define TF_APPLICATION_PYTHON "python"
+#endif
 
 #include <mpi.h>
 #include <stdbool.h>

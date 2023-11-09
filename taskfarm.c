@@ -15,7 +15,11 @@
 #include "taskfarm_def.h"
 
 // Types of 'master-worker' implementation
-#include "master_worker_ready_input.h"
+#include "master_worker_ready_input.h"				// default: 07.23
+
+#ifdef USE_PYTHON
+#include "master_worker_python.h"					// python single processor interface: 11.23
+#endif
 
 #include "print_message.h"
 #include "timer.h"
@@ -89,6 +93,7 @@ int main(int argc, char* argv[])
 		    If Python used
 		   -------------------------------------------- */
 		else if( strcmp(tfc.application,"python") == 0 ){
+			print_stdout(tfc.brank,"\n");
 			sprintf(msg," Python Module Path : %s\n",tfc.python_module_path); print_stdout(tfc.brank,msg);
 			sprintf(msg," Python Module Name : %s\n",tfc.python_module_name); print_stdout(tfc.brank,msg);
 			sprintf(msg," Python Method      : %s\n",tfc.python_method_name); print_stdout(tfc.brank,msg);
@@ -189,26 +194,28 @@ int main(int argc, char* argv[])
 	fflush_channel(NULL);
 	MPI_Barrier(BaseComm);
 
-	/* * * * *
+	/* * * * * * *
 	 * TASK FARM MAIN START
-	 * * * * **/
+	 * * * * * * */
 	if( tfc.brank == tfc.mrank ){
-		//berr = master_worker_task_call_master( &BaseComm, &tfc, &wgc_global[0] );
-		berr = ready_input_call_master( &BaseComm, &tfc, &wgc_global[0] );
+		if( strcmp(tfc.application,"gulp") == 0 ){
+			berr = ready_input_call_master( &BaseComm, &tfc, &wgc_global[0] );
+		}
+#ifdef USE_PYTHON
+		if( strcmp(tfc.application,"python") == 0 ){
+			berr = ready_input_call_master_python( &BaseComm, &tfc, &wgc_global[0] );
+		}
+#endif
 // -------------------------------------------------------------------------------- -> 31.08 REFACTORING
 	}
 	else{
-		//master_worker_task_call_workgroup( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
-
-		/* * *
-			taskfarm - gulp/fhiaims using ready_input default
-		* * */
 		if( strcmp(tfc.application,"gulp") == 0 ){
+			/* taskfarm - gulp/fhiaims using ready_input default */
 			ready_input_call_workgroups( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
 		}
 #ifdef USE_PYTHON
 		if( strcmp(tfc.application,"python") == 0 ){
-			// call python
+			ready_input_call_workgroups_python( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag, &tfc );
 		}
 #endif
 	}

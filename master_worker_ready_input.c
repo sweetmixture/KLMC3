@@ -104,18 +104,6 @@ void set_TaskEnvelope(
  		// Not Implemented 01.09.23       
         return;
     }
-
-
-	/* * *
-	 * APPLICATION PYTHON ------------------------------------------------------------------------------------------------------
-	 * * */
-	if( strcmp(app,"python") == 0 ){
-
-		return;
-	}
-	/* * *
-	 * APPLICATION PYTHON ------------------------------------------------------------------------------------------------------
-	 * * */
 }
 /* * * * *
 
@@ -194,9 +182,6 @@ bool ready_input_call_master(
 
 		// devtmp: set this case as 'application == gulp' ?
 		set_TaskEnvelope( task_id, tfc->application, &mws, &(task_array[i]) );
-
-		// devtmp: using mode python?
-		// set_TaskEnvelope
 	}
 
 	getCurrentDateTime(currentTime);
@@ -508,6 +493,9 @@ void ready_input_call_workgroups(
 				taskres.elapsed_t = get_time();
 
 				if( taskres.inputfile_check ){
+					/* * *
+						app execution
+					* * */
 					task.app_ptr(workgroup_comm,task.task_iopath,&task.task_id,&task.workgroup_tag);
 				}
 	

@@ -12,41 +12,57 @@
 #include <sys/stat.h>
 #include <mpi.h>
 
-#include "master_worker_ready_input.h"
-#include "subroutines.h"
+/* --------------------------------------------
+    08.11.2023
+    If Python used
+   -------------------------------------------- */
+#include "master_worker_python.h"
+
 #include "error.h"
 #include "timer.h"
 
+
+
+/*
+	changing attributes				| add prefix
+	TaskEnvelopePython						-> Python
+	TaskResultEnvelopePython				-> Python
+	MasterWorkspacePython					-> Python
+	
+	ready_input_call_master_python			-> _python
+	ready_input_call_workgroups_python		-> _python
+*/
+
 /* * *
- * get next TaskEnvelope
+ * get next TaskEnvelopePython
  * use only in this source
  * * */
-TaskEnvelope* get_next_TaskEnvelope(
-	TaskEnvelope* task_array,
+TaskEnvelopePython* get_next_TaskEnvelopePython(
+	TaskEnvelopePython* task_array,
 	const int task_count,
 	int* sent_task_count
 ){
 	if( *sent_task_count >= task_count ){
 		return NULL;
 	}
-	TaskEnvelope* task = &task_array[*sent_task_count];
+	TaskEnvelopePython* task = &task_array[*sent_task_count];
 	(*sent_task_count)++;
 
 	return task;
 }
 
 /* * *
- * set TaskEnvelope ( instructions to 'workgroup' )
+ * set TaskEnvelopePython ( instructions to 'workgroup' )
  * used only in this source
  * * */
-void set_TaskEnvelope(
-    const int task_id,
-    const char* app,
-    MasterWorkspace* mws,
-    TaskEnvelope* task
+void set_TaskEnvelopePython(
+    const int task_id,					// IN
+    const char* app,					// IN
+    MasterWorkspacePython* mws,			// IN-OUT: WORKSPACE
+    TaskEnvelopePython* task			// IN-OUT
 ){
 	/* * *
-	 * APPLICATION GULP
+	 * APPLICATION GULP : only for reference in this source file
 	 * * */
     if( strcmp(app,"gulp") == 0 ){
 
@@ -67,7 +83,7 @@ void set_TaskEnvelope(
 		strcat(mws->rundir_path,"/");												// e.g. '/root/
         strcat(mws->rundir_path,mws->rundir);										// e.g. '/root/run'
 
-        // 3. set TaskEnvelope 'task'
+        // 3. set TaskEnvelopePython 'task'
         task->cmd_count = 1;								// mws->inputfile_count;
 
         for(int i=0;i<task->cmd_count;i++){
@@ -76,7 +92,7 @@ void set_TaskEnvelope(
         }
 
 		strcpy(task->application,"gulp");					// Application
-		task->app_ptr = gulpklmc;							// set 'gulp_main()' subroutine
+		//task->app_ptr = gulpklmc;							// set 'gulp_main()' subroutine
 		task->task_id = task_id;							// set task_id
         strcpy(task->task_iopath,mws->rundir_path);			// set task_iopath
         strcpy(task->task_rootpath,mws->root);				// set task_rootpath
@@ -95,21 +111,31 @@ void set_TaskEnvelope(
         return;
     }
 	/* * *
-	 * APPLICATION GULP --------------------------------------------------------------------------------------------------------
-	 * * */
-    
-	// APPLICATION FHIAIMS
-    if( strcmp(app,"fhiaims") == 0 ){
-        
- 		// Not Implemented 01.09.23       
-        return;
-    }
-
-
-	/* * *
 	 * APPLICATION PYTHON ------------------------------------------------------------------------------------------------------
 	 * * */
 	if( strcmp(app,"python") == 0 ){
+
+		mws->inputfile_count = 0;							// 09.11.23 temporal : non input python script
+
+		/* 1. task working dir set */
+        sprintf(mws->rundir,"A%d",task_id);					// set app run directory	// e.g. 'A123'
+        memset(mws->rundir_path,0,sizeof(mws->rundir_path));
+        strcpy(mws->rundir_path,mws->root);					// e.g. '/root/
+		strcat(mws->rundir_path,"/");						// e.g. '/root/
+        strcat(mws->rundir_path,mws->rundir);				// e.g. '/root/A${task_id}
+
+		task->cmd_count = 0;								// mws->inputfile_count;
+
+		/* 2. task packaging */
+		strcpy(task->application,"python");					// Application
+		task->task_id = task_id;							// set task_id
+        strcpy(task->task_iopath,mws->rundir_path);			// set task_iopath
+        strcpy(task->task_rootpath,mws->root);				// set task_rootpath
+        task->task_status = TASK_INIT;						// set task_status
+
+		strcpy(task->python_method,mws->method_name);		// set python_method name
+
+		task->inputfile_count = mws->inputfile_count;
 
 		return;
 	}
@@ -127,7 +153,7 @@ void set_TaskEnvelope(
 
 * * * * */
 //bool master_worker_task_call_master(
-bool ready_input_call_master(
+bool ready_input_call_master_python(
 	const MPI_Comm* base_comm,
 	const TaskFarmConfiguration* tfc,
 	const WorkgroupConfig* wgc
@@ -139,7 +165,7 @@ bool ready_input_call_master(
 		Files
 	* * */
 	FILE* iomaster = NULL;
-	MasterWorkspace mws;
+	MasterWorkspacePython mws;
 
 	/* * *
 		Tasks
@@ -148,7 +174,7 @@ bool ready_input_call_master(
 	int sent_task_count  = 0;
 	const int task_count = tfc->num_tasks;
 	const int master_tag = tfc->n_workgroup - 1;
-	TaskEnvelope* task_array = malloc(task_count*sizeof(TaskEnvelope));
+	TaskEnvelopePython* task_array = malloc(task_count*sizeof(TaskEnvelopePython));
 
 	/* * * END VARIABLES * * */
 
@@ -156,6 +182,13 @@ bool ready_input_call_master(
 	getcwd(mws.root,sizeof(mws.root));
 	strcpy(mws.inputsource_dir,mws.root);
 	strcat(mws.inputsource_dir,"/run");
+
+	// Setting PythonMethod Name
+	/* --------------------------------------------
+		08.11.2023
+		If Python used
+	-------------------------------------------- */
+	strcpy(mws.method_name,tfc->python_method_name);
 
 	// Try: open log file 'master.log'
 	iomaster = fopen(_LOGFILE_MASTER_,"w");
@@ -168,9 +201,9 @@ bool ready_input_call_master(
 		// termination message : REFACTORING REQ ----------------------------------------------------------------
 		for(int n=0;n<master_tag;n++){
 
-        	TaskEnvelope end_task;
+        	TaskEnvelopePython end_task;
         	end_task.task_status = TASK_DIETAG;
-        	MPI_Send(&end_task,sizeof(TaskEnvelope),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
+        	MPI_Send(&end_task,sizeof(TaskEnvelopePython),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
 			getCurrentDateTime(currentTime);
 			fprintf(iomaster," %.30s MPI_Send | completed | master         > workgroup %5d : size %5d : head_procid %6d\n", currentTime,wgc[n].workgroup_tag,wgc[n].workgroup_size,wgc[n].base_rank);
 			fflush(iomaster);
@@ -186,44 +219,47 @@ bool ready_input_call_master(
 	 * * */
 	getCurrentDateTime(currentTime);
 	fprintf(iomaster," * * * \n");
-	fprintf(iomaster," %.30s Task envelopes setting start",currentTime)
+	fprintf(iomaster," %.30s Task envelopes setting start\n",currentTime);
 	fprintf(iomaster," * * * \n");
 
 	for(int i=0;i<task_count;i++){
 		task_id = i + tfc->task_start;	// syntax -> "A${task_id}.gin"
-
-		// devtmp: set this case as 'application == gulp' ?
-		set_TaskEnvelope( task_id, tfc->application, &mws, &(task_array[i]) );
-
-		// devtmp: using mode python?
-		// set_TaskEnvelope
+		set_TaskEnvelopePython( task_id, tfc->application, &mws, &(task_array[i]) );
 	}
 
 	getCurrentDateTime(currentTime);
 	fprintf(iomaster," * * * \n");
-	fprintf(iomaster," %.30s Task envelopes setting finish",currentTime)
+	fprintf(iomaster," %.30s Task envelopes setting finish\n",currentTime);
 	fprintf(iomaster," * * * \n");
 	fflush(iomaster);
+
+	/* --------------------------------------------
+		08.11.2023
+		If Python used
+	-------------------------------------------- */
+	PyObject* sysPath;			// SET PYTHON PATH
+	PyObject* pModule;			// SET PYTHON MODULE NAME
+	python_serial_init(&sysPath,&pModule,tfc->python_module_path,tfc->python_module_name);	// Call Py_Init()
 
 	/*
 		 messaging tasks variables
 	*/
 	MPI_Status status;
 	MPI_Request request;
-	TaskEnvelope* task;
-	TaskResultEnvelope taskres;
+	TaskEnvelopePython* task;
+	TaskResultEnvelopePython taskres;
 	
 	/* * * * *
 		Initial task messaging 
 	 * * * * */
 	for(int n=0;n<master_tag;n++){
 
-		task = get_next_TaskEnvelope(task_array,task_count,&sent_task_count);
+		task = get_next_TaskEnvelopePython(task_array,task_count,&sent_task_count);
 		if( task == NULL ){
 			break;
 		}
 
-		MPI_Isend(task,sizeof(TaskEnvelope),MPI_CHAR,wgc[n].base_rank,TASK_WORKTAG,*base_comm,&request);
+		MPI_Isend(task,sizeof(TaskEnvelopePython),MPI_CHAR,wgc[n].base_rank,TASK_WORKTAG,*base_comm,&request);
 		MPI_Wait(&request,&status);
 
 		getCurrentDateTime(currentTime);
@@ -248,11 +284,11 @@ bool ready_input_call_master(
 	/* * * * *
 		task messaging
 	 * * * * */
-	task = get_next_TaskEnvelope(task_array,task_count,&sent_task_count);
+	task = get_next_TaskEnvelopePython(task_array,task_count,&sent_task_count);
 
 	while( task != NULL ){
 
-		MPI_Recv(&taskres,sizeof(TaskResultEnvelope),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
+		MPI_Recv(&taskres,sizeof(TaskResultEnvelopePython),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
 		getCurrentDateTime(currentTime);
 
 		/* pre-set for message recving */
@@ -270,7 +306,7 @@ bool ready_input_call_master(
 		}
 		// warning handling end
 
-		MPI_Send(task,sizeof(TaskEnvelope),MPI_CHAR,status.MPI_SOURCE,TASK_WORKTAG,*base_comm);	// using ... MPI handle ... MPI_Status stauts -> MPI_SOURCE (send back to right previous 'recv' source)
+		MPI_Send(task,sizeof(TaskEnvelopePython),MPI_CHAR,status.MPI_SOURCE,TASK_WORKTAG,*base_comm);	// using ... MPI handle ... MPI_Status stauts -> MPI_SOURCE (send back to right previous 'recv' source)
 		getCurrentDateTime(currentTime);
 
 		/* pre-set for message sending */
@@ -286,7 +322,7 @@ bool ready_input_call_master(
 		for(int i=0;i<task->cmd_count;i++){
 		fprintf(iomaster," | %2d | %s\n",i+1,task->cmd[i]);
 		}
-		task = get_next_TaskEnvelope(task_array,task_count,&sent_task_count);
+		task = get_next_TaskEnvelopePython(task_array,task_count,&sent_task_count);
 		
 		fflush(iomaster);
 	}
@@ -294,7 +330,7 @@ bool ready_input_call_master(
 	// Final Recv : debugging 07.09.23 - HANG occurs : waiting a message from some 'workgroups' never sending message back since they are on running GULP (generating too many Errors, which never end).23
 	for(int n=0;n<master_tag;n++){
 
-		MPI_Recv(&taskres,sizeof(TaskResultEnvelope),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
+		MPI_Recv(&taskres,sizeof(TaskResultEnvelopePython),MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG,*base_comm,&status);
 		getCurrentDateTime(currentTime);
 
 		/* pre-set for message recving */
@@ -323,11 +359,11 @@ bool ready_input_call_master(
 	// Termination message
 	for(int n=0;n<master_tag;n++){
 
-		TaskEnvelope end_task;
+		TaskEnvelopePython end_task;
 		end_task.task_id = -1;
 		end_task.task_status = TASK_DIETAG;
 
-		MPI_Send(&end_task,sizeof(TaskEnvelope),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
+		MPI_Send(&end_task,sizeof(TaskEnvelopePython),MPI_CHAR,wgc[n].base_rank,TASK_DIETAG,*base_comm);
 		getCurrentDateTime(currentTime);
 
 		/* pre-set for message send */
@@ -344,6 +380,12 @@ bool ready_input_call_master(
 	free(task_array);
 	fclose(iomaster);
 
+	/* --------------------------------------------
+		08.11.2023
+		If Python used
+	-------------------------------------------- */
+	python_serial_final(sysPath,pModule);	// close python environment
+
 	return berr;
 }
 
@@ -351,11 +393,12 @@ bool ready_input_call_master(
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-void ready_input_call_workgroups(
+void ready_input_call_workgroups_python(
 	const MPI_Comm* base_comm,
 	const MPI_Comm* workgroup_comm,
 	const int n_workgroup,
-	const int workgroup_tag
+	const int workgroup_tag,
+	const TaskFarmConfiguration* tfc
 ){
 	bool taskError;
 
@@ -377,8 +420,8 @@ void ready_input_call_workgroups(
 	MPI_Status status;
 	MPI_Request request;
 
-	TaskEnvelope task;
-	TaskResultEnvelope taskres;
+	TaskEnvelopePython task;
+	TaskResultEnvelopePython taskres;
 
 	char cwd[512];
 
@@ -396,22 +439,33 @@ void ready_input_call_workgroups(
 		}
 	}
 
+	/* --------------------------------------------
+		08.11.2023
+		If Python used
+	-------------------------------------------- */
+	PyObject* sysPath;			// SET PYTHON PATH
+	PyObject* pModule;			// SET PYTHON MODULE NAME
+								// python method/function is not known by workgroups
+	python_serial_init( &sysPath, &pModule, tfc->python_module_path, tfc->python_module_name );	// Call Py_Init()
+	const char* pVersion = Py_GetVersion();
+	MPI_Barrier(*workgroup_comm);
+
 	for(int cycle=0;cycle<max_recv_cycle;cycle++){
 
 		for(int n=0;n<workgroup_count;n++){
-			// TaskEnvelope Recv : by each head rank (0) of 'workgroups'
+			// TaskEnvelopePython Recv : by each head rank (0) of 'workgroups'
 			if( n == workgroup_tag && worker_rank == 0 ){
 				/* 
 					Note. 07.09.23 : all workgroups will wait here (when all the tasks are done) for 'DIE' message from 'master'.
 				*/
-				MPI_Recv(&task,sizeof(TaskEnvelope),MPI_CHAR,master_base_rank,MPI_ANY_TAG,*base_comm,&status);
+				MPI_Recv(&task,sizeof(TaskEnvelopePython),MPI_CHAR,master_base_rank,MPI_ANY_TAG,*base_comm,&status);
 				getCurrentDateTime(currentTime);
 
 				if( status.MPI_TAG == TASK_WORKTAG ){
 
 					fprintf(ioworkgroup," <<<<<<<< task recv\n");// workgroup-tag : %d\n",workgroup_tag);
 					fprintf(ioworkgroup," %.30s MPI_Recv | completed\n",currentTime);
-					fprintf(ioworkgroup," application      : %s ( %p )\n",task.application,task.app_ptr);
+					fprintf(ioworkgroup," application      : %s ( %s )\n",task.application,pVersion);
 					fprintf(ioworkgroup," task_id          : %d\n",task.task_id);
 					fprintf(ioworkgroup," task_status      : %d (work-tag)\n",task.task_status);
 					fprintf(ioworkgroup," task_iopath      : %s\n",task.task_iopath);
@@ -438,7 +492,7 @@ void ready_input_call_workgroups(
 
 				if( workgroup_size > 1 ){	// call 'MPI_Bcast()' if workgroup size > 1
 
-					MPI_Bcast(&task,sizeof(TaskEnvelope),MPI_CHAR,0,*workgroup_comm);
+					MPI_Bcast(&task,sizeof(TaskEnvelopePython),MPI_CHAR,0,*workgroup_comm);
 					getCurrentDateTime(currentTime);
 				
 					if( worker_rank == 0 ){
@@ -490,6 +544,13 @@ void ready_input_call_workgroups(
 					}
 				}
 
+				/* * *
+					case if no inputfile -> set inputfile_check = .true.
+				* * */
+				if( task.inputfile_count == 0 ){
+					taskres.inputfile_check = true;
+				}
+
 				if( worker_rank == 0 ){
 					fprintf(ioworkgroup," * file check end\n");
 					fflush(ioworkgroup);
@@ -508,7 +569,11 @@ void ready_input_call_workgroups(
 				taskres.elapsed_t = get_time();
 
 				if( taskres.inputfile_check ){
-					task.app_ptr(workgroup_comm,task.task_iopath,&task.task_id,&task.workgroup_tag);
+			/* * * * * * * * * * * * * * * * * * * *
+			 *	app execution: Python
+			 * * * * * * * * * * * * * * * * * * * */
+					call_python_serial(pModule,task.python_method);
+
 				}
 				getCurrentDateTime(taskres.end_t);
 				taskres.elapsed_t = get_time() - taskres.elapsed_t;
@@ -520,7 +585,7 @@ void ready_input_call_workgroups(
 				chdir(task.task_rootpath);
 
 			/* * *
-				set taskres <TaskResultEnvelope>
+				set taskres <TaskResultEnvelopePython>
 			* * **/
 				taskres.task_status = TASK_FINISHED;
 				taskres.task_id = task.task_id;
@@ -551,7 +616,7 @@ void ready_input_call_workgroups(
 					task result send back > master
 				* * */
 				if( worker_rank == 0 ){
-					MPI_Send(&taskres,sizeof(TaskResultEnvelope),MPI_CHAR,master_base_rank,taskres.task_status,*base_comm);
+					MPI_Send(&taskres,sizeof(TaskResultEnvelopePython),MPI_CHAR,master_base_rank,taskres.task_status,*base_comm);
 					getCurrentDateTime(currentTime);
 
 					fprintf(ioworkgroup," >>>>>>>> task result send\n");
@@ -571,6 +636,13 @@ void ready_input_call_workgroups(
 		MPI_Barrier(*workgroup_comm);
 	}
 	// workgroup logger end
+
+	/* --------------------------------------------
+		08.11.2023
+		If Python used
+	-------------------------------------------- */
+	python_serial_final(sysPath,pModule);	// close python environment
+	MPI_Barrier(*workgroup_comm);
 
 	return;
 }

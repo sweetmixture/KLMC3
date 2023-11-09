@@ -6,7 +6,7 @@ project(
 	LANGUAGES C Fortran)
 
 if(USE_PYTHON)
-add_compile_definitions(USE_PYTHON)	# ENABLEING __PYTHON FLAG DURING THE COMPILATION
+add_compile_definitions(USE_PYTHON)	# ENABLEING 'USE_PYTHON' FLAG DURING THE COMPILATION
 # commands after else must be adequately modifed for including python interface
 # setting python library
 set(PYTHONLIB /work/e05/e05/wkjee/miniconda3/lib/libpython3.11.so)
@@ -55,15 +55,22 @@ set(SRC
         taskfarm_def.c
             read_input.c
 		master_worker_ready_input.c
+		master_worker_python.c
+			${CMAKE_SOURCE_DIR}/python_interface/call_python_serial.c
+			${CMAKE_SOURCE_DIR}/python_interface/python_serial_initfinal.c
         timer.c
         print_message.c
 		error.c
 )
-set(SRC_DEV ${CMAKE_SOURCE_DIR}/develop/unit_test.c)
+
+set(SRC_DEV
+	${CMAKE_SOURCE_DIR}/develop/unit_test.c
+)
 
 # APP SOURCE
 set(SRC_SUBPROGRAM
-	${CMAKE_SOURCE_DIR}/subroutines/subprogram_pi.c)
+	${CMAKE_SOURCE_DIR}/subroutines/subprogram_pi.c
+)
 set(SRC_FORTRAN
 	${CMAKE_SOURCE_DIR}/subroutines/fsubroutine_pi.F90 
 	${CMAKE_SOURCE_DIR}/subroutines/gulpklmc.F90
@@ -72,15 +79,23 @@ set(SRC_FORTRAN
 
 set(EXE tf.x)
 
-#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/includes)
-#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/develop/includes)
-#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/subroutines/includes)
-#include_directories(${EXE} PUBLIC ${GULPOBJ})
+#include_directories(${CMAKE_SOURCE_DIR}/includes)
+#include_directories(${CMAKE_SOURCE_DIR}/develop/includes)
+#include_directories(${CMAKE_SOURCE_DIR}/subroutines/includes)
 
-include_directories(${CMAKE_SOURCE_DIR}/includes)
-include_directories(${CMAKE_SOURCE_DIR}/develop/includes)
-include_directories(${CMAKE_SOURCE_DIR}/subroutines/includes)
-include_directories(${GULPOBJ})
+include_directories(
+	# DEFAULT GULP
+	${CMAKE_SOURCE_DIR}/includes
+	${CMAKE_SOURCE_DIR}/develop/includes
+	${CMAKE_SOURCE_DIR}/subroutines/includes
+	# PYTHON INTERFACE
+	${CMAKE_SOURCE_DIR}/python_interface/includes
+	/work/e05/e05/wkjee/miniconda3/include/python3.11/
+)
+
+include_directories(
+	${GULPOBJ}
+)
 
 # Find libgulpklmc.a libpGFNFF.a
 find_library(
@@ -98,7 +113,7 @@ add_executable(${EXE} ${SRC} ${SRC_DEV} ${SRC_SUBPROGRAM} ${SRC_FORTRAN})
 
 # USER_MODIFICATION
 # CRAY STSTEM
-target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF})
+target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${PYTHONLIB})
 # INTEL SYSTEM
 #target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${LINK_MKL})
 # USER_MODIFICATION END
@@ -114,7 +129,7 @@ set_target_properties(${EXE} PROPERTIES LINKER_LANGUAGE C)
 # Print C compiler
 # message(STATUS "C Compiler: ${CMAKE_C_COMPILER}")
 
-else()
+else()	# -----------------------------------------------------------------------------------------------------------------------
 
 # NO PYTHON MODE
 

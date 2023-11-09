@@ -105,8 +105,12 @@ bool tf_get_taskfarm_configuration(
 			/* if python is used as application: (1) read python module path / (2) python method/function name */
 			read_input_spatternfinder(fp,"python_module_path", &(tfc->python_module_path[0]));
 			read_input_spatternfinder(fp,"python_module_name", &(tfc->python_module_name[0]));
-			read_input_spatternfinder(fp,"python_method", &(tfc->python_method_name[0]));
-
+			read_input_spatternfinder(fp,"python_method_name", &(tfc->python_method_name[0]));
+/*
+python_module_path /work/e05/e05/wkjee/Software/gulpklmc/CPython
+python_method_name test_module
+python_module_name random_gen
+*/
 			// relevant error handling required ?
 		}
 #endif
