@@ -486,16 +486,16 @@ void ready_input_call_workgroups(
 	*/
 				// workgroup processors : move into the working dir
 				chdir(task.task_iopath);
-			/* * *
-				application launching : e.g., extern void application( const MPI_Comm*, char*, int*, int* );
-			* * */
+
 				getCurrentDateTime(taskres.start_t);
 				taskres.elapsed_t = get_time();
+				MPI_Barrier(*workgroup_comm);
 
 				if( taskres.inputfile_check ){
-					/* * *
-						app execution
-					* * */
+					/* * * * * * * * * * * * * * * * * * * *
+					 *  app execution: Python
+					 *  e.g., extern void application( const MPI_Comm*, char*, int*, int* );
+					 * * * * * * * * * * * * * * * * * * * */
 					task.app_ptr(workgroup_comm,task.task_iopath,&task.task_id,&task.workgroup_tag);
 				}
 	
@@ -509,9 +509,10 @@ void ready_input_call_workgroups(
 
 				getCurrentDateTime(taskres.end_t);
 				taskres.elapsed_t = get_time() - taskres.elapsed_t;
-
 				MPI_Barrier(*workgroup_comm);
-			/*  application launching done */
+				/* * * * * *
+				 *  application launching done
+				 * * * * * */
 
 				// get out from the working dir <important> to keep gulpmain from being in race condition of getting channel 'gulptmp_*' - wkjee 11 July 2023 added
 				chdir(task.task_rootpath);

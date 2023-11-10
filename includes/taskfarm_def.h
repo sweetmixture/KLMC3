@@ -80,11 +80,13 @@ typedef struct TaskFarmConfiguration_{
 	/* --------------------------------------------
 	    08.11.2023
 	    If Python used
+		
+		the following variables for loading a single
+		python method/function from a module
 	   -------------------------------------------- */
-	char python_module_path[512];			// global 
-	char python_module_name[512];			// global 
-	char python_method_name[512];			// global
-
+	char python_module_path[512];			// global:	module path (location of module.py)
+	char python_module_name[512];			// global:	name of the 'module' make sure it should not take the extention *.py
+	char python_method_name[512];			// global:	name of the method/function within the 'module'
 #endif
 
 }TaskFarmConfiguration;

@@ -83,8 +83,6 @@ bool tf_get_taskfarm_configuration(
 
         // 'string' : InputFile Read
         read_input_spatternfinder(fp, "application"    , &(tfc->application[0])     );
-		// DEVPYTHON - anyway here application will read keyword, which could be ... python: nothing should be touched here?
-
 
         // 'integer': InputFile Read
         read_input_ipatternfinder(fp, "task_start"     , &(tfc->task_start)         );
@@ -97,21 +95,23 @@ bool tf_get_taskfarm_configuration(
 
 
 #ifdef USE_PYTHON
-		/* --------------------------------------------
-			08.11.2023
-			If Python used
-		   -------------------------------------------- */
+/* --------------------------------------------
+	08.11.2023
+	If Python used
+   -------------------------------------------- */
 		if( strcmp(tfc->application,"python") == 0 ){
 			/* if python is used as application: (1) read python module path / (2) python method/function name */
 			read_input_spatternfinder(fp,"python_module_path", &(tfc->python_module_path[0]));
 			read_input_spatternfinder(fp,"python_module_name", &(tfc->python_module_name[0]));
 			read_input_spatternfinder(fp,"python_method_name", &(tfc->python_method_name[0]));
-/*
-python_module_path /work/e05/e05/wkjee/Software/gulpklmc/CPython
-python_method_name test_module
-python_module_name random_gen
-*/
 			// relevant error handling required ?
+/*
+	! in taskfarm.config file: possible style of input will be ...
+
+	python_module_path /work/e05/e05/wkjee/Software/gulpklmc/CPython
+	python_method_name test_module
+	python_module_name random_gen
+*/
 		}
 #endif
 

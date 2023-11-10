@@ -236,6 +236,7 @@ bool ready_input_call_master_python(
 	/* --------------------------------------------
 		08.11.2023
 		If Python used
+		'python_interface.h' used from master_worker_python.h
 	-------------------------------------------- */
 	PyObject* sysPath;			// SET PYTHON PATH
 	PyObject* pModule;			// SET PYTHON MODULE NAME

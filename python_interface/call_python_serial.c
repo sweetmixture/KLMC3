@@ -10,8 +10,8 @@
 #include <Python.h>
 
 bool call_python_serial(
-PyObject* pModule,			// Python Module (*.py)				// IN
-const char* method_name		// Python Function within *pModule	// IN
+	PyObject* pModule,			// Python Module (*.py)				// IN
+	const char* method_name		// Python Function within *pModule	// IN
 ){
 	/* * *
 		load python method/function from pModule (Python Module)

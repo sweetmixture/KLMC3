@@ -13,8 +13,8 @@
 
 /* from: call_python_serial.c */
 bool call_python_serial(
-PyObject* pModule,          // Python Module (*.py)                 // IN
-const char *method_name     // Python Function within *pModule      // IN
+	PyObject* pModule,          // Python Module (*.py)                 // IN
+	const char *method_name     // Python Function within *pModule      // IN
 /*
     07.11.23 wkjee
     User responsible function: user can feed relevant python function/method to deploy on the taskfarm
@@ -29,15 +29,15 @@ const char *method_name     // Python Function within *pModule      // IN
 
 /* from: python_serial_initfinal.c */
 void python_serial_init(
-PyObject** sysPath,         // IN-OUT   : python module path
-PyObject** pModule,         // IN-OUT   : python module
-const char* module_path,    // IN
-const char* module_name     // IN
+	PyObject** sysPath,         // IN-OUT   : python module path
+	PyObject** pModule,         // IN-OUT   : python module
+	const char* module_path,    // IN
+	const char* module_name     // IN
 );
 
 void python_serial_final(
-PyObject* sysPath,			// IN
-PyObject* pModule			// IN
+	PyObject* sysPath,			// IN
+	PyObject* pModule			// IN
 );
 
 

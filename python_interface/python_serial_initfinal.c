@@ -9,11 +9,12 @@
 #include <Python.h>
 
 void python_serial_init(
-PyObject** sysPath,			// IN-OUT	: python module path
-PyObject** pModule,			// IN-OUT	: python module
-const char* module_path,	// IN
-const char* module_name		// IN
+	PyObject** sysPath,			// IN-OUT	: python module path
+	PyObject** pModule,			// IN-OUT	: python module
+	const char* module_path,	// IN
+	const char* module_name		// IN
 ){
+	// attach interpreter
 	Py_Initialize();
 
 	// python module path setting: module_path - expected to be absolute path
@@ -34,12 +35,13 @@ const char* module_name		// IN
 }
 
 void python_serial_final(
-PyObject* sysPath,			// IN
-PyObject* pModule			// IN
+	PyObject* sysPath,			// IN
+	PyObject* pModule			// IN
 ){
+	// free Pyobjects
 	Py_XDECREF(sysPath);
 	Py_XDECREF(pModule);
-	
+	// release interpreter
 	Py_Finalize();
 	
 	return;

@@ -25,13 +25,12 @@ typedef struct TaskEnvelopePython_{
 	/*
 		application
 	*/
-	char application[32];
-	//app_execute_ptr app_ptr;		// application function(or subroutine) function pointer
+	char application[32];			// string saves application type : this case -> 'python'
 
 	/*
 		Python related
 	*/
-	char python_method[512];
+	char python_method[512];		// python method/function name
 
 	/*
 		task related
@@ -51,8 +50,8 @@ typedef struct TaskEnvelopePython_{
 	/*
 		task status related : will be used later by 'worker'
 	*/
-	int task_status;	// tell workgroup what to do ? 11.09.23 wkjee - only used when 'workgroup' reads in task type (if this is a task or die-tag)
-	int workgroup_tag;	// will be used as a parameter when launching application
+	int task_status;				// tell workgroup what to do ? 11.09.23 wkjee - only used when 'workgroup' reads in task type (if this is a task or die-tag)
+	int workgroup_tag;				// will be used as a parameter when launching application
 
 }TaskEnvelopePython;
 

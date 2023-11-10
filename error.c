@@ -56,15 +56,17 @@ bool error_taskfarm_configuration(
 	if( strcmp(&(tfc->application[0]),TF_APPLICATION_FHIAIMS) == 0 ){
 		bapp = true;
 	}
+
 #ifdef USE_PYTHON
-	/* --------------------------------------------
-	    08.11.2023
-	    If Python used
-	   -------------------------------------------- */
+/* --------------------------------------------
+08.11.2023
+If Python used
+-------------------------------------------- */
 	if( strcmp(&(tfc->application[0]),TF_APPLICATION_PYTHON) == 0 ){
 		bapp = true;
 	}
 #endif
+
 	if( !bapp ){ // if still false
 		print_stderr( brank, ANSI_COLOR_MAGENTA "Error> " ANSI_COLOR_RESET );
 		print_stderr( brank, ANSI_COLOR_RED "application " ANSI_COLOR_RESET "is not specified in file: " ANSI_COLOR_CYAN "taskfarm.config\n" ANSI_COLOR_RESET );

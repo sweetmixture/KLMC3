@@ -60,23 +60,35 @@
 
 	1. keep 'master_worker_task.c' for using the 'pre-prepared input' method
 
-  # * 11.23
+  # * 11.23 - minor changes: bug fix / new examples (GULP)
 
-	0. bugfix - allocating single processor workgroups
+	1. BUGFIX
+	
+		using single processor workgroup, i.e., setting 'cpus_per_worker 1' in the 'taskfarm.config' input file.
 
-		see: 11.2023 bugfix: taskfarm_def.c
+			for the details, see line including '11.2023 bugfix' in taskfarm_def.c
 
-	1. AlGaN examples added to Examples
+	2. GULP AlGaN examples (prepared inputfiles for running ready-input taskfarming) added to '$root/Examples'
 
-	2. Start adding Python interface
+			inputfiles originally made for Ga/AlN solid-solution calculations
 
-       * compatibility with Python3.X (during the developement, Python 3.11 will be used)
+  # * 11.23 -  Main Update: Python Interface
 
-	3. prototype (functional) python interface implementation - calling fully independent python script on the taskfarm interface
-		(09.11.23)
+	1. prototype Python interface is added : tested on ARCHER2 (Cray GNU compiler used) with Python version 3.7, 3.8 and 3.11
 
-		> 'summary' required + documentation
+		* Python script designed for 'single processor' (no parallel) can be executed on the taskfarm.
+		  It is ideal for launching python script on multiple processors, assuming that each python run is fully independent.
 
+		- 'prototype interface has been implemented assuming each python execution does not require any input arguments'.
+			However, this could be modified if there is a request.
 
+	
+		* change list (for developing reference)
 
+			changes in root/includes/*.h	:	taskfarm_def.h					# see sections 'ifdef USE_PYTHON ... #endif'
+												master_worker_python.h
+			changes in root/*.c				:
+												error.c							#ifdef USE_PYTHON ... #endif
+												taskfarm.c						#ifdef USE_PYTHON ... #endif
+												taskfarm_def.c					#ifdef USE_PYTHON ... #endif
 

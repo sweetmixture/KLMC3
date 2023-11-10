@@ -88,10 +88,10 @@ int main(int argc, char* argv[])
 			print_stdout(tfc.brank,"11.23\n");
 		}
 #ifdef USE_PYTHON
-		/* --------------------------------------------
-		    08.11.2023
-		    If Python used
-		   -------------------------------------------- */
+/* --------------------------------------------
+	08.11.2023
+	If Python used
+   -------------------------------------------- */
 		else if( strcmp(tfc.application,"python") == 0 ){
 			print_stdout(tfc.brank,"\n");
 			sprintf(msg," Python Module Path : %s\n",tfc.python_module_path); print_stdout(tfc.brank,msg);
@@ -201,7 +201,12 @@ int main(int argc, char* argv[])
 		if( strcmp(tfc.application,"gulp") == 0 ){
 			berr = ready_input_call_master( &BaseComm, &tfc, &wgc_global[0] );
 		}
+
 #ifdef USE_PYTHON
+/* --------------------------------------------
+	08.11.2023
+	If Python used
+   -------------------------------------------- */
 		if( strcmp(tfc.application,"python") == 0 ){
 			berr = ready_input_call_master_python( &BaseComm, &tfc, &wgc_global[0] );
 		}
@@ -214,6 +219,10 @@ int main(int argc, char* argv[])
 			ready_input_call_workgroups( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
 		}
 #ifdef USE_PYTHON
+/* --------------------------------------------
+	08.11.2023
+	If Python used
+   -------------------------------------------- */
 		if( strcmp(tfc.application,"python") == 0 ){
 			ready_input_call_workgroups_python( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag, &tfc );
 		}
