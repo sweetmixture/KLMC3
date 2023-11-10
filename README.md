@@ -92,7 +92,7 @@ and this will generate an executable ```tf.x``` in the _build_gnu directory.
 
 1. Lanching Example GULP taskfarming  
 
-* On ARCHER2, to carray out a test execution of ```tf.x```, there is an example prepared in ```/root/Example/testrun_template```.
+* On ARCHER2, to carray out a test execution of ```tf.x```, there is an example prepared in ```/root/Example/testrun_template_gulp```.
   
 In the path, one can find a file,
   
