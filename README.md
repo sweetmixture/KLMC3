@@ -1,4 +1,4 @@
-# Task Farm Interface (Basic Framework) for Knowledge Led Master Code (KLMC)
+# Task Farm Interface for Knowledge Led Master Code (KLMC)
 
 ---
 
@@ -92,7 +92,7 @@ and this will generate an executable ```tf.x``` in the _build_gnu directory.
 
 1. Lanching Example GULP taskfarming  
 
-* On ARCHER2, to carray out a test execution of ```tf.x```, there is an example prepared in ```/root/Example/testrun_template_gulp```.
+* On ARCHER2, to carry out a test execution of ```tf.x```, there is an example prepared in ```/root/Example/testrun_template_gulp```.
   
 In the path, one can find a file,
   
@@ -118,5 +118,24 @@ This means that 4 workgroups will be spwaned on each node, and in total 16 workg
 Since 'task_start 100' and 'task_end 144' are specified, the GULP inputfiles (stored in 'run') from A100.gin to A144.gin will be used.  
 
 2. Lanching Example Python taskfarming  
+
+* On ARCHER2, to carry out a test execution of ```tf.x```, there is an example prepared in ```/root/Example/testrun_template_python```.
+
+```taskfarm.config```, which is an essential input file, describes configurtion of task-farm and tasks.  
+In the file, please try to set correct path to your python_module_path, python_module_name and python_function/method.  
+Note. in this version (11.2023), the program only support single processor python script only, therefore you must set 'cpus_per_worker' equal to 1.  
+Otherwise you may waste significant computing resource and get unexpected outputs.  
+
+
+```SLURM_js.slurm``` is a slurm jobscript. Importantly, there are two environmental variables that you must set (i.e., you have to modify this for yourself),
+
+2.1 export your python environment to your computing node. This action corresponds to a line similar to the following,  
+```
+  $source PathToYourPythonDir/bin/activate PathToYourPythonDir/envs/YourPythonEnv
+```
+2.2 export your python library path to your computing node, This action corresponds to a line similar to the following,
+```
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:PathToYourPythonDir/miniconda3/lib/
+```
 
 
