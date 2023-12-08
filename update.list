@@ -103,3 +103,14 @@
 		Errors with intel compiler used taskfarm (tf.xf) : runtime crash reported when using 'gerun' on MMM Young - 'mpirun' command looks fine
 		> tested using AlGaN example 0-499 samples with 2 nodes (80 procs) / 20 procs per workgroup
   
+		Possible Errors
+		* Intel compiler :
+		> should use same version (release year) of 'mpi/intel' and 'compiler/intel'.
+			e.g., 'compilers/intel/2019/update4' and 'mpi/intel/2019/update4/intel' on MMM UCL Young
+			Otherwise will cause unexpected runtime crash.
+
+		Possible Errors:
+		* If you are using UCL machines
+		> DO NOT USE 'gerun' command, this will cause unexpected runtime crash.
+			must use 'mpirunt' command to execute this taskfarming interface.
+
