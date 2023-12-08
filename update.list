@@ -85,10 +85,21 @@
 	
 		* change list (for developing reference)
 
-			changes in root/includes/*.h	:	taskfarm_def.h					# see sections 'ifdef USE_PYTHON ... #endif'
-												master_worker_python.h
-			changes in root/*.c				:
-												error.c							#ifdef USE_PYTHON ... #endif
-												taskfarm.c						#ifdef USE_PYTHON ... #endif
-												taskfarm_def.c					#ifdef USE_PYTHON ... #endif
+			changes in root/includes/*.h :	taskfarm_def.h	# see sections 'ifdef USE_PYTHON ... #endif'
+							master_worker_python.h
 
+			changes in root/*.c :
+							error.c		#ifdef USE_PYTHON ... #endif
+							taskfarm.c	#ifdef USE_PYTHON ... #endif
+							taskfarm_def.c	#ifdef USE_PYTHON ... #endif
+
+  # * 08.12.23 - Error logging
+  
+		Errors with cray compiler (gnu) on archer2 : runtime crash reported when workgroup received '512'th task.
+		> this does not care whatever type of taskfarm configuration is used. i.e., whatever the number of procs allocated to workgroup, when
+		  the receive count reaches '512' it crashes.
+		> looks like error in 'lib-gulp-6.2.0', however, practically still useable.
+
+		Errors with intel compiler used taskfarm (tf.xf) : runtime crash reported when using 'gerun' on MMM Young - 'mpirun' command looks fine
+		> tested using AlGaN example 0-499 samples with 2 nodes (80 procs) / 20 procs per workgroup
+  

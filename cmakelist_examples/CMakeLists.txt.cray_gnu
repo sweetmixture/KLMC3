@@ -22,12 +22,19 @@ set(GULPROOT /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/gulpklmc/klmc3_t
 set(GULPOBJ ${GULPROOT}/Src/Linux_MPI)
 set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)
 
-# CRAY SYSTEM: ARCHER2 : GNU
+# CRAY SYSTEM: ARCHER2 : CRAY_GNU
 # cray (C) - cc, (Fortran) - ftn
 set(CMAKE_C_COMPILER cc)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
 set(CMAKE_Fortran_COMPILER ftn)
 set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3 -fallow-argument-mismatch -ffree-line-length-512")
+
+# CRAY SYSTEM: ARCHER2 : CRAY_CCE
+# cray (C) - cc, (Fortran) - ftn
+#set(CMAKE_C_COMPILER cc)
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
+#set(CMAKE_Fortran_COMPILER ftn)
+#set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
 
 # INTEL SYSTEM
 # intel (C) - mpicc, (Fortran) - mpif90
@@ -142,12 +149,19 @@ set(GULPROOT /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/gulpklmc/klmc3_t
 set(GULPOBJ ${GULPROOT}/Src/Linux_MPI)
 set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)
 
-# CRAY SYSTEM: ARCHER2 : GNU
+# CRAY SYSTEM: ARCHER2 : CRAY_GNU
 # cray (C) - cc, (Fortran) - ftn
 set(CMAKE_C_COMPILER cc)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
 set(CMAKE_Fortran_COMPILER ftn)
 set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3 -fallow-argument-mismatch -ffree-line-length-512")
+
+# CRAY SYSTEM: ARCHER2 : CRAY_CCE
+# cray (C) - cc, (Fortran) - ftn
+#set(CMAKE_C_COMPILER cc)
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
+#set(CMAKE_Fortran_COMPILER ftn)
+#set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
 
 # INTEL SYSTEM
 # intel (C) - mpicc, (Fortran) - mpif90
