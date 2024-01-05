@@ -114,3 +114,13 @@
 		> DO NOT USE 'gerun' command, this will cause unexpected runtime crash.
 			must use 'mpirunt' command to execute this taskfarming interface.
 
+  # * 05.01.24 - Error logging
+
+		Possible errors caused by using different setups of inputfiles
+
+		> changing number of atoms in the system is allowed for no-symmetry GULP calculations
+
+		> changing number of atoms and interatomic potential are allowed for no-symmetry GULP calculations
+
+		> @Error changing symmetry of unit cell (e.g., turning on - turning off - turning on ..) will crash the taskfarm
+

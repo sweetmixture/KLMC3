@@ -6,12 +6,10 @@ project(
 	LANGUAGES C Fortran)
 
 if(USE_PYTHON)
-add_compile_definitions(USE_PYTHON)	# ENABLEING 'USE_PYTHON' FLAG DURING THE COMPILATION | Example> cmake -DUSE_PYTHON=ON ..
+add_compile_definitions(USE_PYTHON)	# ENABLEING 'USE_PYTHON' FLAG DURING THE COMPILATION
 # commands after else must be adequately modifed for including python interface
 # setting python library
-#set(PYTHONLIB /work/e05/e05/wkjee/miniconda3/lib/libpython3.11.so)
-
-set(PYTHONLIB /home/uccawkj/miniconda3/lib/libpython3.10.so)	# on YOUNG
+set(PYTHONLIB /work/e05/e05/wkjee/miniconda3/lib/libpython3.11.so)
 
 # NO PYTHON MODE
 
@@ -20,17 +18,16 @@ include_directories(${MPI_INCLUDE_PATH})
 
 # ---------------------------------------------------------------------------------------
 # USER_MODIFICATION: Modification required: user environment dependent - gulp *.o, *.mod, *.a
-#set(GULPROOT /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3-libgulp-6.1.2/)
-set(GULPROOT /home/uccawkj/Software/TaskFarm/KLMC3-libgulp-6.1.2)
-set(GULPOBJ ${GULPROOT}/Src/Linux_MPI)		# *.o, *.mod files
-set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)	# *.o, *.mod files
+set(GULPROOT /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3-libgulp-6.1.2/)
+set(GULPOBJ ${GULPROOT}/Src/Linux_MPI)
+set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)
 
 # CRAY SYSTEM: ARCHER2 : CRAY_GNU
 # cray (C) - cc, (Fortran) - ftn
-#set(CMAKE_C_COMPILER cc)
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
-#set(CMAKE_Fortran_COMPILER ftn)
-#set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3 -fallow-argument-mismatch -ffree-line-length-512")
+set(CMAKE_C_COMPILER cc)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
+set(CMAKE_Fortran_COMPILER ftn)
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3 -fallow-argument-mismatch -ffree-line-length-512")
 
 # CRAY SYSTEM: ARCHER2 : CRAY_CCE
 # cray (C) - cc, (Fortran) - ftn
@@ -39,18 +36,15 @@ set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)	# *.o, *.mod files
 #set(CMAKE_Fortran_COMPILER ftn)
 #set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
 
-
 # INTEL SYSTEM
 # intel (C) - mpicc, (Fortran) - mpif90
-set(CMAKE_C_COMPILER mpicc)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3 -mcmodel=large")
-set(CMAKE_Fortran_COMPILER mpif90)
-set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
-set(LINK_MKL "-lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
-set(LINK_CORE "-lifcore -lifport")
+#set(CMAKE_C_COMPILER mpicc)
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3 -mcmodel=large")
+#set(CMAKE_Fortran_COMPILER mpif90)
+#set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
+#set(LINK_MKL "-lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
+#set(LINK_CORE "-lifcore -lifport")
 # USER_MODIFICATION: End modification
-
-# 07.12.2023 Manchester ...
 
 # ---------------------------------------------------------------------------------------
 # Get C compiler version - nothing to do with actual compilation ------------------------
@@ -92,17 +86,20 @@ set(SRC_FORTRAN
 
 set(EXE tf.x)
 
+#include_directories(${CMAKE_SOURCE_DIR}/includes)
+#include_directories(${CMAKE_SOURCE_DIR}/develop/includes)
+#include_directories(${CMAKE_SOURCE_DIR}/subroutines/includes)
+
 include_directories(
 	# DEFAULT GULP
 	${CMAKE_SOURCE_DIR}/includes
 	${CMAKE_SOURCE_DIR}/develop/includes
 	${CMAKE_SOURCE_DIR}/subroutines/includes
-	# PYTHON INTERFACE - system sensitive
+	# PYTHON INTERFACE
 	${CMAKE_SOURCE_DIR}/python_interface/includes
-	/home/uccawkj/miniconda3/include/python3.10
+	/work/e05/e05/wkjee/miniconda3/include/python3.11/
 )
 
-# GULP *.mod files
 include_directories(
 	${GULPOBJ}
 )
@@ -112,22 +109,20 @@ find_library(
 	GULPKLMC
 	NAMES libgulpklmc.a
 	HINTS ${GULPOBJ}
-	REQUIRED
-)
+	REQUIRED)
 find_library(
 	GULPpGFNFF
 	NAMES libpGFNFF.a
 	HINTS ${GULPGFNFF}
-	REQUIRED
-)
+	REQUIRED)
 
 add_executable(${EXE} ${SRC} ${SRC_DEV} ${SRC_SUBPROGRAM} ${SRC_FORTRAN})
 
 # USER_MODIFICATION
 # CRAY STSTEM
-# target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${PYTHONLIB})
+target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${PYTHONLIB})
 # INTEL SYSTEM
-target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${LINK_MKL} ${PYTHONLIB})
+#target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${LINK_MKL})
 # USER_MODIFICATION END
 
 # finalise 
@@ -150,26 +145,32 @@ include_directories(${MPI_INCLUDE_PATH})
 
 # ---------------------------------------------------------------------------------------
 # USER_MODIFICATION: Modification required: user environment dependent - gulp *.o, *.mod, *.a
-#set(GULPROOT /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3-libgulp-6.1.2/)
-set(GULPROOT /home/uccawkj/Software/TaskFarm/KLMC3-libgulp-6.1.2)
+set(GULPROOT /mnt/lustre/a2fs-work2/work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3-libgulp-6.1.2/)
 set(GULPOBJ ${GULPROOT}/Src/Linux_MPI)
 set(GULPGFNFF ${GULPROOT}/Utils/pGFNFF/Src)
 
-# CRAY SYSTEM: ARCHER2 : GNU
+# CRAY SYSTEM: ARCHER2 : CRAY_GNU
+# cray (C) - cc, (Fortran) - ftn
+set(CMAKE_C_COMPILER cc)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
+set(CMAKE_Fortran_COMPILER ftn)
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3 -fallow-argument-mismatch -ffree-line-length-512")
+
+# CRAY SYSTEM: ARCHER2 : CRAY_CCE
 # cray (C) - cc, (Fortran) - ftn
 #set(CMAKE_C_COMPILER cc)
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3")
 #set(CMAKE_Fortran_COMPILER ftn)
-#set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3 -fallow-argument-mismatch -ffree-line-length-512")
+#set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
 
 # INTEL SYSTEM
 # intel (C) - mpicc, (Fortran) - mpif90
-set(CMAKE_C_COMPILER mpicc)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3 -mcmodel=large")
-set(CMAKE_Fortran_COMPILER mpif90)
-set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
-set(LINK_MKL "-lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
-set(LINK_CORE "-lifcore -lifport")
+#set(CMAKE_C_COMPILER mpicc)
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3 -mcmodel=large")
+#set(CMAKE_Fortran_COMPILER mpif90)
+#set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
+#set(LINK_MKL "-lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
+#set(LINK_CORE "-lifcore -lifport")
 # USER_MODIFICATION: End modification
 
 # ---------------------------------------------------------------------------------------
@@ -196,54 +197,44 @@ set(SRC_DEV ${CMAKE_SOURCE_DIR}/develop/unit_test.c)
 
 # APP SOURCE
 set(SRC_SUBPROGRAM
-	${CMAKE_SOURCE_DIR}/subroutines/subprogram_pi.c
-)
+	${CMAKE_SOURCE_DIR}/subroutines/subprogram_pi.c)
 set(SRC_FORTRAN
 	${CMAKE_SOURCE_DIR}/subroutines/fsubroutine_pi.F90 
-	# CALLING GULP-MAIN
 	${CMAKE_SOURCE_DIR}/subroutines/gulpklmc.F90
 	${CMAKE_SOURCE_DIR}/subroutines/gulpklmc_initmax.F90
 )
 
 set(EXE tf.x)
 
-include_directories(
-	# DEFAULT GULP
-	${CMAKE_SOURCE_DIR}/includes
-	${CMAKE_SOURCE_DIR}/develop/includes
-	${CMAKE_SOURCE_DIR}/subroutines/includes
-	# PYTHON INTERFACE - system sensitive
-	# ${CMAKE_SOURCE_DIR}/python_interface/includes
-	# /home/uccawkj/miniconda3/include/python3.10
-)
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/includes)
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/develop/includes)
+#include_directories(${EXE} PUBLIC ${CMAKE_SOURCE_DIR}/subroutines/includes)
+#include_directories(${EXE} PUBLIC ${GULPOBJ})
 
-
-# GULP *.mod files
-include_directories(
-	${GULPOBJ}
-)
+include_directories(${CMAKE_SOURCE_DIR}/includes)
+include_directories(${CMAKE_SOURCE_DIR}/develop/includes)
+include_directories(${CMAKE_SOURCE_DIR}/subroutines/includes)
+include_directories(${GULPOBJ})
 
 # Find libgulpklmc.a libpGFNFF.a
 find_library(
 	GULPKLMC
 	NAMES libgulpklmc.a
 	HINTS ${GULPOBJ}
-	REQUIRED
-)
+	REQUIRED)
 find_library(
 	GULPpGFNFF
 	NAMES libpGFNFF.a
 	HINTS ${GULPGFNFF}
-	REQUIRED
-)
+	REQUIRED)
 
 add_executable(${EXE} ${SRC} ${SRC_DEV} ${SRC_SUBPROGRAM} ${SRC_FORTRAN})
 
 # USER_MODIFICATION
 # CRAY STSTEM
-#target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF})
+target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF})
 # INTEL SYSTEM
-target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${LINK_MKL})
+#target_link_libraries(${EXE} ${MPI_LIBRARIES} MPI::MPI_Fortran ${GULPKLMC} ${GULPpGFNFF} ${LINK_MKL})
 # USER_MODIFICATION END
 
 # finalise 
