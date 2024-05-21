@@ -1,0 +1,41 @@
+#Stage1
+# Task parameters
+Calculate                     optimize
+Opt_restart                   off
+Opt_energy_convergence        1.0000e-003
+Opt_gradient_convergence      1.0000e-001 A
+Opt_displacement_convergence  1.0000e-001 A
+Opt_iterations                150
+Opt_max_displacement          1.0000 A
+Opt_coordinate_system         cartesian
+Symmetry                      c1
+
+# Electronic parameters
+Harris                        on
+Spin_polarization             restricted
+Charge                        0
+Pseudopotential               dspp
+Basis                         min
+Functional                    pwc
+Aux_density                   octupole
+Integration_grid              xcoarse
+Occupation                    smear 0.3
+Cutoff_Global                 4.5000 angstrom
+#Scf_density_convergence       1.0000e-005
+#Scf_charge_mixing             0.3000
+#Scf_spin_mixing               0.3000
+#Scf_iterations                150
+#Scf_diis                      6 kresse
+#Scf_restart                   off
+#fast_diag                     0
+#Sparse_eff_mat                1.0
+#Sparse_eff_dens               1.0
+#max_memory                    2048
+
+# Print options
+Print                         eigval_last_it
+
+# Calculated properties
+Mulliken_analysis             charge
+Hirshfeld_analysis            charge
+#Esp_fit                       on

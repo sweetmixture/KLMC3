@@ -1,0 +1,1133 @@
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Config.f90
+Config.f90:236:2:
+
+  236 |           CHARACTER(LEN=5), PUBLIC :: DMOL_INPUT_PREFIX = 'dmol3', DMOL_INPUT_SUFFIX = 'input'
+      |         1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Library.f90 
+Library.f90:111:27:
+
+  111 |     WRITE(i, '(i10)' ) str1
+      |                           ^
+Warning: 'i' is used uninitialized [-Wuninitialized]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c UnitCell.f90
+UnitCell.f90:529:11:
+
+  529 |      i_max=r_v*cell(2)*cell(3)*ABS(SIN(degree_to_radian*cell(4)))+1
+      |           1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1) [-Wconversion]
+UnitCell.f90:530:11:
+
+  530 |      j_max=r_v*cell(1)*cell(3)*ABS(SIN(degree_to_radian*cell(5)))+1
+      |           1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1) [-Wconversion]
+UnitCell.f90:531:11:
+
+  531 |      k_max=r_v*cell(1)*cell(2)*ABS(SIN(degree_to_radian*cell(6)))+1
+      |           1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1) [-Wconversion]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Format.f90
+Format.f90:58:35:
+
+   58 |     INTEGER :: str_length=0, offset=0, str_offset=1, str_until=1
+      |                                   1
+Warning: Unused variable 'offset' declared at (1) [-Wunused-variable]
+Format.f90:58:49:
+
+   58 |     INTEGER :: str_length=0, offset=0, str_offset=1, str_until=1
+      |                                                 1
+Warning: Unused variable 'str_offset' declared at (1) [-Wunused-variable]
+Format.f90:58:62:
+
+   58 |     INTEGER :: str_length=0, offset=0, str_offset=1, str_until=1
+      |                                                              1
+Warning: Unused variable 'str_until' declared at (1) [-Wunused-variable]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Serial-Comms.f90 
+Serial-Comms.f90:134:41:
+
+  134 |   SUBROUTINE MPI_BARRIER(MY_COMM,in_error)
+      |                                         1
+Warning: Unused dummy argument 'in_error' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:134:32:
+
+  134 |   SUBROUTINE MPI_BARRIER(MY_COMM,in_error)
+      |                                1
+Warning: Unused dummy argument 'my_comm' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:116:40:
+
+  116 |   SUBROUTINE comms_copy_to_master(in_pop)
+      |                                        1
+Warning: Unused dummy argument 'in_pop' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:106:38:
+
+  106 |   SUBROUTINE comms_copy_to_root(in_pop)
+      |                                      1
+Warning: Unused dummy argument 'in_pop' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:97:38:
+
+   97 |   SUBROUTINE comms_bcast_logical(array,length,IN_COMM)
+      |                                      1
+Warning: Unused dummy argument 'array' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:97:53:
+
+   97 |   SUBROUTINE comms_bcast_logical(array,length,IN_COMM)
+      |                                                     1
+Warning: Unused dummy argument 'in_comm' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:97:45:
+
+   97 |   SUBROUTINE comms_bcast_logical(array,length,IN_COMM)
+      |                                             1
+Warning: Unused dummy argument 'length' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:88:40:
+
+   88 |   SUBROUTINE comms_bcast_character(array,length)
+      |                                        1
+Warning: Unused dummy argument 'array' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:88:47:
+
+   88 |   SUBROUTINE comms_bcast_character(array,length)
+      |                                               1
+Warning: Unused dummy argument 'length' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:79:35:
+
+   79 |   SUBROUTINE comms_bcast_real(array,length,IN_COMM)
+      |                                   1
+Warning: Unused dummy argument 'array' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:79:50:
+
+   79 |   SUBROUTINE comms_bcast_real(array,length,IN_COMM)
+      |                                                  1
+Warning: Unused dummy argument 'in_comm' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:79:42:
+
+   79 |   SUBROUTINE comms_bcast_real(array,length,IN_COMM)
+      |                                          1
+Warning: Unused dummy argument 'length' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:70:38:
+
+   70 |   SUBROUTINE comms_bcast_integer(array,length)
+      |                                      1
+Warning: Unused dummy argument 'array' at (1) [-Wunused-dummy-argument]
+Serial-Comms.f90:70:45:
+
+   70 |   SUBROUTINE comms_bcast_integer(array,length)
+      |                                             1
+Warning: Unused dummy argument 'length' at (1) [-Wunused-dummy-argument]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Timer.f90 
+Timer.f90:195:71:
+
+  195 |   SUBROUTINE printToStream(outStream, routine, message, logLevel, level)
+      |                                                                       1
+Warning: Unused dummy argument 'level' at (1) [-Wunused-dummy-argument]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Algebra.f90 
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c File.f90 
+File.f90:1736:2:
+
+ 1736 |                           WRITE(message, *) 'WARNING! Number of atoms in XYZ file does not '
+      |                1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+File.f90:1737:2:
+
+ 1737 |                           CALL print2All("readXYZ", message, 0)
+      |                1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+File.f90:1738:2:
+
+ 1738 |                           WRITE(message, *) 'match  KLMC internal number of atoms for a cluster! (', N_ATOMS, ')'
+      |                1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+File.f90:1739:2:
+
+ 1739 |                           CALL print2All("readXYZ", message, 0)
+      |                1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+File.f90:1740:2:
+
+ 1740 |                           WRITE(message, *) 'Setting N_ATOMS = ', num_atoms
+      |                1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+File.f90:1741:2:
+
+ 1741 |                           CALL print2All("readXYZ", message, 0)
+      |                1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+File.f90:1742:2:
+
+ 1742 |                           WRITE(message, *) 'Check results carefully!'
+      |                1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+File.f90:1743:2:
+
+ 1743 |                           CALL print2All("readXYZ", message, 0)
+      |                1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+File.f90:3022:34:
+
+ 3022 |               UNIT_CELL='scell   '
+      |                                  1
+Warning: CHARACTER expression will be truncated in assignment (7/8) at (1) [-Wcharacter-truncation]
+File.f90:3857:42:
+
+ 3857 |     CHARACTER(LEN=200) :: line, energyLine
+      |                                          1
+Warning: Unused variable 'energyline' declared at (1) [-Wunused-variable]
+File.f90:3743:42:
+
+ 3743 |       INTEGER                      :: i, k, out_error=1, out_unit=27
+      |                                          1
+Warning: Unused variable 'k' declared at (1) [-Wunused-variable]
+File.f90:3702:42:
+
+ 3702 |       INTEGER                      :: i, k, out_error=1, out_unit=27
+      |                                          1
+Warning: Unused variable 'k' declared at (1) [-Wunused-variable]
+File.f90:3449:36:
+
+ 3449 |       REAL(DBL) :: xcoord(MAX_ATOMS),ycoord(MAX_ATOMS),zcoord(MAX_ATOMS) ! local copy of atomic coords
+      |                                    1
+Warning: Array 'xcoord' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+File.f90:3449:54:
+
+ 3449 |       REAL(DBL) :: xcoord(MAX_ATOMS),ycoord(MAX_ATOMS),zcoord(MAX_ATOMS) ! local copy of atomic coords
+      |                                                      1
+Warning: Array 'ycoord' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+File.f90:3449:72:
+
+ 3449 |       REAL(DBL) :: xcoord(MAX_ATOMS),ycoord(MAX_ATOMS),zcoord(MAX_ATOMS) ! local copy of atomic coords
+      |                                                                        1
+Warning: Array 'zcoord' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+File.f90:2977:46:
+
+ 2977 |       REAL(KIND=DBL), DIMENSION(6) :: tempCell
+      |                                              1
+Warning: Unused variable 'tempcell' declared at (1) [-Wunused-variable]
+File.f90:2268:33:
+
+ 2268 |       INTEGER :: n, iquote, ipipe
+      |                                 1
+Warning: Unused variable 'ipipe' declared at (1) [-Wunused-variable]
+File.f90:2268:26:
+
+ 2268 |       INTEGER :: n, iquote, ipipe
+      |                          1
+Warning: Unused variable 'iquote' declared at (1) [-Wunused-variable]
+File.f90:2268:18:
+
+ 2268 |       INTEGER :: n, iquote, ipipe
+      |                  1
+Warning: Unused variable 'n' declared at (1) [-Wunused-variable]
+File.f90:2221:81:
+
+ 2221 |       CHARACTER(LEN=MAX_GULP_COLUMN_WIDTH), DIMENSION(MAX_GULP_COLUMNS) :: buffer=''
+      |                                                                                 1
+Warning: Unused variable 'buffer' declared at (1) [-Wunused-variable]
+File.f90:2224:33:
+
+ 2224 |       INTEGER :: n, iquote, ipipe
+      |                                 1
+Warning: Unused variable 'ipipe' declared at (1) [-Wunused-variable]
+File.f90:2224:26:
+
+ 2224 |       INTEGER :: n, iquote, ipipe
+      |                          1
+Warning: Unused variable 'iquote' declared at (1) [-Wunused-variable]
+File.f90:2155:44:
+
+ 2155 |       INTEGER :: out_error=1, out_unit=31, n
+      |                                            1
+Warning: Unused variable 'n' declared at (1) [-Wunused-variable]
+File.f90:2071:44:
+
+ 2071 |       INTEGER :: out_error=1, out_unit=31, n
+      |                                            1
+Warning: Unused variable 'n' declared at (1) [-Wunused-variable]
+File.f90:1988:44:
+
+ 1988 |     REAL(KIND=DBL) :: posx, posy, posz, cosa, sina
+      |                                            1
+Warning: Unused variable 'cosa' declared at (1) [-Wunused-variable]
+File.f90:1988:50:
+
+ 1988 |     REAL(KIND=DBL) :: posx, posy, posz, cosa, sina
+      |                                                  1
+Warning: Unused variable 'sina' declared at (1) [-Wunused-variable]
+File.f90:1860:47:
+
+ 1860 |     INTEGER :: out_error=1, out_unit=31, n, ide, in_error=1, in_unit=26
+      |                                               1
+Warning: Unused variable 'ide' declared at (1) [-Wunused-variable]
+File.f90:1696:40:
+
+ 1696 |   LOGICAL FUNCTION EXCEPTIONS(in_cluster)
+      |                                        1
+Warning: Unused dummy argument 'in_cluster' at (1) [-Wunused-dummy-argument]
+File.f90:1547:50:
+
+ 1547 |      CHARACTER(LEN=81)             :: fname,buffer
+      |                                                  1
+Warning: Unused variable 'buffer' declared at (1) [-Wunused-variable]
+File.f90:1548:41:
+
+ 1548 |      INTEGER                       :: i,j,ierror,val
+      |                                         1
+Warning: Unused variable 'j' declared at (1) [-Wunused-variable]
+File.f90:1546:43:
+
+ 1546 |      CHARACTER(LEN=20)              :: junk,num_lines
+      |                                           1
+Warning: Unused variable 'junk' declared at (1) [-Wunused-variable]
+File.f90:1551:46:
+
+ 1551 |      LOGICAL                       :: readflag
+      |                                              1
+Warning: Unused variable 'readflag' declared at (1) [-Wunused-variable]
+File.f90:1552:45:
+
+ 1552 |      REAL(KIND=DBL)                :: scaling
+      |                                             1
+Warning: Unused variable 'scaling' declared at (1) [-Wunused-variable]
+File.f90:1548:52:
+
+ 1548 |      INTEGER                       :: i,j,ierror,val
+      |                                                    1
+Warning: Unused variable 'val' declared at (1) [-Wunused-variable]
+File.f90:1396:42:
+
+ 1396 |       INTEGER                       :: i,j,ierror
+      |                                          1
+Warning: Unused variable 'j' declared at (1) [-Wunused-variable]
+File.f90:1160:44:
+
+ 1160 |       LOGICAL                   :: lold,lpbc
+      |                                            1
+Warning: Unused variable 'lpbc' declared at (1) [-Wunused-variable]
+File.f90:862:30:
+
+  862 |   character(len=256) :: buffer,jobid
+      |                              1
+Warning: Unused variable 'buffer' declared at (1) [-Wunused-variable]
+File.f90:860:25:
+
+  860 |   integer :: file,stat, i
+      |                         1
+Warning: Unused variable 'i' declared at (1) [-Wunused-variable]
+File.f90:862:36:
+
+  862 |   character(len=256) :: buffer,jobid
+      |                                    1
+Warning: Unused variable 'jobid' declared at (1) [-Wunused-variable]
+File.f90:857:51:
+
+  857 |   character(len=81)           :: qstat_job_complete
+      |                                                   1
+Warning: Unused variable 'qstat_job_complete' declared at (1) [-Wunused-variable]
+File.f90:840:41:
+
+  840 |   LOGICAL                     :: readfile = .FALSE.
+      |                                         1
+Warning: Unused variable 'readfile' declared at (1) [-Wunused-variable]
+File.f90:568:42:
+
+  568 |    LOGICAL                     :: readfile = .FALSE.
+      |                                          1
+Warning: Unused variable 'readfile' declared at (1) [-Wunused-variable]
+File.f90:590:21:
+
+  590 |    LOGICAL :: up_flag = .TRUE.
+      |                     1
+Warning: Unused variable 'up_flag' declared at (1) [-Wunused-variable]
+File.f90:501:46:
+
+  501 |     INTEGER                     :: file,ierror,stat,i
+      |                                              1
+Warning: Unused variable 'ierror' declared at (1) [-Wunused-variable]
+File.f90:437:46:
+
+  437 |     INTEGER                     :: file,ierror,stat
+      |                                              1
+Warning: Unused variable 'ierror' declared at (1) [-Wunused-variable]
+File.f90:164:43:
+
+  164 |     CHARACTER(LEN=200) :: SRC_DIR, FILELINE
+      |                                           1
+Warning: Unused variable 'fileline' declared at (1) [-Wunused-variable]
+File.f90:164:33:
+
+  164 |     CHARACTER(LEN=200) :: SRC_DIR, FILELINE
+      |                                 1
+Warning: Unused variable 'src_dir' declared at (1) [-Wunused-variable]
+File.f90:79:22:
+
+   79 |     INTEGER :: success=0
+      |                      1
+Warning: Unused variable 'success' declared at (1) [-Wunused-variable]
+File.f90:1007:63:
+
+ 1007 |        OPEN(unit=file,file=tmp_file, status='old', iostat=stat)
+      |                                                               ^
+Warning: 'file' may be used uninitialized [-Wmaybe-uninitialized]
+File.f90:877:72:
+
+  877 |   open(unit=file,file=TRIM(RELAXED_FOLDER)//'/'//job_script,iostat=stat)
+      |                                                                        ^
+Warning: 'file' may be used uninitialized [-Wmaybe-uninitialized]
+File.f90:654:73:
+
+  654 |    open(unit=file,file=TRIM(RELAXED_FOLDER)//'/'//job_script,iostat=stat)
+      |                                                                         ^
+Warning: 'file' may be used uninitialized [-Wmaybe-uninitialized]
+File.f90:518:106:
+
+  518 |       OPEN(unit=file,file=TRIM(RELAXED_FOLDER)//TRIM(input_name(i))//'/OUTCAR', status='old', iostat=stat)
+      |                                                                                                          ^
+Warning: 'file' may be used uninitialized [-Wmaybe-uninitialized]
+File.f90:453:104:
+
+  453 |     OPEN(unit=file,file=TRIM(RELAXED_FOLDER)//TRIM(input_name)//'/output.nw', status='old', iostat=stat)
+      |                                                                                                        ^
+Warning: 'file' may be used uninitialized [-Wmaybe-uninitialized]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Atoms.f90
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Utilities.f90
+Utilities.f90:1373:19:
+
+ 1373 |     INTEGER :: I, J
+      |                   1
+Warning: Unused variable 'j' declared at (1) [-Wunused-variable]
+Utilities.f90:1253:32:
+
+ 1253 |     TYPE(cluster) :: tmp_cluster
+      |                                1
+Warning: Array 'tmp_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Utilities.f90:734:32:
+
+  734 |     CHARACTER(LEN=15)  :: lenStr
+      |                                1
+Warning: Unused variable 'lenstr' declared at (1) [-Wunused-variable]
+Utilities.f90:736:36:
+
+  736 |     TYPE(cluster) :: modi_ss_cluster
+      |                                    1
+Warning: Array 'modi_ss_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Utilities.f90:740:38:
+
+  740 |     REAL(KIND=DBL) :: posx, posy, posz
+      |                                      1
+Warning: Unused variable 'posz' declared at (1) [-Wunused-variable]
+Utilities.f90:614:33:
+
+  614 |     CHARACTER(LEN=200) :: message
+      |                                 1
+Warning: Unused variable 'message' declared at (1) [-Wunused-variable]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Grid.f90
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c ClusterRoutines.f90 
+ClusterRoutines.f90:490:13:
+
+  490 |             skipping FHI-aims calculation'
+      |             1
+Warning: Missing '&' in continued character constant at (1) [-Wampersand]
+ClusterRoutines.f90:1354:2:
+
+ 1354 |         METALLIC=.FALSE.
+      |         1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+ClusterRoutines.f90:1444:50:
+
+ 1444 |    INTEGER                      :: i,j,k,file_unit=99
+      |                                                  1
+Warning: Unused variable 'file_unit' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1447:44:
+
+ 1447 |    REAL(KIND=dp),DIMENSION(1:3) :: start_pos
+      |                                            1
+Warning: Unused variable 'start_pos' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1446:40:
+
+ 1446 |    REAL(KIND=dp)                :: sum_x,sum_y,sum_z,dist
+      |                                        1
+Warning: Unused variable 'sum_x' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1446:46:
+
+ 1446 |    REAL(KIND=dp)                :: sum_x,sum_y,sum_z,dist
+      |                                              1
+Warning: Unused variable 'sum_y' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1446:52:
+
+ 1446 |    REAL(KIND=dp)                :: sum_x,sum_y,sum_z,dist
+      |                                                    1
+Warning: Unused variable 'sum_z' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1350:26:
+
+ 1350 |     REAL(KIND=DP)  :: dist,min_dist, pairDist
+      |                          1
+Warning: Unused variable 'dist' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1350:35:
+
+ 1350 |     REAL(KIND=DP)  :: dist,min_dist, pairDist
+      |                                   1
+Warning: Unused variable 'min_dist' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1056:41:
+
+ 1056 |   LOGICAL :: foundDuplicate, hashkeyMatch
+      |                                         1
+Warning: Unused variable 'hashkeymatch' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1059:31:
+
+ 1059 |   CHARACTER(LEN=150) :: message
+      |                               1
+Warning: Unused variable 'message' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1055:26:
+
+ 1055 |   REAL(KIND=DBL) :: trace1, trace2
+      |                          1
+Warning: Unused variable 'trace1' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:1055:34:
+
+ 1055 |   REAL(KIND=DBL) :: trace1, trace2
+      |                                  1
+Warning: Unused variable 'trace2' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:762:61:
+
+  762 | LOGICAL FUNCTION clusterGeometricalCheck(in_cluster, log_step)
+      |                                                             1
+Warning: Unused dummy argument 'log_step' at (1) [-Wunused-dummy-argument]
+ClusterRoutines.f90:218:40:
+
+  218 |     CHARACTER(LEN=N_HASH_LEN) :: hashkey
+      |                                        1
+Warning: Unused variable 'hashkey' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:107:25:
+
+  107 |   REAL(KIND=DBL) :: newxc, newyc, newzc, xc1, yc1, zc1
+      |                         1
+Warning: Unused variable 'newxc' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:107:32:
+
+  107 |   REAL(KIND=DBL) :: newxc, newyc, newzc, xc1, yc1, zc1
+      |                                1
+Warning: Unused variable 'newyc' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:107:39:
+
+  107 |   REAL(KIND=DBL) :: newxc, newyc, newzc, xc1, yc1, zc1
+      |                                       1
+Warning: Unused variable 'newzc' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:107:44:
+
+  107 |   REAL(KIND=DBL) :: newxc, newyc, newzc, xc1, yc1, zc1
+      |                                            1
+Warning: Unused variable 'xc1' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:107:49:
+
+  107 |   REAL(KIND=DBL) :: newxc, newyc, newzc, xc1, yc1, zc1
+      |                                                 1
+Warning: Unused variable 'yc1' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:107:54:
+
+  107 |   REAL(KIND=DBL) :: newxc, newyc, newzc, xc1, yc1, zc1
+      |                                                      1
+Warning: Unused variable 'zc1' declared at (1) [-Wunused-variable]
+ClusterRoutines.f90:48:47:
+
+   48 |     TYPE(cluster), DIMENSION(1)  :: tmp_cluster
+      |                                               1
+Warning: Array 'tmp_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+ClusterRoutines.f90:35:60:
+
+   35 |     TYPE(cluster),DIMENSION(1)                :: tmp_cluster
+      |                                                            1
+Warning: Array 'tmp_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Moveclass.f90 
+Moveclass.f90:999:12:
+
+  999 |     cos_phi=COS(r(1))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1000:12:
+
+ 1000 |     sin_phi=SIN(r(1))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1001:12:
+
+ 1001 |     cos_eta=COS(r(2))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1002:12:
+
+ 1002 |     sin_eta=SIN(r(2))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1005:17:
+
+ 1005 |         x_old  = in_cluster%atoms(i)%xc
+      |                 1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1006:17:
+
+ 1006 |         y_old  = in_cluster%atoms(i)%yc
+      |                 1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1007:17:
+
+ 1007 |         z_old  = in_cluster%atoms(i)%zc
+      |                 1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1014:12:
+
+ 1014 |     cos_phi=COS(r(3))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1015:12:
+
+ 1015 |     sin_phi=SIN(r(3))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1016:12:
+
+ 1016 |     cos_eta=COS(r(4))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1017:12:
+
+ 1017 |     sin_eta=SIN(r(4))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1020:17:
+
+ 1020 |         x_old  = in_cluster%atoms(i)%xc
+      |                 1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1021:17:
+
+ 1021 |         y_old  = in_cluster%atoms(i)%yc
+      |                 1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1022:17:
+
+ 1022 |         z_old  = in_cluster%atoms(i)%zc
+      |                 1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1029:13:
+
+ 1029 |     z_min =  R_MAX_CLUSTER_BOUNDARY(3)
+      |             1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1030:12:
+
+ 1030 |     z_max = -R_MAX_CLUSTER_BOUNDARY(3)
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1036:13:
+
+ 1036 |     xy_old = z_min + ((0.1 + 0.8*r(5))*(z_max-z_min))
+      |             1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:929:12:
+
+  929 |     cos_phi=COS(twoPI*r(1))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:930:12:
+
+  930 |     sin_phi=SIN(twoPI*r(1))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:931:12:
+
+  931 |     cos_eta=COS(twoPI*r(2))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:932:12:
+
+  932 |     sin_eta=SIN(twoPI*r(2))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:933:12:
+
+  933 |     cos_psi=COS(twoPI*r(3))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:934:12:
+
+  934 |     sin_psi=SIN(twoPI*r(3))
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:937:17:
+
+  937 |         x_old  = in_cluster%atoms(i)%xc
+      |                 1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:938:17:
+
+  938 |         y_old  = in_cluster%atoms(i)%yc
+      |                 1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:939:17:
+
+  939 |         z_old  = in_cluster%atoms(i)%zc
+      |                 1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:947:13:
+
+  947 |     z_min =  R_MAX_CLUSTER_BOUNDARY(3)
+      |             1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:948:12:
+
+  948 |     z_max = -R_MAX_CLUSTER_BOUNDARY(3)
+      |            1
+Warning: Possible change of value in conversion from REAL(8) to REAL(4) at (1) [-Wconversion]
+Moveclass.f90:1914:31:
+
+ 1914 |     INTEGER :: i,j,k,M_ATOMS,p1,i0,nm,nr
+      |                               1
+Warning: Unused variable 'p1' declared at (1) [-Wunused-variable]
+Moveclass.f90:1913:30:
+
+ 1913 |     REAL(KIND=DBL) :: r_random=0.
+      |                              1
+Warning: Unused variable 'r_random' declared at (1) [-Wunused-variable]
+Moveclass.f90:1800:30:
+
+ 1800 |     REAL(KIND=DBL) :: r_random=0.
+      |                              1
+Warning: Unused variable 'r_random' declared at (1) [-Wunused-variable]
+Moveclass.f90:918:19:
+
+  918 |     INTEGER :: i, j
+      |                   1
+Warning: Unused variable 'j' declared at (1) [-Wunused-variable]
+Moveclass.f90:615:30:
+
+  615 |   TYPE(cluster) :: out_cluster
+      |                              1
+Warning: Array 'out_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Moveclass.f90:563:32:
+
+  563 |     TYPE(cluster) :: out_cluster
+      |                                1
+Warning: Array 'out_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Moveclass.f90:416:32:
+
+  416 |     TYPE(cluster) :: out_cluster
+      |                                1
+Warning: Array 'out_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Moveclass.f90:266:74:
+
+  266 |     TYPE(cluster) :: temp1Cluster, temp2Cluster, crossProduct, cluster1rot, cluster2rot
+      |                                                                          1
+Warning: Array 'cluster1rot' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Moveclass.f90:266:87:
+
+  266 |     TYPE(cluster) :: temp1Cluster, temp2Cluster, crossProduct, cluster1rot, cluster2rot
+      |                                                                                       1
+Warning: Array 'cluster2rot' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Moveclass.f90:266:61:
+
+  266 |     TYPE(cluster) :: temp1Cluster, temp2Cluster, crossProduct, cluster1rot, cluster2rot
+      |                                                             1
+Warning: Array 'crossproduct' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Moveclass.f90:266:33:
+
+  266 |     TYPE(cluster) :: temp1Cluster, temp2Cluster, crossProduct, cluster1rot, cluster2rot
+      |                                 1
+Warning: Array 'temp1cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Moveclass.f90:266:47:
+
+  266 |     TYPE(cluster) :: temp1Cluster, temp2Cluster, crossProduct, cluster1rot, cluster2rot
+      |                                               1
+Warning: Array 'temp2cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Moveclass.f90:151:32:
+
+  151 |     TYPE(cluster) :: out_cluster
+      |                                1
+Warning: Array 'out_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Moveclass.f90:122:32:
+
+  122 |     TYPE(cluster) :: out_cluster
+      |                                1
+Warning: Array 'out_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Environment.f90 
+Environment.f90:1027:36:
+
+ 1027 |                                    yet supported for JOB_TYPE = 1'
+      |                                    1
+Warning: Missing '&' in continued character constant at (1) [-Wampersand]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Population.f90 
+Population.f90:564:33:
+
+  564 |     TYPE(cluster) :: temp_cluster
+      |                                 1
+Warning: Array 'temp_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Population.f90:476:30:
+
+  476 |   TYPE(cluster) :: tempCluster
+      |                              1
+Warning: Array 'tempcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Population.f90:396:30:
+
+  396 |   TYPE(cluster) :: tempCluster
+      |                              1
+Warning: Array 'tempcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Population.f90:338:25:
+
+  338 |     TYPE(cluster) :: temp
+      |                         1
+Warning: Unused variable 'temp' declared at (1) [-Wunused-variable]
+Population.f90:287:25:
+
+  287 |     TYPE(cluster) :: temp
+      |                         1
+Warning: Array 'temp' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Population.f90:177:18:
+
+  177 |     INTEGER :: i,j,k
+      |                  1
+Warning: Unused variable 'j' declared at (1) [-Wunused-variable]
+Population.f90:177:20:
+
+  177 |     INTEGER :: i,j,k
+      |                    1
+Warning: Unused variable 'k' declared at (1) [-Wunused-variable]
+Population.f90:176:37:
+
+  176 |     REAL(KIND=DBL), DIMENSION(3) :: r   !Random number 3-D array
+      |                                     1
+Warning: Unused variable 'r' declared at (1) [-Wunused-variable]
+Population.f90:41:29:
+
+   41 |   TYPE(cluster) :: newCluster
+      |                             1
+Warning: Array 'newcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c MonteCarlo.f90 
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Master.f90 
+Master.f90:409:39:
+
+  409 | SUBROUTINE shiftAtomOrder(inout_cluster,in_from,in_to)
+      |                                       1
+Warning: Unused dummy argument 'inout_cluster' at (1) [-Wunused-dummy-argument]
+Master.f90:257:36:
+
+  257 | SUBROUTINE correctCluster(in_cluster,inout_cluster)
+      |                                    1
+Warning: Unused dummy argument 'in_cluster' at (1) [-Wunused-dummy-argument]
+Master.f90:257:50:
+
+  257 | SUBROUTINE correctCluster(in_cluster,inout_cluster)
+      |                                                  1
+Warning: Unused dummy argument 'inout_cluster' at (1) [-Wunused-dummy-argument]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c BasinHopping.f90 
+BasinHopping.f90:29:58:
+
+   29 |     TYPE(cluster),DIMENSION(1) :: cluster_old, cluster_new
+      |                                                          1
+Warning: Array 'cluster_new' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+BasinHopping.f90:29:45:
+
+   29 |     TYPE(cluster),DIMENSION(1) :: cluster_old, cluster_new
+      |                                             1
+Warning: Array 'cluster_old' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+BasinHopping.f90:36:31:
+
+   36 |     REAL(KIND=DBL) :: kT, gnorm
+      |                               1
+Warning: Unused variable 'gnorm' declared at (1) [-Wunused-variable]
+BasinHopping.f90:24:47:
+
+   24 |     INTEGER :: step=1, counter=0, counter1=0, i
+      |                                               1
+Warning: Unused variable 'i' declared at (1) [-Wunused-variable]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Annealing.f90 
+Annealing.f90:21:58:
+
+   21 |     TYPE(cluster),DIMENSION(1) :: cluster_old, cluster_new
+      |                                                          1
+Warning: Array 'cluster_new' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Annealing.f90:21:45:
+
+   21 |     TYPE(cluster),DIMENSION(1) :: cluster_old, cluster_new
+      |                                             1
+Warning: Array 'cluster_old' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Thresholds.f90 
+Thresholds.f90:22:58:
+
+   22 |     TYPE(cluster),DIMENSION(1) :: cluster_old, cluster_new
+      |                                                          1
+Warning: Array 'cluster_new' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Thresholds.f90:22:45:
+
+   22 |     TYPE(cluster),DIMENSION(1) :: cluster_old, cluster_new
+      |                                             1
+Warning: Array 'cluster_old' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c RdfRoutines.f90 
+RdfRoutines.f90:188:16:
+
+  187 |     DO nr=0,N_REGIONS
+      |                     2
+  188 |       out_r_occ(nr)=ZERO
+      |                1
+Warning: Array reference at (1) out of bounds (0 < 1) in loop beginning at (2)
+RdfRoutines.f90:205:16:
+
+  204 |     DO nr=0,N_REGIONS
+      |                     2
+  205 |       out_r_occ(nr)=A*out_r_occ(nr)
+      |                1
+Warning: Array reference at (1) out of bounds (0 < 1) in loop beginning at (2)
+RdfRoutines.f90:205:32:
+
+  204 |     DO nr=0,N_REGIONS
+      |                     2           
+  205 |       out_r_occ(nr)=A*out_r_occ(nr)
+      |                                1
+Warning: Array reference at (1) out of bounds (0 < 1) in loop beginning at (2)
+RdfRoutines.f90:29:33:
+
+   29 |     TYPE(cluster)  :: cluster_rdf
+      |                                 1
+Warning: Array 'cluster_rdf' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c GeneticAlgorithm.f90 
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c ProductionRun.f90 
+ProductionRun.f90:148:46:
+
+  148 |     TYPE(cluster),DIMENSION(1) :: cluster_eval
+      |                                              1
+Warning: Array 'cluster_eval' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+ProductionRun.f90:149:33:
+
+  149 |     TYPE(cluster) :: cluster_temp
+      |                                 1
+Warning: Array 'cluster_temp' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+ProductionRun.f90:70:44:
+
+   70 |     TYPE(cluster) :: parent1, parent2, child
+      |                                            1
+Warning: Array 'child' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using -frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+ProductionRun.f90:70:28:
+
+   70 |     TYPE(cluster) :: parent1, parent2, child
+      |                            1
+Warning: Array 'parent1' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+ProductionRun.f90:70:37:
+
+   70 |     TYPE(cluster) :: parent1, parent2, child
+      |                                     1
+Warning: Array 'parent2' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c ScanBox.f90 
+ScanBox.f90:23:58:
+
+   23 |     TYPE(cluster),DIMENSION(1) :: cluster_old, cluster_new
+      |                                                          1
+Warning: Array 'cluster_new' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+ScanBox.f90:23:45:
+
+   23 |     TYPE(cluster),DIMENSION(1) :: cluster_old, cluster_new
+      |                                             1
+Warning: Array 'cluster_old' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+ScanBox.f90:25:33:
+
+   25 |     CHARACTER(LEN=60) :: filename=''
+      |                                 1
+Warning: Unused variable 'filename' declared at (1) [-Wunused-variable]
+ScanBox.f90:24:33:
+
+   24 |     CHARACTER(LEN=100) :: message=''
+      |                                 1
+Warning: Unused variable 'message' declared at (1) [-Wunused-variable]
+ScanBox.f90:19:45:
+
+   19 |     INTEGER :: step=1, counter=0, n_exchanges
+      |                                             1
+Warning: Unused variable 'n_exchanges' declared at (1) [-Wunused-variable]
+ScanBox.f90:21:30:
+
+   21 |     REAL(KIND=DBL) :: r_random=0., diff=0., original_stepsize=0.
+      |                              1
+Warning: Unused variable 'r_random' declared at (1) [-Wunused-variable]
+ScanBox.f90:28:30:
+
+   28 |     REAL(KIND=DBL) :: kT, zero=0.0_DP, gnorm
+      |                              1
+Warning: Unused variable 'zero' declared at (1) [-Wunused-variable]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c SolidSolution.f90 
+SolidSolution.f90:317:64:
+
+  317 |     TYPE(cluster),DIMENSION(1) :: cluster_old(1), cluster_new(1)
+      |                                                                1
+Warning: Array 'cluster_new' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+SolidSolution.f90:317:48:
+
+  317 |     TYPE(cluster),DIMENSION(1) :: cluster_old(1), cluster_new(1)
+      |                                                1
+Warning: Array 'cluster_old' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+SolidSolution.f90:319:33:
+
+  319 |     CHARACTER(LEN=60) :: filename=''
+      |                                 1
+Warning: Unused variable 'filename' declared at (1) [-Wunused-variable]
+SolidSolution.f90:315:30:
+
+  315 |     REAL(KIND=DBL) :: r_random=0., diff=0.
+      |                              1
+Warning: Unused variable 'r_random' declared at (1) [-Wunused-variable]
+SolidSolution.f90:136:61:
+
+  136 |     INTEGER :: in_error=1, in_unit=26, countHashkeys, lineCnt
+      |                                                             1
+Warning: Unused variable 'linecnt' declared at (1) [-Wunused-variable]
+SolidSolution.f90:103:30:
+
+  103 |     TYPE(cluster) :: ssCluster
+      |                              1
+Warning: Array 'sscluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c RefineSprings.f90 
+RefineSprings.f90:25:31:
+
+   25 |     TYPE(cluster):: new_cluster
+      |                               1
+Warning: Array 'new_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+gfortran -g -C -fbounds-check -Wall -fbacktrace -finit-real=nan  -c Testing.f90
+Testing.f90:687:29:
+
+  687 |     TYPE(cluster) :: oCluster
+      |                             1
+Warning: Array 'ocluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:661:29:
+
+  661 |     TYPE(cluster) :: oCluster
+      |                             1
+Warning: Array 'ocluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:568:33:
+
+  568 |     TYPE(cluster) :: test_cluster
+      |                                 1
+Warning: Array 'test_cluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:547:32:
+
+  547 |     TYPE(cluster) :: tempCluster
+      |                                1
+Warning: Array 'tempcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:529:43:
+
+  529 |     TYPE(cluster), DIMENSION(1) :: clusters
+      |                                           1
+Warning: Array 'clusters' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:512:32:
+
+  512 |     TYPE(cluster) :: tempCluster
+      |                                1
+Warning: Array 'tempcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:490:32:
+
+  490 |     TYPE(cluster) :: tempCluster
+      |                                1
+Warning: Array 'tempcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:449:33:
+
+  449 |     TYPE(cluster) :: tempCluster1, tempCluster2
+      |                                 1
+Warning: Array 'tempcluster1' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:449:47:
+
+  449 |     TYPE(cluster) :: tempCluster1, tempCluster2
+      |                                               1
+Warning: Array 'tempcluster2' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:418:32:
+
+  418 |     TYPE(cluster) :: tempCluster
+      |                                1
+Warning: Array 'tempcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:395:32:
+
+  395 |     TYPE(cluster) :: tempCluster
+      |                                1
+Warning: Array 'tempcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:373:33:
+
+  373 |     TYPE(cluster) :: tempCluster1, tempCluster2
+      |                                 1
+Warning: Array 'tempcluster1' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:373:47:
+
+  373 |     TYPE(cluster) :: tempCluster1, tempCluster2
+      |                                               1
+Warning: Array 'tempcluster2' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:349:59:
+
+  349 |     TYPE(cluster) :: tempCluster1, tempCluster2, newCluster
+      |                                                           1
+Warning: Array 'newcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:349:33:
+
+  349 |     TYPE(cluster) :: tempCluster1, tempCluster2, newCluster
+      |                                 1
+Warning: Array 'tempcluster1' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:349:47:
+
+  349 |     TYPE(cluster) :: tempCluster1, tempCluster2, newCluster
+      |                                               1
+Warning: Array 'tempcluster2' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:332:32:
+
+  332 |     TYPE(cluster) :: tempCluster
+      |                                1
+Warning: Array 'tempcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:194:33:
+
+  194 |     TYPE(cluster) :: tempCluster1, tempCLuster2
+      |                                 1
+Warning: Array 'tempcluster1' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:194:47:
+
+  194 |     TYPE(cluster) :: tempCluster1, tempCLuster2
+      |                                               1
+Warning: Array 'tempcluster2' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]
+Testing.f90:155:45:
+
+  155 |     TYPE(cluster), DIMENSION(100) :: clusters
+      |                                             1
+Warning: Unused variable 'clusters' declared at (1) [-Wunused-variable]
+Testing.f90:160:40:
+
+  160 |     CHARACTER(LEN=N_HASH_LEN) :: hashKey
+      |                                        1
+Warning: Unused variable 'hashkey' declared at (1) [-Wunused-variable]
+Testing.f90:159:31:
+
+  159 |     REAL(KIND=DP) :: hashRadius
+      |                               1
+Warning: Unused variable 'hashradius' declared at (1) [-Wunused-variable]
+Testing.f90:156:26:
+
+  156 |     INTEGER :: filesCnt, i, j
+      |                          1
+Warning: Unused variable 'i' declared at (1) [-Wunused-variable]
+Testing.f90:156:29:
+
+  156 |     INTEGER :: filesCnt, i, j
+      |                             1
+Warning: Unused variable 'j' declared at (1) [-Wunused-variable]
+Testing.f90:158:32:
+
+  158 |     TYPE(cluster) :: tempCluster
+      |                                1
+Warning: Unused variable 'tempcluster' declared at (1) [-Wunused-variable]
+Testing.f90:121:16:
+
+  121 |     INTEGER :: i, filesCnt
+      |                1
+Warning: Unused variable 'i' declared at (1) [-Wunused-variable]
+Testing.f90:124:19:
+
+  124 |     INTEGER :: ierr
+      |                   1
+Warning: Unused variable 'ierr' declared at (1) [-Wunused-variable]
+Testing.f90:123:32:
+
+  123 |     TYPE(cluster) :: tempCluster
+      |                                1
+Warning: Unused variable 'tempcluster' declared at (1) [-Wunused-variable]
+Testing.f90:78:32:
+
+   78 |     TYPE(cluster) :: tempCluster
+      |                                1
+Warning: Array 'tempcluster' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. This makes the procedure unsafe when called recursively, or concurrently from multiple threads. Consider using '-frecursive', or increase the '-fmax-stack-var-size=' limit, or change the code to use an ALLOCATABLE array. [-Wsurprising]

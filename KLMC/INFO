@@ -1,0 +1,106 @@
+ SMW: Originally copied SCOTT_original/* into dropbox (SCOTT_version) for Matt
+ MATT_version_1 is these files updated by him (and me since the original uploading to dropbox)
+ SCOTT_version is my files updated by me since the original uploading to dropbox
+
+ Changes made to both versions. 
+ Therefore SMW can diff ".. and SCOTT_Version" to find out SMW changes
+ and diff "MATT_version_1 and SCOTT_version" to find out Matt's changes to KLMC (../*)
+
+SMW: 03 Sept 13
+ update File.f90 for Ilker (fixed definition of original location of images, created parameter R_MIRROR_Zx2)
+ update Basinhopping.f90 to compute N_EXTRA_ATOMS if L_IMAGE_ATOMS=.TRUE.
+ update Environment to prevent stop if R_MIRROR_Z/=0.0
+ beware comments stating R_MIRROR_Z should = 0.0 as constriants in GULP required Cartesian coords (KLMC needs value of c!)
+ update Config.f90 to include new parameter R_MIRROR_ZF
+ update Environment.f90 to readin c as part of MIRROR_Z and compute R_MIRROR_ZF
+
+SMW: 04 Sept 13
+ update Master.f90 to compute N_EXTRA_ATOMS by default rather than later in other routines if L_IMAGE_ATOMS=.TRUE.
+ update Basinhopping.f90 change back (i.e. remove compute N_EXTRA_ATOMS) - see comment on Master.f90 above
+ update ProductionRun.f90 to remove compute N_EXTRA_ATOMS - see comment on Master.f90 above
+ update ScanBox.f90 to remove compute N_EXTRA_ATOMS - see comment on Master.f90 above
+ update Environment.f90 to report value of N_EXTRA_ATOMS and R_MIRROR_ZF by default
+ update File.f90 to use correct numbering for shells in GULP constrians (which updates pointers when re-arranging atoms)
+
+SMW: 06 Sept 13
+ update RdfRoutines.f90 (GaussianFn) to include comments on integration
+ update RdfRoutines.f90 (smearFi, GaussianFn) to use in_sig to increase efficiency, and change smearFi to smear_F
+
+SMW: 07 Sept 13
+ update Environment.f90 to redefine user input sigma used in Gaussian to be variance
+ update Config.f90 to include expanded RDF options
+ update Environment.f90 to print out all options for RDF subroutine
+ update Config.f90 File.f90 RdfRoutines.f90 change freq and nfreq (int) to gr
+ update Unitcell.f90 to include and use function volume
+
+SMW: 09 Sept 13
+ update Environment.f90 to make file_list allocatable
+
+SMW: 15 Sept 13
+ update Environment.f90 (restartdata) so output better formatted
+ update ClusterRoutines.f90 (relaxAtoms) so output better formatted
+ update Config.f90 Environment.f90 to include new logical L_COMPUTE_OCC
+ update ProductionRun.f90 to include option if L_COMPUTE_OCC=.TRUE.
+ update UnitCell.f90 (FIND_NN) to include extra parameter in_r0(3)
+ update RdfRoutines.f90 to include subroutine computeOcc
+
+SMW: 16 Sept 13
+ update Makefile to link RdfRoutines.o with ProductionRun.f90
+
+SMW:    Sept 13
+ Upload MATT_version_1 into dropbox for MRF
+
+MRF: 24 Sept 13
+ Merged changes since 3 Sept 13 into version stored in dropbox and MacPro.
+
+MRF: 24 Sept - 24 Nov 13
+ Changes made, but not listed here
+ One crucial change made by SMW and MRF: evaluate() now expects an array!! of candidates
+ so that we can batch candidates for evaluation - changes made for GA, but in a modular way so changes made throughout!
+ e.g. single candidate (walker) is now the 1st element of an array of size 1
+      getEnergy() still expects one element (candidate) and NOT the array
+      likewise for: initialiseCluster() updateBestSet() notValidCluster() removeClusterFiles() removeArcFiles() 
+                    restartWalker() runMonteCarlo() writeWalker() randomiseCluster() etc
+ update ClusterRoutines.f90 (evaluate) to handle an array - will evaluate all candidates passed to it
+ update ClusterRoutines.f90 (evaluate_single) new subroutine to allow a particular candidate to be evaluated via call to evaluate
+ update ClusterRoutines.f90 (re_evaluate) new subroutine for evaluating some (not all) candidates via call to evaluate
+
+ MATT_version_2 is these updated files 
+ MATT_version_3 is these updated files plus new changes by SMW after 24 Nov 13
+
+ Therefore SMW can diff "MATT_version_1 and MATT_version_2" to find out changes made by MATT
+ and diff "MATT_version_2 and MATT_version_3" to see SMW new changes (as listed below) to latest version
+
+1/7/2014 BRAGG RIP
+
+Have created folder KLMC_VERSION_1.0 with what we (SMW and MRF) believe to be the most recent KLMC files, which are from 
+Dropbox/KLMC/KLMC-merged-1/KLMC-latest
+
+SMW: 01 July 14
+ update ClusterRoutines.f90 (relaxAtoms) as filename(1) no longer initialised unless using VASP
+ update BasinHopping.f90 Environment.f90 so that OUTPUT_LEVEL 1-5 => more messages and >5 => keep all 3rd party I/O
+ update SCOTT.f90 print out MASTER cluster if DEBUG_LEVEL high rather than OUTPUT_LEVEL
+
+SMW: 03 July 14
+ update Config.f90 BasinHopping.f90 Montecarlo.f90 Defined and used dZERO
+ update File.f90 so that headers are written for "metropolis" and "energy" log-files
+ update Montecarlo.f90 and File.f90 so that "metropolis" log-file meaningful
+
+SMW: 05 Sept 14
+ update File.f90 If Debugging, then print out MASTER_ATOMS ASAP
+ update Master.f90 Enable MASTER_ATOMS to contain either Cartesian or fractional coordinates
+                   Still need to address N_PBC = 1 or 2 !!!
+
+SMW: 11 Sept 14
+ update Format.f90 File.f90 Created subroutine printLine and findChannel, then used in peek
+
+SMW: 22 Oct 14
+ BUG found in Rdfrountines.f90 In Config.f90 defined MAX_RDF_DIST=5000 and MAX_RDF_UDIST=100000, 
+                               former used to allocate and latter used to check allocation okay
+ update Config.f90 such that MAX_RDF_UDIST defines array size of rdist and gr 
+
+SMW: 23 Oct 14
+ created Utilities.f90 to house general subroutines (in this case debugBanner, which replaces CALL printBanner
+                       and avoids adding a check for DEBUG_LEVEL in main routines)
+ update File.f90 In readARC subroutine, have replaced debug logical and print statements with DEBUG_LEVEL and peek
+                 In peek subroutine, have changed formating of coords

@@ -1,0 +1,282 @@
+##################################################################
+#  JOB_TYPE         
+#   1 - BASIN HOPPING OR RANDOMISED QUENCHING
+#   2 - GENETIC ALGORITHM FOR CLUSTERS
+#   3 - SOLID SOLUTIONS - CHARGE ORDERING
+#   4 - REFINEMENT OF SPRING CONSTANTS
+#   5 - SCAN CLUSTERS OVER SURFACE
+#   6 - SIMULATED ANNEALING MONTE CARLO (METROPOLIS)
+#   7 - ENERGY LID
+#   8 - FOR TESTING (TEMPORAL)
+#   9 - HYBRID GENETIC PRODUCTION RUN
+#
+#  N_DEF_ENERGY: GULP, AIMS, VASP, NW, DMOL, NONE
+##################################################################
+
+JOB_TYPE:2
+SEED: 0
+DEBUG:0
+OUTPUT:10
+N_DEF_ENERGY:GULP
+RUN_REMOTE:FALSE
+RUN_BATCH:.FALSE.
+
+##################################################################
+#  General Variables
+##################################################################
+# Cluster comparison parameters:
+#
+#   N_ATTEMPTS_RNDM_STRUCT - number of attempts to generate a random structure (cluster)
+#   RNDM_INI_BY_ATOM - when generating a random structure atoms are added one by one and checked 
+#   CHECK_ZERO_COORDINATION - flag to turn on the check for zero-coordinated atoms
+#		during the validation of a cluster
+#	USE_VARIABLE_RAD_COLL - 
+#	COLL_COEF_DIFF - 
+#	COLL_COEF_SAME - 
+#   COLLAPSE - 
+#	CHECK_FRAGMENTATION - flag to turn on the check for fragmentation during
+#		the validation of a cluster
+#   USE_VARIABLE_RAD_FRAG - 
+#   FRAG_COEF - 
+#	FRAGMENT -
+#   DSPECIES -
+#
+#   L_RECENTRE_AFTER_EVAL - 
+#   R_ENERGY_TOLERANCE - Energy tolerance for identical clusters
+#   L_CMPR_PMOI - A flag to turn on the comparison using principal moments of inertia of identical clusters
+#   R_PMOI_TOLERANCE - Tolerance for principal moments of inertia of identical clusters
+#   MUTATE_SWAP_PROP -     A proportion of mutations carried out by swaping atoms
+#   MUTATE_EXPAND_PROP -   A proportion of mutations carried out by expansion of the cluster
+#   MUTATE_CONTRACT_PROP - A proportion of mutations carried out by contraction of the cluster
+#                          The rest is carried out by moving atoms
+#   MUTATE_EXPAND_COEF - An expension coefficient
+#   MUTATE_CONTRACT_COEF - A contraction coefficient
+#   DIM_TOLERANCE - 
+##################################################################
+
+DIMENSIONS:0
+POPULATION:30
+ENFORCE_CONTAINER:FALSE
+R_MIN_CLUSTER_ENERGY:-100000.0
+R_REFINE_THRESHOLD_1:-10.0
+R_BEST_CUTOFF:-10.0
+NUMBER_BEST_CLUSTERS:20
+
+N_ATTEMPTS_RNDM_STRUCT:10000000
+RNDM_INI_BY_ATOM:.TRUE.
+CHECK_ZERO_COORDINATION:.TRUE.
+USE_VARIABLE_RAD_COLL:.TRUE.
+COLL_COEF_DIFF:0.6
+COLL_COEF_SAME:0.7
+COLLAPSE:1.5
+CHECK_FRAGMENTATION:.TRUE.
+USE_VARIABLE_RAD_FRAG:.TRUE.
+FRAG_COEF:1.25
+FRAGMENT:3.0
+DSPECIES:1.5
+
+L_RECENTRE_AFTER_EVAL:.TRUE.
+
+R_ENERGY_TOLERANCE:0.0005
+L_CMPR_PMOI:.TRUE.
+R_PMOI_TOLERANCE:0.1
+
+MUTATE_SWAP_PROP:0.1
+MUTATE_EXPAND_PROP:0.1
+MUTATE_CONTRACT_PROP:0.1
+MUTATE_EXPAND_COEF:1.2
+MUTATE_CONTRACT_COEF:0.8
+DIM_TOLERANCE:0.8
+
+##################################################################
+# Data mining in Mode 0 Configuration (JOB_TYPE 0)
+##################################################################
+#  DM_FLAG - flag to switch on the data mining
+#  DM_REPLACE_ATOMS - Which atoms replace by which atoms: eg. 'Mg-Si;O-F'
+#  DM_NOEVAL_OUT_FORMAT - output format for N_DEF_ENERGY:NONE
+#		options: car, xyz
+#  DM_RECENTRE - flag to recentre a datamined cluster
+##################################################################
+
+DM_FLAG:.TRUE.
+DM_REPLACE_ATOMS:'Mg-Si'
+DM_NOEVAL_OUT_FORMAT:'xyz'
+DM_RECENTRE:.TRUE.
+
+##################################################################
+# Basin Hopping Configuration (JOB_TYPE 1)
+##################################################################
+
+COUNTER:0
+N_MAX_BH_STEPS:10
+N_BH_DYNAMIC_THRESHOLD:10000000
+N_BH_MOVECLASS_THRESHOLD:1000000
+R_TEMPERATURE:300
+R_BH_STEPSIZE:1.8
+BH_METHOD:RELAX  
+#BH_ACCEPT:QUENCH
+BH_ACCEPT:METROPOLIS
+
+##################################################################
+# Genetic Algorithm Configuration (JOB_TYPE 2)
+##################################################################
+# GA_GEN_STATS: Generates statistics of the GA run
+# GA_MUTATION_RATIO: a ratio to describe how many crossover products should mutate
+# GA_MUT_SELFCROSS_RATIO: a ration to perform selfcrossover mutation.
+# GA_STEPSIZE: an atom displacement stepsize during mutation 
+# GA_CROSS_CHECK: check the validity of a cluster after a crossover
+# GA_CROSS_ATTEMPTS: a maximum number of crossover attempts
+# GA_CROSS_1_2D_RATIO: if two clusters are 1 or 2 D, use chromosomalCrossover_1D_2D instead 
+#                      with this ratio.
+# GA_SAVE_POP_FREQ: Frequency to save pop during GA (0 - off)
+# GA_ENFORCE_MIN_SIZE: Minimum initial unique GA population as percentage of desired population
+# GA_INI_POP_ATTEMPTS: number of attempts to fully generate unique initial population
+##################################################################
+
+N_GENERATIONS:100
+N_TOURNAMENT_SIZE:10
+R_REINSERT_ELITES_RATIO:0.6
+R_POP_REPLACEMENT_RATIO:0.6
+R_MAX_CLUSTER_BOUNDARY:3.0
+GA_GEN_STATS:.TRUE.
+GA_MUTATION_RATIO:0.8
+GA_MUT_SELFCROSS_RATIO:0.2
+GA_STEPSIZE:1.8
+GA_CROSS_CHECK:.TRUE.
+GA_CROSS_ATTEMPTS:10000
+GA_CROSS_1_2D_RATIO:1.0
+GA_SAVE_POP_FREQ:1
+GA_SAVE_POP_OUT_FORMAT:'xyz'
+GA_ENFORCE_MIN_SIZE:0.1
+GA_INI_POP_ATTEMPTS:20
+
+##################################################################
+# Solid Solution Parameters (JOB_TYPE 3)
+##################################################################
+# ENERGY_ONLY - 
+# COMPUTE_RDF - 
+# RANDOM_START - 
+# SS_STATS - a flag to generate statistics after the run
+# SS_STATS_BACKUP - dump stats every SS_STATS_BACKUP steps
+# SS_IMPORT_LIB - a flag to import previous structures. L_USE_TOP_ANALYSIS
+#   must be turned on too!
+# SS_LIB_DIR - a path to a directory where structures from previous
+#   runs a kept
+# SS_DELETE_FAILED - a flag to delete cluster files of failed attempts
+# SS_KEEP_ONLY_LOW - a flag to keep only lowest energy structures
+# SS_SKIP_EVALUATION - a flag to switch off energy evaluation
+# SS_CHECK_GEOMETRY - a flag to check the geometry of clusters
+# SS_NO_FILES - a flag to switch off saving structures into files (works only with SS_SKIP_EVALUATION)
+##################################################################
+
+ENERGY_ONLY:.FALSE.
+COMPUTE_RDF:.FALSE.
+RANDOM_START:.FALSE.
+SS_STATS:.TRUE.
+SS_STATS_BACKUP:100
+SS_IMPORT_LIB:.TRUE.
+SS_LIB_DIR:'/Users/Tomas/Desktop/Previous/'
+SS_DELETE_FAILED:.TRUE.
+SS_KEEP_ONLY_LOW:.FALSE.
+SS_SKIP_EVALUATION:.TRUE.
+SS_CHECK_GEOMETRY:.TRUE.
+SS_NO_FILES:.TRUE.
+
+##################################################################
+# Hybrid Genetic Production Run (JOB_TYPE 9)
+##################################################################
+# HGA_POP - 
+# HGA_CROSS_ATTEMPTS - 
+# HGA_FILE1 - 
+# HGA_FILE2 - 
+##################################################################
+
+HGA_POP:100
+HGA_CROSS_ATTEMPTS:100
+HGA_FILE1:A3833
+HGA_FILE2:A3839
+
+##################################################################
+# Environment Configuration
+##################################################################
+
+GULP_MASTER_NAME:'Master.gin'
+WORKING_DIR:''
+RELAXED_FOLDER:'run/'
+#RESTART_FOLDER:'restart/'
+EXE_GULP_PATH:'/Users/Tomas/git/gulp-4.2/Src/gulp'
+
+##################################################################
+# DMOL Environment Configuration
+##################################################################
+# DMOL_VERSION- (Faraday:3.2, IB-server:6.1)
+# DMOL_MASTER_NAME - input file name
+# DMOL_EXE_PATH - full path to the executable
+# DMOL_TAR_OUTPUT - flag to tar and save all the output from dmol3 executions
+# DMOL_LICENCE_PATH - v.3.2. sourcing the the licence profile
+# DMOL_DATA_PATH - defines the path for the DMOL3_DATA environment variable
+# DMOL_PATH  - v.6.1. defines the path for the PATH environment variable
+# DMOL_LD_PATH - v.6.1. defines the path for the LD_LIBRARY_PATH environment variable
+# DMOL_ACCELRYS_PACKDIR - v.6.1. defines the path for the ACCELRYS_LIC_PACK_DIR environment variable
+# DMOL_SAVE_INITIAL_STRUCT - saves initial structure before DMOL3 optimisation
+##################################################################
+
+DMOL_VERSION:6.1
+DMOL_MASTER_NAME:'Master.dmol3'
+DMOL_EXE_PATH:'/usr/local/MaterialsStudio61/MaterialsStudio6.1/bin/dmol3.exe'
+DMOL_TAR_OUTPUT:.FALSE.
+DMOL_LICENCE_PATH:'/usr/local/accelrys/License_Pack/msi_lic_profile'
+DMOL_DATA_PATH:'/usr/local/MaterialsStudio61/MaterialsStudio6.1/share/Resources/Quantum/DMol3/'
+DMOL_PATH:'/usr/local/MaterialsStudio61/MaterialsStudio6.1/bin:/home/tomas/git/KLMC:/usr/local/sge6.2u5/bin/lx24-amd64:/opt/openmpi/gfortran/1.6.5/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/gamess'
+DMOL_LD_PATH:'/usr/local/MaterialsStudio61/MaterialsStudio6.1/lib:/usr/local/MaterialsStudio61/LicensePack/linux/lib'
+DMOL_ACCELRYS_PACKDIR:'/usr/local/MaterialsStudio61/LicensePack'
+DMOL_SAVE_INITIAL_STRUCT:.TRUE.
+
+#DMOL_VERSION:3.2
+#DMOL_MASTER_NAME:'Master.dmol3'
+#DMOL_EXE_PATH:'/usr/local/accelrys/DMol3/bin/dmol3.exe'
+#DMOL_TAR_OUTPUT:.FALSE.
+#DMOL_LICENCE_PATH:'/usr/local/accelrys/License_Pack/msi_lic_profile'
+#DMOL_DATA_PATH:'/usr/local/accelrys/Data/Resources/Quantum/DMol3/'
+#DMOL_LD_PATH:'/usr/local/MaterialsStudio61/MaterialsStudio6.1/lib:/usr/local/MaterialsStudio61/LicensePack/linux/lib'
+#DMOL_ACCELRYS_PACKDIR:'/usr/local/MaterialsStudio61/LicensePack'
+#DMOL_SAVE_INITIAL_STRUCT:.TRUE.
+
+##################################################################
+# Topological Analysis Configuration
+##################################################################
+# L_USE_TOP_ANALYSIS - flag to turn on topological analysis to check 
+#	for duplicates
+# HKG_PATH - the full path to the hkg.py script
+# C_HASHKEY_RADIUS - which radius should be used to identify edges.
+#	options: IR (ionic radius), CR (covalent radius)
+# HASHKEY_RADIUS_CONST - added constant to the distance criterion
+##################################################################
+
+L_USE_TOP_ANALYSIS:.TRUE.
+HKG_PATH:'/home/tomas/git/hkg/hkg.py'
+C_HASHKEY_RADIUS:IR
+HASHKEY_RADIUS_CONST:0.4
+
+##################################################################
+# Initial Random Population Configuration
+#
+# I_TYPE_PRESSURE:  1 - atoms on the corners of a cube
+#					2 - read from a file (data/pressureAtoms.xyz)
+##################################################################
+
+L_APPLY_PRESSURE:.FALSE.
+C_ATOM_PRESSURE:Ar
+I_TYPE_PRESSURE:2
+R_RADIUS_PRESSURE:3.0
+ATOMSFILE_PRESSURE:Sphere6
+
+##################################################################
+# The Grid Configuration
+##################################################################
+
+GRID_ON:.TRUE.
+GRID_NPOINTS_X:7
+GRID_NPOINTS_Y:7
+GRID_NPOINTS_Z:7
+GRID_RADIUS:1.5
