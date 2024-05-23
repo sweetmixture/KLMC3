@@ -1,0 +1,58 @@
+HDF5 "t2.h5" {
+GROUP "/" {
+   GROUP "Group1" {
+      ATTRIBUTE "klmc" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SCALAR
+         DATA {
+         (0): 97
+         }
+      }
+      GROUP "SubGroup1" {
+         ATTRIBUTE "task_id" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+            DATA {
+            (0): 71
+            }
+         }
+         DATASET "lvectors" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 3, 3 ) / ( 3, 3 ) }
+            DATA {
+            (0,0): 12.12, 0, 0.123,
+            (1,0): -0.34, 15.12, 0.31,
+            (2,0): 0.11, -0.52, 15.1251
+            }
+         }
+      }
+   }
+   GROUP "Group2" {
+      ATTRIBUTE "klmc" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SCALAR
+         DATA {
+         (0): 97
+         }
+      }
+      GROUP "SubGroup2" {
+         ATTRIBUTE "task_id" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+            DATA {
+            (0): 71
+            }
+         }
+         DATASET "lvectors" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 3, 3 ) / ( 3, 3 ) }
+            DATA {
+            (0,0): 12.12, 0, 0.123,
+            (1,0): -0.34, 15.12, 0.31,
+            (2,0): 0.11, -0.52, 15.1251
+            }
+         }
+      }
+   }
+}
+}

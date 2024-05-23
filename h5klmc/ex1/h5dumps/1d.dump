@@ -1,0 +1,11 @@
+HDF5 "1d.h5" {
+GROUP "/" {
+   DATASET "1D_Dataset" {
+      DATATYPE  H5T_STD_I32LE
+      DATASPACE  SIMPLE { ( 5 ) / ( 5 ) }
+      DATA {
+      (0): 1, 2, 3, 4, 5
+      }
+   }
+}
+}

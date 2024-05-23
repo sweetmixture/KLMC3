@@ -22,9 +22,7 @@ bool isInteger( const char* str ){
 }
 
 /* * *
-
 	functions in 'read_input.h'
-
 * * */
 
 // <int> pattern finder
@@ -61,8 +59,7 @@ void read_input_ipatternfinder(
 
 				// token NULL
 				if( token == NULL ){
-
-					// error message?
+					// supposed to print error message?
 					// dev tmp
 					// printf("ipattern expected following arg not found after: %s\n",pattern);
 					return;
@@ -71,7 +68,6 @@ void read_input_ipatternfinder(
 				else{
 					// token !<int>
 					if( !isInteger(token) ){
-
 						// dev tmp
 						// printf("ipattern expected following arg is not an integer: %s\n",pattern);
 						return;
@@ -143,3 +139,8 @@ void read_input_spatternfinder( FILE* fp, const char* pattern, char* ret ){
 
 	return;
 }
+
+
+/* * * * * *
+ KLMC Output Extractor? 23.05.2024 WKJEE
+ * * * * * */

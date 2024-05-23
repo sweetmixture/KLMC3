@@ -61,7 +61,7 @@ void set_TaskEnvelope(
 		strcat(mws->inputfile_path[0],"/");											// e.g. '/root/run/'
         strcat(mws->inputfile_path[0],mws->inputfile[0]);							// e.g. '/root/run/A123.gin'
 
-        // 2. set mws 'rundir_path'
+        // 2. set mws 'rundir_path': where klmc generated inputfiles are (on disk)
         memset(mws->rundir_path,0,sizeof(mws->rundir_path));
         strcpy(mws->rundir_path,mws->root);											// e.g. '/root/
 		strcat(mws->rundir_path,"/");												// e.g. '/root/

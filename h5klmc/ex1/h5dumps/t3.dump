@@ -1,0 +1,166 @@
+HDF5 "t2.h5" {
+GROUP "/" {
+   GROUP "Group1" {
+      ATTRIBUTE "klmc" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SCALAR
+         DATA {
+         (0): 97
+         }
+      }
+      GROUP "SubGroup1" {
+         ATTRIBUTE "task_id" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+            DATA {
+            (0): 71
+            }
+         }
+         DATASET "klmc_1dd1" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 3 ) / ( 3 ) }
+            DATA {
+            (0): 3.14, 15.92, 36.78
+            }
+         }
+         DATASET "klmc_1df1" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SIMPLE { ( 10 ) / ( 10 ) }
+            DATA {
+            (0): 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+            }
+         }
+         DATASET "klmc_1di1" {
+            DATATYPE  H5T_STD_I32LE
+            DATASPACE  SIMPLE { ( 5 ) / ( 5 ) }
+            DATA {
+            (0): 1, 2, 3, 4, 5
+            }
+         }
+         DATASET "klmc_d2d" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 4, 3 ) / ( 4, 3 ) }
+            DATA {
+            (0,0): 1, 2, 3,
+            (1,0): 4, 5, 6,
+            (2,0): 7, 8, 9,
+            (3,0): 11, 12, 13
+            }
+         }
+         DATASET "klmc_f2d" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SIMPLE { ( 2, 3 ) / ( 2, 3 ) }
+            DATA {
+            (0,0): 1, 2, 3,
+            (1,0): 4, 5, 6
+            }
+         }
+         DATASET "klmc_i2d" {
+            DATATYPE  H5T_STD_I32LE
+            DATASPACE  SIMPLE { ( 2, 3 ) / ( 2, 3 ) }
+            DATA {
+            (0,0): 1, 2, 3,
+            (1,0): 4, 5, 6
+            }
+         }
+         DATASET "lvectors" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 3, 3 ) / ( 3, 3 ) }
+            DATA {
+            (0,0): 12.12, 0, 0.123,
+            (1,0): -0.34, 15.12, 0.31,
+            (2,0): 0.11, -0.52, 15.1251
+            }
+         }
+         DATASET "taskid" {
+            DATATYPE  H5T_STD_I32LE
+            DATASPACE  SIMPLE { ( 1 ) / ( 1 ) }
+            DATA {
+            (0): 131
+            }
+         }
+      }
+   }
+   GROUP "Group2" {
+      ATTRIBUTE "klmc" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SCALAR
+         DATA {
+         (0): 97
+         }
+      }
+      GROUP "SubGroup2" {
+         ATTRIBUTE "task_id" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+            DATA {
+            (0): 71
+            }
+         }
+         DATASET "klmc_1dd1" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 3 ) / ( 3 ) }
+            DATA {
+            (0): 3.14, 15.92, 36.78
+            }
+         }
+         DATASET "klmc_1df1" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SIMPLE { ( 10 ) / ( 10 ) }
+            DATA {
+            (0): 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+            }
+         }
+         DATASET "klmc_1di1" {
+            DATATYPE  H5T_STD_I32LE
+            DATASPACE  SIMPLE { ( 5 ) / ( 5 ) }
+            DATA {
+            (0): 1, 2, 3, 4, 5
+            }
+         }
+         DATASET "klmc_d2d" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 4, 3 ) / ( 4, 3 ) }
+            DATA {
+            (0,0): 1, 2, 3,
+            (1,0): 4, 5, 6,
+            (2,0): 7, 8, 9,
+            (3,0): 11, 12, 13
+            }
+         }
+         DATASET "klmc_f2d" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SIMPLE { ( 2, 3 ) / ( 2, 3 ) }
+            DATA {
+            (0,0): 1, 2, 3,
+            (1,0): 4, 5, 6
+            }
+         }
+         DATASET "klmc_i2d" {
+            DATATYPE  H5T_STD_I32LE
+            DATASPACE  SIMPLE { ( 2, 3 ) / ( 2, 3 ) }
+            DATA {
+            (0,0): 1, 2, 3,
+            (1,0): 4, 5, 6
+            }
+         }
+         DATASET "lvectors" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 3, 3 ) / ( 3, 3 ) }
+            DATA {
+            (0,0): 12.12, 0, 0.123,
+            (1,0): -0.34, 15.12, 0.31,
+            (2,0): 0.11, -0.52, 15.1251
+            }
+         }
+         DATASET "taskid" {
+            DATATYPE  H5T_STD_I32LE
+            DATASPACE  SIMPLE { ( 1 ) / ( 1 ) }
+            DATA {
+            (0): 131
+            }
+         }
+      }
+   }
+}
+}

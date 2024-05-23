@@ -124,3 +124,15 @@
 
 		> @Error changing symmetry of unit cell (e.g., turning on - turning off - turning on ..) will crash the taskfarm
 
+
+  # * 22.05.24 - H5MD update ... see /ch5md
+
+	* HDF5 standard: using central hdf5 on ARCHER2 require module: 'cray-hdf5/1.12.2.1'
+
+		> https://docs.hdfgroup.org/hdf5/v1_14/v1_14_4/_intro_h_d_f5.html
+
+		> source: https://github.com/pdebuyl/ch5md : H5MD specification (reference)
+
+	* KLMC3 preparation
+
+		> /h5klmc/ex1/t3.c : source for custom hdf5 dset writer, supporing 1d 2d 3d; int float double
