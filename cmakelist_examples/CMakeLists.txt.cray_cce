@@ -50,6 +50,7 @@ set(SRC
         timer.c
         print_message.c
 		error.c
+		file.c
 )
 set(SRC_DEV ${CMAKE_SOURCE_DIR}/develop/unit_test.c)
 

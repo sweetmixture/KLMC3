@@ -28,7 +28,7 @@ bool error_taskfarm_filenotfound(
 	MPI_Comm_rank(*base_comm,&brank);
 
 	print_stderr( brank, ANSI_COLOR_MAGENTA "Error> " ANSI_COLOR_RESET );
-	print_stderr( brank, "It is likely that the taskfarm configuration file " ANSI_COLOR_CYAN "taskfarm.config" ANSI_COLOR_RESET " does not exist ...\n" );
+	print_stderr( brank, "There is no taskfarm configuration file " ANSI_COLOR_CYAN "taskfarm.config" ANSI_COLOR_RESET " does not exist ...\n" );
 	print_stderr( brank, "otherwise, in " ANSI_COLOR_RED __FILE__ " " ANSI_COLOR_RESET "function: " ANSI_COLOR_GREEN "bool " ANSI_COLOR_RESET "tf_get_taskfarm_configuration() -> debugging may be required\n" );
 
 	bret = false;
@@ -180,7 +180,7 @@ bool error_taskfarm_commsplit_nproc_check(
 	}
 
 	/* * *
-	 * cpu balence check
+	 * cpu balance check
 	 * * */
 	if( bsize % tfc->cpus_per_workgroup != 0 ){
 	
@@ -196,20 +196,20 @@ bool error_taskfarm_commsplit_nproc_check(
 }
 
 
-/* * * * *
- * utilities
- * * * * */
-
-bool error_file_exists(
-	const char* filename
-){
-	if( access(filename,F_OK) == 0 ){
-		return true;
-	}
-	else{
-		return false;
-	}	
-}
+///* * * * *
+// * utilities
+// * * * * */
+//
+//bool error_file_exists(
+//	const char* filename
+//){
+//	if( access(filename,F_OK) == 0 ){
+//		return true;
+//	}
+//	else{
+//		return false;
+//	}	
+//}
 
 
 

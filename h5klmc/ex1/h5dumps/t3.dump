@@ -1,4 +1,4 @@
-HDF5 "t2.h5" {
+HDF5 "t3.h5" {
 GROUP "/" {
    GROUP "Group1" {
       ATTRIBUTE "klmc" {

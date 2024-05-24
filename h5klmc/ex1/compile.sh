@@ -13,7 +13,7 @@ h5dump t2.h5 > t2.dump
 h5cc t3.c -o t3.x
 mv *.o obj
 ./t3.x
-h5dump t2.h5 > t3.dump
+h5dump t3.h5 > t3.dump
 
 h5cc 1d.c -o 1d.x
 mv *.o obj

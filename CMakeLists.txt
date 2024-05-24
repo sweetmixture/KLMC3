@@ -1,7 +1,7 @@
 #
 cmake_minimum_required(VERSION 3.11)
 project(
-	BaseTaskFarm
+	KLMC3
 	VERSION 1.0.0
 	LANGUAGES C Fortran)
 
@@ -68,6 +68,7 @@ set(SRC
         timer.c
         print_message.c
 		error.c
+		file.c
 )
 
 set(SRC_DEV
@@ -192,6 +193,7 @@ set(SRC
         timer.c
         print_message.c
 		error.c
+		file.c
 )
 set(SRC_DEV ${CMAKE_SOURCE_DIR}/develop/unit_test.c)
 

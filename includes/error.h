@@ -36,9 +36,9 @@ bool error_taskfarm_commsplit_nproc_check(
  * utilities
  * * */
 
-bool error_file_exists( 
-    const char* filename 
-);
+//bool error_file_exists( 
+//    const char* filename 
+//);
 
 
 #endif

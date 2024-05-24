@@ -20,6 +20,7 @@
 
 #include "error.h"
 #include "timer.h"
+#include "file.h"
 
 
 
@@ -529,7 +530,7 @@ void ready_input_call_workgroups_python(
 				/* 2. inputfile check */
 				for(int i=0;i<task.inputfile_count;i++){
 
-					taskres.inputfile_check = error_file_exists( task.inputfile_path[i] );
+					taskres.inputfile_check = file_exists( task.inputfile_path[i] );
 
 					if( taskres.inputfile_check ){
 						if( worker_rank == 0 ){

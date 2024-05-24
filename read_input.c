@@ -1,9 +1,9 @@
 /*
-        Author:         Woongkyu Jee / woong.jee.16@ucl.ac.uk
-        Affiliation:    University College London
-        Date:           2023.05.25 - 
+		Author:			Woongkyu Jee / woong.jee.16@ucl.ac.uk
+		Affiliation:	University College London
+		Date:			2023.05.25 - 
 
-        Description:
+		Description:
 */
 
 #include <stdio.h>
@@ -11,15 +11,62 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include <ctype.h>
+
 /* * *
-	only use in this source
+	Utilities 
 * * */
 
 bool isInteger( const char* str ){
 	char *endptr;
+	
+	while(isspace((unsigned char)*str)) str++; // skip heading whitespace
+	if(*str == '+' || *str == '-') str++; // allow optional leading signs
 	strtol(str,&endptr,10); // base '10' integer conversion
-	return *endptr == '\0'; // condition conversion success
+
+	return *endptr == '\0'; // condition conversion success, (i.e. if conversion is successful, enptr will be moved to the end, as '\0'
 }
+
+bool isFloat(const char* str){
+	char *endptr;
+	
+	while(isspace((unsigned char)*str)) str++; // skip heading whitespace
+	if(*str == '+' || *str == '-') str++; // allow optional leading signs
+	strtod(str, &endptr); // strtod will parse the number, including scientific notation
+	
+	return *str != '\0' && *endptr == '\0';
+}	
+
+bool convertToInteger(const char* str, int* outValue){
+	char* endptr;
+
+	while(isspace((unsigned char)*str)) str++;
+	if(*str == '+' || *str == '-') str++;
+
+	int value = (int)strtol(str,&endptr,10);
+
+	if(*str != '\0' && *endptr == '\0' ){
+		*outValue = value;
+		return true;
+	} else {
+		return false;
+	}
+}
+bool convertToFloat(const char* str, double* outValue){
+	char *endptr;
+
+	while(isspace((unsigned char)*str)) str++;
+	if(*str == '+' || *str == '-') str++;
+
+	double value = strtod(str, &endptr);
+
+	if(*str != '\0' && *endptr == '\0'){
+		*outValue = value;
+		return true;
+	}else{
+		return false;
+	}
+}	
 
 /* * *
 	functions in 'read_input.h'

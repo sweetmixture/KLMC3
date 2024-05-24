@@ -11,17 +11,18 @@
 #define __TASKFARM_READ_INPUT
 
 #include <stdio.h>
+#include <stdbool.h>
 
-void read_input_ipatternfinder(
-	FILE* fp,
-	const char* pattern,
-	int* ret
-);
+bool isInteger( const char* str );
 
-void read_input_spatternfinder(
-	FILE* fp,
-	const char* pattern,
-	char* ret
-);
+bool isFloat( const char* str );
+
+bool convertToInteger(const char* str, double* outValue);
+
+bool convertToFloat(const char* str, double* outValue);
+
+void read_input_ipatternfinder( FILE* fp, const char* pattern, int* ret );
+
+void read_input_spatternfinder( FILE* fp, const char* pattern, char* ret );
 
 #endif
