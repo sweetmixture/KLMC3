@@ -105,8 +105,10 @@ subroutine gulpklmc( MPI_comm_klmc, klmc_task_iopath, klmc_task_id, klmc_worker_
 
   call gulpfinish
 
-  ! 25/07 added wkjee tmp
-  ! call reinitialise
+  ! 06/2024
+  ! memory debugging
+  ! call gulpklmc_deallocate 
+  call gulpklmc_deallocate_all
 
 !=====================
 ! Print out log

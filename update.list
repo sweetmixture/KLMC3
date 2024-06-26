@@ -95,28 +95,28 @@
 
   # * 08.12.23 - Error logging
   
-		Errors with cray compiler (gnu) on archer2 : runtime crash reported when workgroup received '512'th task.
+		[1] Errors with cray compiler (gnu) on archer2 : runtime crash reported when workgroup received '512'th task.
 		> this does not care whatever type of taskfarm configuration is used. i.e., whatever the number of procs allocated to workgroup, when
 		  the receive count reaches '512' it crashes.
 		> looks like error in 'lib-gulp-6.2.0', however, practically still useable.
 
-		Errors with intel compiler used taskfarm (tf.xf) : runtime crash reported when using 'gerun' on MMM Young - 'mpirun' command looks fine
+		[2] Errors with intel compiler used taskfarm (tf.xf) : runtime crash reported when using 'gerun' on MMM Young - 'mpirun' command looks fine
 		> tested using AlGaN example 0-499 samples with 2 nodes (80 procs) / 20 procs per workgroup
   
-		Possible Errors
+		[3] Possible Errors
 		* Intel compiler :
 		> should use same version (release year) of 'mpi/intel' and 'compiler/intel'.
 			e.g., 'compilers/intel/2019/update4' and 'mpi/intel/2019/update4/intel' on MMM UCL Young
 			Otherwise will cause unexpected runtime crash.
 
-		Possible Errors:
+		[4] Possible Errors:
 		* If you are using UCL machines
 		> DO NOT USE 'gerun' command, this will cause unexpected runtime crash.
 			must use 'mpirunt' command to execute this taskfarming interface.
 
   # * 05.01.24 - Error logging
 
-		Possible errors caused by using different setups of inputfiles
+		[1] Possible errors caused by using different setups of inputfiles
 
 		> changing number of atoms in the system is allowed for no-symmetry GULP calculations
 
@@ -127,12 +127,41 @@
 
   # * 22.05.24 - H5MD update ... see /ch5md
 
-	* HDF5 standard: using central hdf5 on ARCHER2 require module: 'cray-hdf5/1.12.2.1'
+	[1] * HDF5 standard: using central hdf5 on ARCHER2 require module: 'cray-hdf5/1.12.2.1'
 
 		> https://docs.hdfgroup.org/hdf5/v1_14/v1_14_4/_intro_h_d_f5.html
 
 		> source: https://github.com/pdebuyl/ch5md : H5MD specification (reference)
 
-	* KLMC3 preparation
+	[2] * KLMC3 preparation
 
 		> /h5klmc/ex1/t3.c : source for custom hdf5 dset writer, supporing 1d 2d 3d; int float double
+
+  # * 26.06.24 - Memory leak error fixed
+
+	[1] subroutine "gulpklmc_deallocate_all.F90" added.
+
+		> "gulpklmc_deallocate_all.F90" subroutine is called after 'gulpfinish()' (see gulpklmc.F90), forcing to deallocate pointers used in GULP-library
+		  (SCOREP supporting helps this debugging). This problem is likely to be related with the error reported previously (see '08.12.23' [1]).
+		  To confirm this, a large size task is planned to be tested.
+
+	[2] subroutine "optim.F90" withi GULPlib is modified
+		(see details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log)
+
+	[3] "CMakeLists.txt" is refactored, supporting straightforward build of 'klmc3' as a single file.
+
+		> Intel on MMM YOUNG, Cray (GNU or CCE) on ARCHER2 (for both using Python interface is available).
+
+		> On ARCHER 2, using SCOREP (scalasca module) is supported. In GULP-lib level use of SCOREP,
+		check the details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log.
+
+	----
+		
+		* ARCHER 2 CRAY [D]: test done
+
+		build klmc3 + gulplib [D]
+		build klmc3 + gulplib + python3 [D]
+		build klmc3 (SCOREP) + gulplib (SCOREP): no leaking [D]
+		build klmc3 (SCOREP) + gulplib (SCOREP) + python3 (SCOREP): no leaking [D]
+
+
