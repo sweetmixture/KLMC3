@@ -98,7 +98,7 @@
 		[1] Errors with cray compiler (gnu) on archer2 : runtime crash reported when workgroup received '512'th task.
 		> this does not care whatever type of taskfarm configuration is used. i.e., whatever the number of procs allocated to workgroup, when
 		  the receive count reaches '512' it crashes.
-		> looks like error in 'lib-gulp-6.2.0', however, practically still useable.
+		> looks like error in 'lib-gulp-6.1.2', however, practically still useable.
 
 		[2] Errors with intel compiler used taskfarm (tf.xf) : runtime crash reported when using 'gerun' on MMM Young - 'mpirun' command looks fine
 		> tested using AlGaN example 0-499 samples with 2 nodes (80 procs) / 20 procs per workgroup
@@ -107,12 +107,17 @@
 		* Intel compiler :
 		> should use same version (release year) of 'mpi/intel' and 'compiler/intel'.
 			e.g., 'compilers/intel/2019/update4' and 'mpi/intel/2019/update4/intel' on MMM UCL Young
-			Otherwise will cause unexpected runtime crash.
+			
+			possible module loading command,
+
+				'$module load gcc-libs/4.9.2 compilers/intel/2019/update4 mpi/intel/2019/update4/intel cmake userscripts/1.4.0'
+
+			Otherwise compilation will cause unexpected runtime crash.
 
 		[4] Possible Errors:
 		* If you are using UCL machines
 		> DO NOT USE 'gerun' command, this will cause unexpected runtime crash.
-			must use 'mpirunt' command to execute this taskfarming interface.
+			must use 'mpirun' command to execute this taskfarming interface.
 
   # * 05.01.24 - Error logging
 
@@ -157,6 +162,8 @@
 
 	----
 		
+		* MMM YOUNG [D]: test for Li2S 1000 calculation done
+
 		* ARCHER 2 CRAY [D]: test done
 
 		build klmc3 + gulplib [D]
@@ -164,4 +171,9 @@
 		build klmc3 (SCOREP) + gulplib (SCOREP): no leaking [D]
 		build klmc3 (SCOREP) + gulplib (SCOREP) + python3 (SCOREP): no leaking [D]
 
+		Stress planned test (extensive tasks) on ARHCER 2
+			/work/e05/e05/wkjee/SolidSolution/Batteries/IronPhospate/ProductionMax72/p48_2 | 199,999 | 128 nodes 24H
+			/work/e05/e05/wkjee/SolidSolution/Batteries/IronPhospate/ProductionMax72/p60_2 | 199,999 | 128 nodes 24H
 
+			jobs on queue at: 27.06.2024
+		

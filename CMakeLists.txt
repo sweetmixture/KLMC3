@@ -39,11 +39,7 @@ set(SCOREP "TRUE") # POSSIBLE TYPES: "TRUE", "FALSE". BEWARE TO USE SCOPEP, MUST
 #    CMAKE_Fortran_COMPILER
 #    CMAKE_C_FLAGS
 #    CMAKE_Fortran_FLAGS
-#
-# VARIABLES FOR INTEL
-#
-set(LINK_MKL "")
-set(LINK_CORE "")
+
 
 #
 # MPI SETTING
@@ -84,9 +80,9 @@ elseif(COMPILER STREQUAL "INTEL")
 	set(CMAKE_Fortran_COMPILER mpif90)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -O3 -mcmodel=large")
 	set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O3")
-	# INTEL MKL/CORE SETTINGS
-	set(LINK_MKL "${LINK_MKL} -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
-	set(LINK_CORE "${LINK_CORE} -lifcore -lifport")
+	# INTEL MKL/CORE SETTINGS: NO WHITESPACE ALLOWED FOR THE VARIABLES $LINK_MKL ...
+	set(LINK_MKL "-lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64 -lpthread -lm -ldl")
+	set(LINK_CORE "-lifcore -lifport")
 	message(STATUS "INTEL MKL LINK: ${LINK_MKL}")
 	message(STATUS "INTEL CORE LINK: ${LINK_CORE}")
 else()
