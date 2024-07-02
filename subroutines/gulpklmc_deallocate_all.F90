@@ -4312,6 +4312,27 @@ subroutine gulpklmc_deallocate_all
   end if
 
   !
+  ! 07.2024 WKJEE
+  !
+  ! As a part of module parallel <MPI_comm>
+  !
+  ! * CALL BLACS_GRIDINIT(CONTEXT): 'initcomm.F90', which never freed.
+  !   CONTEXT: typically a MPI_Comm handle
+  !   (i.e., internal sub-communicator allocation results in communicator leaking)
+  !   - possible error
+  !     ...
+  !     MPIR_Get_contextid_sparse_group(610): Too many communicators (0/2048 free on this process; ignore_id=0)
+  !     ...
+  ! * CALL BLACS_GRIDEXIT(CONTEXT):
+  !   CONTEXT consume resources, and therefore CONTEXT should be released when no longer needed. 
+  !   After the freeing of a context, the context no longer exists,
+  !   * * * and its handle may be re-used if new contexts are defined. * * *
+  !   Note. CALL BLACS_EXIT(CONTEXT): this will destroy CONTEXT, and the CONTEXT no longer available.
+  !   (i.e., the MPI_Comm passed to Context will no longer be available)
+  !
+  call BLACS_GRIDEXIT(iBlacsContext) ! 01.07.2024 does not fix context leaking error
+
+  !
   ! module partial
   !
   if (associated(ibocptr)) then

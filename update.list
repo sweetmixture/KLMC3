@@ -6,7 +6,7 @@
 #       Description:
 #
 
- # * - 31.07.23
+ # * 07.2023 prototype
 
 	1. mainly 'libridising GULP 6.1.2'
 
@@ -14,7 +14,7 @@
 
 	3. portability test done : CRAY CCE / GNU - ARCHER 2 : INTEL - YOUNG # should follow GNU for using FHI-AIMS on the taskfarm (only available option on ARCHER2).
 
- # * 01.08.23 - 12.09.23 
+ # * 08.2023 - 10.23 
 
 	1. refactoring entire source code
 	
@@ -56,11 +56,11 @@
 		* Analogous error when using FHI-AIMS - subroutine aims() - the main subroutine.
           It is possible to call aims() multilple times using a type of library calls but this issue must be tackled first.
 
-  # * 15.09.23 - refactoring ReadyInput program
+  # * 09.23 - refactoring ReadyInput program
 
 	1. keep 'master_worker_task.c' for using the 'pre-prepared input' method
 
-  # * 11.23 - minor changes: bug fix / new examples (GULP)
+  # * 11.2023 - minor changes: bug fix / new examples (GULP)
 
 	1. BUGFIX
 	
@@ -72,7 +72,7 @@
 
 			inputfiles originally made for Ga/AlN solid-solution calculations
 
-  # * 11.23 -  Main Update: Python Interface
+  # * 11.2023 -  Main Update: Python Interface
 
 	1. prototype Python interface is added : tested on ARCHER2 (Cray GNU compiler used) with Python version 3.7, 3.8 and 3.11
 
@@ -93,12 +93,12 @@
 							taskfarm.c	#ifdef USE_PYTHON ... #endif
 							taskfarm_def.c	#ifdef USE_PYTHON ... #endif
 
-  # * 08.12.23 - Error logging
+  # * 12.2023 - Error logging
   
-		[1] Errors with cray compiler (gnu) on archer2 : runtime crash reported when workgroup received '512'th task.
+		[1] Errors with cray compiler (gnu) on archer2 : runtime crash reported when workgroup received '512'th task
 		> this does not care whatever type of taskfarm configuration is used. i.e., whatever the number of procs allocated to workgroup, when
 		  the receive count reaches '512' it crashes.
-		> looks like error in 'lib-gulp-6.1.2', however, practically still useable.
+		  > identified as BLACS Context leaking - 'fixed' - 07.2024
 
 		[2] Errors with intel compiler used taskfarm (tf.xf) : runtime crash reported when using 'gerun' on MMM Young - 'mpirun' command looks fine
 		> tested using AlGaN example 0-499 samples with 2 nodes (80 procs) / 20 procs per workgroup
@@ -119,7 +119,7 @@
 		> DO NOT USE 'gerun' command, this will cause unexpected runtime crash.
 			must use 'mpirun' command to execute this taskfarming interface.
 
-  # * 05.01.24 - Error logging
+  # * 01.2024 - Error logging
 
 		[1] Possible errors caused by using different setups of inputfiles
 
@@ -130,7 +130,7 @@
 		> @Error changing symmetry of unit cell (e.g., turning on - turning off - turning on ..) will crash the taskfarm
 
 
-  # * 22.05.24 - H5MD update ... see /ch5md
+  # * 05.24 - H5MD update ... see /ch5md
 
 	[1] * HDF5 standard: using central hdf5 on ARCHER2 require module: 'cray-hdf5/1.12.2.1'
 
@@ -142,7 +142,7 @@
 
 		> /h5klmc/ex1/t3.c : source for custom hdf5 dset writer, supporing 1d 2d 3d; int float double
 
-  # * 26.06.24 - Memory leak error fixed
+  # * 06.2024 - Memory leak error fixed
 
 	[1] subroutine "gulpklmc_deallocate_all.F90" added.
 
@@ -159,21 +159,56 @@
 
 		> On ARCHER 2, using SCOREP (scalasca module) is supported. In GULP-lib level use of SCOREP,
 		check the details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log.
-
 	----
 		
-		* MMM YOUNG [D]: test for Li2S 1000 calculation done
+  # * 06.2024 - Memory leak error fixed - Test calculations
 
-		* ARCHER 2 CRAY [D]: test done
+		* MMM YOUNG: test for Li2S 1000 calculation done (possibly including BLACS error still)
+
+		* ARCHER 2 CRAY: memory leaking test 
 
 		build klmc3 + gulplib [D]
 		build klmc3 + gulplib + python3 [D]
 		build klmc3 (SCOREP) + gulplib (SCOREP): no leaking [D]
 		build klmc3 (SCOREP) + gulplib (SCOREP) + python3 (SCOREP): no leaking [D]
 
-		Stress planned test (extensive tasks) on ARHCER 2
+		* large calculation test (extensive tasks) on ARHCER 2
+
 			/work/e05/e05/wkjee/SolidSolution/Batteries/IronPhospate/ProductionMax72/p48_2 | 199,999 | 128 nodes 24H
 			/work/e05/e05/wkjee/SolidSolution/Batteries/IronPhospate/ProductionMax72/p60_2 | 199,999 | 128 nodes 24H
 
 			jobs on queue at: 27.06.2024
+
+			> 'Failed' due to BLACS Context (MPI Comm) leaking - 'fixed' - 07.2024
+	----
+
+  # * 07.2024 - BLACS Context (or MPI_Comm) leaking fixed
 		
+		* check the details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log.
+		  (changes made: see '/root/subroutines/gulpklmc_deallocate_all.F90' in module parallel section)
+
+		* large calculation test on ARCHER 2
+
+			32 nodes (4096 CPUs) - LiFeS 500,000 samples
+
+			[1] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_1	
+				1024 subcomm
+				normal return
+				Elapsed time (s)   : 1032.65150118
+				 4 CPUs per worker | max tasks : w.g. 1012 procssed 633
+			[2] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_2
+				512  subcomm
+				normal return
+				Elapsed time (s)   : 1297.85260105
+				 8 CPUs per worker | max tasks : w.g.  503 procssed 1418
+			[3] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_3
+				256  subcomm
+				normal return
+				Elapsed time (s)   : 1952.75869894
+				16 CPUs per worker | max tasks : w.g.  254 procssed 2375
+			[4] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_4
+				128  subcomm
+				normal return
+				Elapsed time (s)   : 2366.59485602
+				32  CPUs per worker | max tasks : w.g.   9 procssed 5751
+
