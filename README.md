@@ -3,28 +3,23 @@
 **Compilation Dependency:**  
 This program relies on GULP 6.1.2 static library, which can be fount [here](https://github.com/sweetmixture/KLMC3-libgulp-6.1.2/tree/main).  
 **Updates (as of 07.24):**  
-For development details, see'update.list' in the root directory.
+development log, see'update.list' in the root directory.
 
 #### Program Capabilities
 1. Parallel GULP Calculations
-- Launch multiple GULP tasks in parallel.  
-- Designed for deploying tens of thousands of GULP calculations across multiple nodes on HPCs, using the 'master-worker' method.  
-- Capable of reading KLMC-generated GULP input files and launching GULP (run-time GULP input file generation is not supported yet).
+- Launch multiple GULP tasks in parallel (large scale GULP tasks across multiple nodes on HPCs, using the 'master-worker' method.  
+- Capable of reading KLMC-generated GULP input files and launching GULP (run-time GULP input file generation is not supported yet).  
 2. Launching Python Tasks
 - Launch multiple Python (single processor) tasks in parallel.
-- Each execution of the script occurs within its own directory, similar to mode (1) for GULP.
-- Users are responsible for their Python scripts.
+- Each execution of the script occurs within its own directory, similar to using GULP mode.  
+- Users are responsible to take care of their Python scripts.  
 
 #### Build
-1. Default Mode - Launching GULP Calculations in Parallel
-- Ensure KLMC3-libgulp is built (refer to the provided link).
-- Example assumes the use of cray-gnu compiler on ARCHER 2.
-- Set up your environment:
-```bash
-  $ module restore
-  $ module load PrgEnv-gnu
-```
+1. Default Mode: launching GULP tasks in parallel
+- Make sure to keep the GULP static library [here](https://github.com/sweetmixture/KLMC3-libgulp-6.1.2/tree/main).  
+- Make sure to keep the same system environment as used for the static GULP library.  
 
+Once you clone this git-repo on your system, you can find 
 * Once environment setting is done, locate relevant CMakeLists.txt in the root directory. For instance, while being in the root directory,  
 ```
   $ cp cmakelist_examples/CMakeLists.txt.cray_gnu CMakeLists.txt
