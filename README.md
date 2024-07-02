@@ -1,35 +1,22 @@
-# Task Farm Interface for Knowledge Led Master Code (KLMC)
+### Knowledge Led Master Code 3 (KLMC3)
 
----
+**Compilation Dependency:**  
+This program relies on GULP 6.1.2 static library, which can be fount [here](https://github.com/sweetmixture/KLMC3-libgulp-6.1.2/tree/main).  
+**Updates (as of 07.24):**  
+For development details, see'update.list' in the root directory.
 
-**Compilation Dependency:**
-This program relies on KLMC3-libgulp, a libridised version of GULP 6.1.2. You can find it [here](https://github.com/sweetmixture/KLMC3-libgulp-6.1.2/tree/main).
-
----
-
-**Updates (as of 11.23):**
-For development details, refer to 'update.list' in the root directory.
-
----
-
-## Program Capabilities
-
-### 1. Parallel GULP Calculations
-- Launch multiple GULP calculations in parallel.
-- Designed for deploying tens of thousands of GULP calculations across multiple nodes on HPCs, using the 'master-worker' or 'server-client' algorithm.
+#### Program Capabilities
+1. Parallel GULP Calculations
+- Launch multiple GULP tasks in parallel.  
+- Designed for deploying tens of thousands of GULP calculations across multiple nodes on HPCs, using the 'master-worker' method.  
 - Capable of reading KLMC-generated GULP input files and launching GULP (run-time GULP input file generation is not supported yet).
-
-### 2. Parallel Python Execution
-- Launch 'python' (single processor) in parallel.
+2. Launching Python Tasks
+- Launch multiple Python (single processor) tasks in parallel.
 - Each execution of the script occurs within its own directory, similar to mode (1) for GULP.
 - Users are responsible for their Python scripts.
 
----
-
-## Build (Compilation)
-
-### 1. Default Mode - Launching GULP Calculations in Parallel
-
+#### Build
+1. Default Mode - Launching GULP Calculations in Parallel
 - Ensure KLMC3-libgulp is built (refer to the provided link).
 - Example assumes the use of cray-gnu compiler on ARCHER 2.
 - Set up your environment:
