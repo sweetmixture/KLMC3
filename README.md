@@ -1,123 +1,108 @@
 ### Knowledge Led Master Code 3 (KLMC3)
 
 **Compilation Dependency:**  
-This program relies on GULP 6.1.2 static library, which can be fount [here](https://github.com/sweetmixture/KLMC3-libgulp-6.1.2/tree/main).  
-**Updates (as of 07.24):**  
-development log, see'update.list' in the root directory.
+This program requires GULP 6.1.2 static library, which can be found [here](https://github.com/sweetmixture/KLMC3-libgulp-6.1.2/tree/main).  
 
-#### Program Capabilities
-1. Parallel GULP Calculations
-- Launch multiple GULP tasks in parallel (large scale GULP tasks across multiple nodes on HPCs, using the 'master-worker' method.  
-- Capable of reading KLMC-generated GULP input files and launching GULP (run-time GULP input file generation is not supported yet).  
-2. Launching Python Tasks
+**Updates ( - 07.24):**  To find the development log, see ```update.list``` in the root directory of this git-repo.  
+
+#### Capabilities
+1. Executing Parallel GULP Tasks
+- Launch multiple GULP tasks in parallel (large scale GULP tasks across multiple nodes on HPCs based on the 'master-worker' method).  
+- Capable of reading KLMC-generated GULP input files and launching GULP (runtime GULP input file generation is not supported yet).  
+2. Executing Parallel Python Tasks
 - Launch multiple Python (single processor) tasks in parallel.
-- Each execution of the script occurs within its own directory, similar to using GULP mode.  
-- Users are responsible to take care of their Python scripts.  
+- Each execution of a Python script occurs within its own directory, similar to using GULP mode.  
+- Users are responsible to custom their Python scripts.  
 
 #### Build
-1. Default Mode: launching GULP tasks in parallel
+1. Using GULP (+PYTHON)
 - Make sure to keep the GULP static library [here](https://github.com/sweetmixture/KLMC3-libgulp-6.1.2/tree/main).  
-- Make sure to keep the same system environment as used for the static GULP library.  
+- [IMPORTANT] Make sure to keep the same system environment as used for building the static GULP library.  
 
-Once you clone this git-repo on your system, you can find 
-* Once environment setting is done, locate relevant CMakeLists.txt in the root directory. For instance, while being in the root directory,  
-```
-  $ cp cmakelist_examples/CMakeLists.txt.cray_gnu CMakeLists.txt
-```
-In the directory, cmakelist_examples, there are three examples prepared for different system environments,  
-```
-(1) CMakeLists.txt.cray_gnu -> used in this example  
-(2) CMakeLists.txt.cray_cce (e.g. using cray-cce compiler on ARCHER 2)  
-(3) CMakeLists.txt.intel (e.g. using intel compiler on YOUNG, KATHELEEN)  
-```
-Here, we are going to use (1) CMakeLists.txt.cray_gnu, however, one can choose a relevant one for the given system enviornment.  
+Once you clone this git-repo on your system, you can find ```CMakeLists.txt``` in the root directory.  
 
-* IMPORTANT: after locating CMakeLists.txt in the root, now it is necessary to set the correct path of 'KLMC3-libgulp', which should be done by modifying the line,  
+STEP 1. There are a few variables in ```CMakeLists.txt```, which users have to set them correctly.  
+For example,  
 ```
+set(COMPILER "CRAY")
 set(GULPROOT /path/to/KLMC3-libgulp-6.1.2)
+set(ENABLE_PYTHON "FALSE")
+set(PYTHONLIB /path/to/lib/libpython3.XX.so)
+set(PYTHONINCLUDE /path/to/include/python3.XX/)
 ```
+COMPILER could be set to either 'CRAY' or 'INTEL' depending on your system.  
+GULPROOT has to be set to the root of GULP static library.  
+ENABLE_PYTHON could be set to either 'TRUE' or 'FALSE'.  
 
-* IMPORTANT: if you are planning to use the python interface go to 1.2  
-
-1.1 To build the program, following the commands,  
+* If ENABLE_PYTHON is set to be 'TRUE',  
+PYTHONLIB and PYTHONINCLUDE must be set appropriately (if ENABLE_PYTHON is 'FALSE', these two variables will be ignored).  
+The setting could be,  
 ```
-  $ mkdir _build_gnu && cd _build_gnu
-  $ cmake ..
-  $ make
+set(PYTHONLIB /opt/cray/pe/python/3.9.13.1/lib/libpython3.so)
+set(PYTHONINCLUDE /opt/cray/pe/python/3.9.13.1/include/python3.9)
 ```
-and this will generate an executable ```tf.x``` in the _build_gnu directory.  
-
-1.2 To build the program, including the functionality of using python interface,
-
-* make sure to set library path correctly, e.g.,
+This shows an example of using a central Python module on the ARCHER 2.  
+* Or one could use a custom Python environment (e.g., miniconda) and this case will be,  
+```
+set(PYTHONLIB /work/e05/e05/wkjee/miniconda3/lib/libpython3.11.so)
+set(PYTHONINCLUDE /work/e05/e05/wkjee/miniconda3/include/python3.11)
+```
+If you are using a custom environment, make sure to set library path correctly in your job script,  
+(which is for telling a compute node where the library is located and activating the environment)
 ```
   $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path_to_your_python_lib/
+  $ source PathToYourPythonDir/bin/activate PathToYourPythonDir/envs/YourPythonEnv
 ```
-if you are using miniconda3 on your linux account, this could be done by  
+
+STEP 2. Build  
+Once the settings in ```CMakeLists.txt``` is done, please follow the commands to build,  
 ```
-  $export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${CONDA_PREFIX}/lib/
+mkdir _build && cd _build
+cmake ..
+make
 ```
-if you want to make this change permanently, you can put that command in your ~/.bashrc  
+and this will generate an executable ```klmc3.XXXX.x``` in the ```_build``` directory.  
 
-* once the python library path set, following the command,
-```
-  $ mkdir _build_gnu && cd _build_gnu
-  $ cmake -DUSE_PYTHON=ON ..
-  $ make
-```
-and this will generate an executable ```tf.x``` in the _build_gnu directory.  
+----
+#### Run Examples
 
+1. Launching GULP tasks in parallel (on ARCHER 2)
 
-
-
-### Run Examples
-
-1. Lanching Example GULP taskfarming  
-
-* On ARCHER2, to carry out a test execution of ```tf.x```, there is an example prepared in ```/root/Example/testrun_template_gulp```.
+* In this git-repot, there is an example prepared in ```/root/Example/testrun_template_gulp```.  
   
-In the path, one can find a file,
-  
-```taskfarm.config```, which is an essential input file, describes configurtion of task-farm and tasks.  
+In the directory, you can find ```taskfarm.config``` file, which is essential, describing a configurtion of how GULP tasks will be parallelised.  
 
-For the run, the program needs pre-prepared input files, which could be found in the path ```/root/Example/TestRunGinFiles```.  
-In the directory, two sets of KLMC generated input files, each containing 200 GULP input files, named with A0.gin - A199.gin.  
+To launch GULP tasks in parallel, the program requires pre-prepared input files, which could be found in the path ```/root/Example/TestRunGinFiles```.  
+
+In the directory, there are a few sets of KLMC generated GULP input files, named as A0.gin - A199.gin.  
   
 In this case, let's use input files in ```CeOrun200```, and this must be relocated to the directory where ```taskfarm.config``` file located.  
 ```
   $ cp -r /root/Example/TestRunGinFiles/CeOrun200 /root/Example/testrun_template/run
 ```
-Note that make sure to change the name of directory containing GULP input files to 'run', otherwise the program cannot find GULP input files.  
+Or instead, if the file size is too big, you can use symbolic link,  
+```
+  $ ln -s /root/Example/TestRunGinFiles/CeOrun200 /root/Example/testrun_template/run
+```
+Make sure to change the name of directory containing GULP input files to 'run', otherwise the program cannot find GULP input files.  
 
 Once everything is set, submitting the given SLURM job script,  
+(make sure to do relevant modification before it's submission).  
 ```
   $ sbatch SLURM_js.slurm
 ```
-(make sure to do relevant modification befor it's submission).  
 
-By default, one can find some information from the given jobsript and taskfarm.config where 4 nodes (512 cores) are requested and each workgroup will use 32 processors.  
-This means that 4 workgroups will be spwaned on each node, and in total 16 workgroups will launch GULP independently until requested number of GULP calculations are finished.  
-Since 'task_start 100' and 'task_end 144' are specified, the GULP inputfiles (stored in 'run') from A100.gin to A144.gin will be used.  
+By default, one can find some information from the given jobscript and ```taskfarm.config```  
+where 4 nodes (512 cores on ARCHER 2) are requested and each workgroup will use 32 processors.  
+This means 4 workgroups will be spwaned on each node, and in total 16 workgroups will launch GULP independently until requested number of GULP calculations are finished.  
+(since in ```taskfarm.config```, 'task_start 100' and 'task_end 144' are specified, the GULP inputfiles (stored in 'run') from A100.gin to A144.gin will be used).  
 
-2. Lanching Example Python taskfarming  
+2. Launching Python tasks in parallel (on ARCHER 2)
 
-* On ARCHER2, to carry out a test execution of ```tf.x```, there is an example prepared in ```/root/Example/testrun_template_python```.
+* In this git-repot, there is an example prepared in ```/root/Example/testrun_template_python```.  
 
-```taskfarm.config```, which is an essential input file, describes configurtion of task-farm and tasks.  
+```taskfarm.config```, again which is an essential input file, describing a configurtion of how tasks will be processed in parallised.  
 In the file, please try to set correct path to your python_module_path, python_module_name and python_function/method.  
-Note. in this version (11.2023), the program only support single processor python script only, therefore you must set 'cpus_per_worker' equal to 1.  
-Otherwise you may waste significant computing resource and get unexpected outputs.  
-
-
-```SLURM_js.slurm``` is a slurm jobscript. Importantly, there are two environmental variables that you must set (i.e., you have to modify this for yourself),
-
-2.1 export your python environment to your computing node. This action corresponds to a line similar to the following,  
-```
-  $source PathToYourPythonDir/bin/activate PathToYourPythonDir/envs/YourPythonEnv
-```
-2.2 export your python library path to your computing node, This action corresponds to a line similar to the following,
-```
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:PathToYourPythonDir/miniconda3/lib/
-```
-
+Note. in this version (07.2024), the program only support single processor python script, therefore you must set 'cpus_per_worker' equal to 1.   
+Otherwise you may waste computing resource and possibly get unexpected outputs.   
 
