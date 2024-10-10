@@ -19,6 +19,12 @@
 
 #ifdef USE_PYTHON
 #include "master_worker_python.h"					// python single processor interface: 11.23
+
+
+/*
+	Using KLMC Built-in Capabilities 10.2024 wkjee
+*/
+
 #endif
 
 #include "print_message.h"
@@ -29,40 +35,38 @@
 
 int main(int argc, char* argv[])
 {
-	char msg[512];
-	char currentTime[64]; 
-	double start_t, end_t, total_elapsed_t;
-	bool berr;
+	char   msg[512];                              // message buffer for any
+	char   currentTime[64];                       // humand readable time
 
-	int brank,bsize;
-//	int impi;
+	double start_t;                               // KLMC start   time (internal)
+	double end_t;                                 // KLMC end     time (internal)
+	double total_elapsed_t;                       // KLMC elapsed time
 
-	MPI_Comm BaseComm;
-	BaseComm = MPI_COMM_WORLD;
+	bool   berr;
+
+	int    brank;                                 // MPI base rank : visible any processors
+    int    bsize;                                 // MPI base size : visible any processors
+
+	MPI_Comm BaseComm;                            // define base communicator : visible any processor
+	BaseComm = MPI_COMM_WORLD;                    //
 
 	MPI_Init(&argc,&argv);
-
-// ERRORCHECK REQ: MPI_Initialized( &impi );
-
 	MPI_Comm_size(BaseComm,&bsize);
 	MPI_Comm_rank(BaseComm,&brank);
 
-	// ---------------------------- BaseComm configuration done
+	// * * * configuring BaseComm <MPI_Comm> done
 
-	MPI_Comm WorkgroupComm;
-	TaskFarmConfiguration tfc;
-
-	//const int mrank = bsize - 1;	// last CPU is always dedicated to 'master'  - deprecated 29.08.23
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	// PREPARATION  - deprecated 29.08.23 - moved into 'tf_get_taskfarm_configuration()'
-	// direct setting tfc.brank bsize mrank
+	MPI_Comm WorkgroupComm;                       // define workgroup communicator  : visible only by workgroup processors
+	TaskFarmConfiguration tfc;                    // generic resource configuration : MPI based > see 'taskfarm_def.h'
 
 	/* * * * *
 	 * 1 STEP : READ INPUT
 	 * * * * */
 	berr = tf_get_taskfarm_configuration( &BaseComm, &tfc );
+
+
+
+
 	MPI_Barrier(BaseComm);
 
 	if( !berr ){ // taskfarm configure failed

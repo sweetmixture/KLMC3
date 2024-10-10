@@ -13,16 +13,27 @@ project(KLMC3 VERSION 1.0.0 LANGUAGES C Fortran)
 # USER SETTING
 #
 # USER SECTION ----------------------------------
+#
 # [1] setting GULP library root
+#
 set(COMPILER "CRAY") # POSSIBLE TYPES: "CRAY", "INTEL"
+#
 # [2] find GULP static library file
-set(GULPROOT /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3-libgulp-6.1.2-07.2024)
+#
+set(GULPROOT /work/e05/e05/wkjee/Software/KLMC3-PythonInterface-Dev-10.2024/KLMC3-libgulp-6.1.2)
+#
 # [3] if using Python library root
-set(ENABLE_PYTHON "FALSE") # POSSBILE TYPES: "TRUE", "FALSE"
+#
+# * if you use 'miniconda', could get the 'root' by this command: 'echo ${CONDA_PREFIX}'
+#
+set(ENABLE_PYTHON "TRUE") # POSSBILE TYPES: "TRUE", "FALSE"
 set(PYTHONLIB /work/e05/e05/wkjee/miniconda3/lib/libpython3.11.so) # using custom env - miniconda
 set(PYTHONINCLUDE /work/e05/e05/wkjee/miniconda3/include/python3.11/) # using custom env -miniconda
 #set(PYTHONLIB /opt/cray/pe/python/3.9.13.1/lib/libpython3.so) # using central module - cray-python on ARCHER2
 #set(PYTHONINCLUDE /opt/cray/pe/python/3.9.13.1/include/python3.9) # using central module - cray-python on ARCHER2
+#
+#
+#
 
 #
 # [4] DEVELOPING PURPOSE USING SCOREP PROFILER ON ARCHER2

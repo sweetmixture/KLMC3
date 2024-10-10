@@ -13,13 +13,6 @@
 #include <mpi.h>
 
 #include "master_worker_ready_input.h"
-/*
-	Used defined types <struct>
-
-		TaskEnvelope
-		TaskResultEnvelope
-		MasterWorkspace
-*/
 #include "subroutines.h"
 #include "error.h"
 #include "timer.h"
