@@ -76,12 +76,12 @@ typedef struct TaskFarmConfiguration_{
 /* * * 
  * task related
  * * */
-    char application[64];                    // global
+    char application[64];                   // global
  
-    int num_tasks;                           // global
-    int task_start;                          // global
-    int task_end;                            // global
-    int cpus_per_workgroup;                  // global
+    int num_tasks;                          // global
+    int task_start;                         // global
+    int task_end;                           // global
+    int cpus_per_workgroup;                 // global
 
 #ifdef USE_PYTHON
 /* --------------------------------------------
@@ -134,6 +134,7 @@ typedef struct WorkgroupConfig_{
                workgroup_tag<int>  : workgroup tag of 'n'th workgroup : (simply) = n
                workgroup_size<int> : size (#CPUs)  of 'n'th workgroup
 
+     more details : see taskfarm_def.c : tf_get_workgroup_config()
    * * */
 
     int base_size;                 // global
@@ -149,21 +150,21 @@ typedef struct WorkgroupConfig_{
 * * */
 
 bool tf_get_taskfarm_configuration(
-   const MPI_Comm* base_comm,      // IN
-   TaskFarmConfiguration* tfc      // IN-OUT
+   const MPI_Comm* base_comm,        // IN
+   TaskFarmConfiguration* tfc        // IN-OUT
 );
 
 bool tf_config_workgroup(
-    const MPI_Comm* base_comm,      // IN
-    MPI_Comm* workgroup_comm,      // IN-OUT
-    TaskFarmConfiguration* tfc      // IN-OUT
+    const MPI_Comm* base_comm,       // IN
+    MPI_Comm* workgroup_comm,        // IN-OUT
+    TaskFarmConfiguration* tfc       // IN-OUT
 );
 
 bool tf_get_workgroup_config(
-   const MPI_Comm* base_comm,            // IN
-   const MPI_Comm* workgroup_comm,         // IN
-   const TaskFarmConfiguration* tfc,       // IN
-   WorkgroupConfig* wgc_global            // IN-OUT
+   const MPI_Comm* base_comm,        // IN
+   const MPI_Comm* workgroup_comm,   // IN
+   const TaskFarmConfiguration* tfc, // IN
+   WorkgroupConfig* wgc_global       // IN-OUT
 );
 
 // general function pointer get library(?) function

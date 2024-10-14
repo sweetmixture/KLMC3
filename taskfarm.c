@@ -198,43 +198,61 @@ int main(int argc, char* argv[])
 	fflush_channel(NULL);
 	MPI_Barrier(BaseComm);
 
-	/* * * * * * *
+	/* * * * * * * * * * * * * * * * * * * * *
 	 * TASK FARM MAIN START
-	 * * * * * * */
+     * * * * * * * * * * * * * * * * * * * * *
+     * cases using Python supported sampler
+     * (0) Ready Input                 RI : read prepared GULP input files from disk 07/23 wkjee full feature
+     * (1) Random Quenching            RQ :
+     * (2) Solid-Solution              SS :
+     * (3) Basin-Hoping                BH :
+     * (4) Simulated-Annealing         SA :
+     * (5) Metropolis MonteCarlo       MM :
+     * (6) Lid MonteCarlo              LM :
+     * (7) Surface-Cluster translation SC :
+     * (8) Genetic Algorithm           GA :
+     * (9) Python Interface            PI :
+     * * * * * * * * * * * * * * * * * * * * */
 
-    // [0] default mode : launching GULP input files from disk
 	if( tfc.brank == tfc.mrank ){
+        // mode 0 : Ready Input
 		if( strcmp(tfc.application,"gulp") == 0 ){
 			berr = ready_input_call_master( &BaseComm, &tfc, &wgc_global[0] );
 		}
-
 #ifdef USE_PYTHON
-/* --------------------------------------------
-	08.11.2023
-	If Python used
-   -------------------------------------------- */
+/* * * * * * * * * * * * * * * * * * * * *
+ * Master cases using Python supported sampler
+ * * * * * * * * * * * * * * * * * * * * */
+        if ( strcmp(tfc.application,"gulp-ss") == 0 ){
+			//berr = solidsolution_call_master( &BaseComm, &tfc, &wgc_global[0] );
+        }
+
+
+        // mode 9 : Python only
 		if( strcmp(tfc.application,"python") == 0 ){
 			berr = ready_input_call_master_python( &BaseComm, &tfc, &wgc_global[0] );
 		}
 #endif
-// -------------------------------------------------------------------------------- -> 31.08 REFACTORING
-	}
+	} // -------------------------------------------------------------------------------- MASTER 
 	else{
+        // mode 0 : Ready Input
 		if( strcmp(tfc.application,"gulp") == 0 ){
-			/* taskfarm - gulp/fhiaims using ready_input default */
 			ready_input_call_workgroups( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
 		}
 #ifdef USE_PYTHON
-/* --------------------------------------------
-	08.11.2023
-	If Python used
-   -------------------------------------------- */
+/* * * * * * * * * * * * * * * * * * * * *
+ * Worker cases using Python supported sampler
+ * * * * * * * * * * * * * * * * * * * * */
+        if( strcmp(tfc.application,"gulp-ss") == 0 ){
+            //solidsolution_call_workgroups( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag );
+        }
+
+        // mode 9 : Python only
 		if( strcmp(tfc.application,"python") == 0 ){
 			ready_input_call_workgroups_python( &BaseComm, &WorkgroupComm, tfc.n_workgroup, tfc.workgroup_tag, &tfc );
 		}
 #endif
-	}
-
+	} // -------------------------------------------------------------------------------- WORKER
 	/* * * * *
 	 * TASK FARM MAIN END
 	 * * * * */
