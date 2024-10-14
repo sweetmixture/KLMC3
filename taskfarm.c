@@ -22,8 +22,8 @@
 
 
 /*
-	Using KLMC Built-in Capabilities 10.2024 wkjee
-*/
+ * Using KLMC Built-in Capabilities 10.2024 wkjee
+ */
 
 #endif
 
@@ -185,8 +185,8 @@ int main(int argc, char* argv[])
  * * * * * * * * * * * * * * * * */
 
 	/* * *
-		timing start
-	* * */
+     * timing start
+	 * * */
 	start_t = get_time();
 	getCurrentDateTime(currentTime);
 
@@ -201,6 +201,8 @@ int main(int argc, char* argv[])
 	/* * * * * * *
 	 * TASK FARM MAIN START
 	 * * * * * * */
+
+    // [0] default mode : launching GULP input files from disk
 	if( tfc.brank == tfc.mrank ){
 		if( strcmp(tfc.application,"gulp") == 0 ){
 			berr = ready_input_call_master( &BaseComm, &tfc, &wgc_global[0] );

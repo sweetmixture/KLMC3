@@ -118,8 +118,8 @@ typedef struct WorkgroupConfig_{
 
       Description:
 
-         C struct which saves taskfarm CPU configuration globally. Note taht 'TaskFarmConfiguration' type is local !
-         The term 'globally' implies, each CPU will have the same copy of it.
+         C struct saving taskfarm CPU configuration globally : 'globally' implies, each CPU will have the same copy of it
+         c.f. previous 'TaskFarmConfiguration' member variables are either local or global
 
          This struct is used as array in 'main' (taskfarm.c).
 
