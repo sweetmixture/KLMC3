@@ -23,19 +23,43 @@
  * * */
 #define TF_CONFIG_FILE          "taskfarm.config"      // taskfarm configuration file
 #define TF_MAIN_FILE            "taskfarm.log"
+
 /* * *
  * some default application names
  * * */
-#define TF_APPLICATION_GULP     "gulp"
+#define TF_APPLICATION_GULP     "gulp"                 // mode [0] : Ready-Input
 #define TF_APPLICATION_FHIAIMS  "fhiaims"
 
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* PYTHON SECTION                                                */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #ifdef USE_PYTHON
 /* --------------------------------------------
-    08.11.2023
-    If Python used
+    10.2024 wkjee
+    GULP algorithm based modes
+    reserved application names
    -------------------------------------------- */
-#define TF_APPLICATION_PYTHON   "python"
+#define TF_APPLICATION_GULP_RQ  "gulp-rq"              // mode [1] : Random-Quenching
+#define TF_APPLICATION_GULP_SS  "gulp-ss"              // mode [2] : Solid-Solution
+#define TF_APPLICATION_GULP_BH  "gulp-bh"              // mode [3] : Basin-Hoping
+#define TF_APPLICATION_GULP_SA  "gulp-sa"              // mode [4] : Simulated-Annealing
+#define TF_APPLICATION_GULP_MM  "gulp-mm"              // mode [5] : Metropolis-MonteCarlo
+#define TF_APPLICATION_GULP_LM  "gulp-lm"              // mode [6] : Lid-MonteCarlo
+#define TF_APPLICATION_GULP_SC  "gulp-sc"              // mode [7] : Surface-Cluster translation
+#define TF_APPLICATION_GULP_GA  "gulp-ga"              // mode [8] : Genetic-Algorithm
+/* --------------------------------------------
+    08.11.2023 wkjee
+    If Python used
+    Dev Only
+   -------------------------------------------- */
+#define TF_APPLICATION_PYTHON   "python"               // mode [9] : single core Python
+
+#include <Python.h>
 #endif
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* PYTHON SECTION                                                */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include <mpi.h>
 #include <stdbool.h>
@@ -70,14 +94,29 @@ typedef struct TaskFarmConfiguration_{
  * KLMC3 : master - worker configuration related
  * * */
     int n_workgroup;                        // global : workgroup number = worker-groups(n) + master(1)
-    int workgroup_tag;                      // local  : my workgroup tag    : i.e., group tag  I belong to
+    int workgroup_tag;                      // local  : my workgroup tag     : i.e., group tag  I belong to
     int workgroup_size;                     // local  : my workgroup size    : i.e., group size I belong to
     int worker_rank;                        // local  : my rank in workgroup : i.e., my rank in the workgroup I belong to
 /* * * 
  * task related
  * * */
-    char application[64];                   // global
- 
+    char application[64];                   // global : application name + mode : 'name'-'mode' convention
+    char algorithm[64];
+    /* application types
+     * reserved modes
+     *     App | Algorithm (shorhand names)
+     * (0) gulp                             : read prepared GULP input files from disk 07/23 wkjee full feature
+     * (1) gulp-rq                          : Random-Quenching
+     * (2) gulp-ss                          : Solid-Solution
+     * (3) gulp-bh                          : Basin-Holing
+     * (4) gulp-sa                          : Simulated-Annealing
+     * (5) gulp-mm                          : Metropolis-MonteCarlo
+     * (6) gulp-lm                          : Lid-MonteCarlo
+     * (7) gulp-sc                          : Surface-Cluster Translation
+     * (8) gulp-ga                          : Genetic-Algorithm
+     * (9) python                           : single-core worker python
+     */
+
     int num_tasks;                          // global
     int task_start;                         // global
     int task_end;                           // global
@@ -85,7 +124,15 @@ typedef struct TaskFarmConfiguration_{
 
 #ifdef USE_PYTHON
 /* --------------------------------------------
-    08.2023
+    10.2024 wkjee, b.camino
+    GULP algorithm based modes: python utilised features
+   --------------------------------------------- */
+    //Generic variables
+    //char 
+	PyObject* PyGeometryClass;              // 
+
+/* --------------------------------------------
+    08.2023 wkjee
     If Python used
     
     Following variables for loading a single

@@ -94,25 +94,70 @@ TaskFarmConfiguration* tfc                  // intent :: IN-OUT
         tfc->cpus_per_workgroup = -1;
         // Init end;
 
-        // 'string' : InputFile Read
+        // application mode <str>        : InputFile Read 
         read_input_spatternfinder(fp, "application"    , &(tfc->application[0])     );
 
-        // 'integer': InputFile Read
+        // task / workgroup config <int> : InputFile Read
         read_input_ipatternfinder(fp, "task_start"     , &(tfc->task_start)         );
         read_input_ipatternfinder(fp, "task_end"       , &(tfc->task_end)           );
         read_input_ipatternfinder(fp, "cpus_per_worker", &(tfc->cpus_per_workgroup) );
-        /* * * Modification required 12.09.23 : wkjee
-            Mode pattern reader
-            (1) simply using pre-prepared input files
-        * * */
 
-
+        /* [0] GULP Ready-Input mode */
+        if( strcmp(tfc->application,"gulp") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"Ready-Input");
+        }
 #ifdef USE_PYTHON
-/* --------------------------------------------
-    08.11.2023
-    If Python used
-   -------------------------------------------- */
+    /* --------------------------------------------
+        10.2024 
+        GULP algorithm based modes - Template
+        mode 1 : Random-Quenching
+        mode 2 : Solid-Solution
+        mode 3 : Basin-Hoping
+        mode 4 : Simulated-Annealing
+        mode 5 : Metropolis-MonteCarlo
+        mode 6 : Lid-MonteCarlo
+        mode 7 : Surface-Cluster Translation
+        mode 8 : Genetic-Algorithm
+       -------------------------------------------- */
+        if( strcmp(tfc->application,"gulp-rq") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"Random-Quenching");
+            // do some more actions to read extra input files
+        }
+        if( strcmp(tfc->application,"gulp-ss") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"Solid-Solution");
+            // do some more actions to read extra input files
+        }
+        if( strcmp(tfc->application,"gulp-bh") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"Basin-Hopping");
+            // do some more actions to read extra input files
+        }
+        if( strcmp(tfc->application,"gulp-sa") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"Simulated-Annealing");
+            // do some more actions to read extra input files
+        }
+        if( strcmp(tfc->application,"gulp-mm") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"Metropolis-MonteCarlo");
+            // do some more actions to read extra input files
+        }
+        if( strcmp(tfc->application,"gulp-lm") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"Lid-MonteCarlo");
+            // do some more actions to read extra input files
+        }
+        if( strcmp(tfc->application,"gulp-sc") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"Surface-Cluster Translation");
+            // do some more actions to read extra input files
+        }
+        if( strcmp(tfc->application,"gulp-ga") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"Genetic-Algorithm");
+            // do some more actions to read extra input files
+        }
+
+    /* --------------------------------------------
+        08.11.2023
+        If Python used
+       -------------------------------------------- */
         if( strcmp(tfc->application,"python") == 0 ){
+            sprintf(&(tfc->algorithm[0]),"custom single core python : only valid for using single core workgroups");
             /* if python is used as application: (1) read python module path / (2) python method/function name */
             read_input_spatternfinder(fp,"python_module_path", &(tfc->python_module_path[0]));
             read_input_spatternfinder(fp,"python_module_name", &(tfc->python_module_name[0]));

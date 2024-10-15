@@ -142,7 +142,7 @@ void read_input_spatternfinder( FILE* fp, const char* pattern, char* ret ){
 
 	int line_number = 0;
 
-	fseek( fp, 0, SEEK_SET );
+	fseek( fp, 0, SEEK_SET ); // back to the file front
 
 	// 1. read line
 	while( fgets(line,sizeof(line),fp) != NULL ){
