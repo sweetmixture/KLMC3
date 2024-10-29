@@ -11,7 +11,11 @@
 # Selects an optimised or debug build : debug, intermediate, fast
 
 #F90 := gfortran
-F90 := ftn
+#F90 := ftn
+
+# wkjee : using scorep-profiler
+F90 := scorep-ftn
+
 #BUILD := debug 
 BUILD := intermediate
 #gfortran
@@ -52,7 +56,8 @@ ifeq ($(BUILD), debug)
 endif
 
 ifeq ($(BUILD),intermediate)
-FLAGS := -O1   
+# using scorep-profiler
+FLAGS := -O1 -g
 endif
 
 ifeq ($(BUILD),fast)

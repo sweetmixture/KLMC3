@@ -2999,6 +2999,9 @@ END SUBROUTINE writeArcFile
 
       REWIND(in_unit)
       i = 1
+!
+! WKJEE 10/24 : read system dimension
+!
       toploop: DO
           READ(UNIT=in_unit,FMT=*, IOSTAT=in_error, IOMSG=ERROR_MSG) buffer
           marker_not_found=.TRUE.
@@ -3117,6 +3120,11 @@ END SUBROUTINE writeArcFile
       L_GULP_OPTI=(index(TRIM(MASTER_TOP(1)),'opti').ne.0)
 
       ! Search until the 'species' or 'extra' keyword line whilst counting opt'n atoms 
+!
+! WKJEE 10/24 : variable 'i' saves number of atoms
+!
+! module Config varialbe MASTER_ATOMS saves atomic configuration
+!
       i = 1
       read_local_atoms=.false.
       replaceloop: DO
@@ -3218,7 +3226,7 @@ END SUBROUTINE writeArcFile
                   STOP
                  ENDIF
                 EXIT copyloop
-              ENDIF
+              ENDIF ! IF( JOB_TYPE == 0 .OR. JOB_TYPE == 1 .OR. JOB_TYPE == 3 ) THEN
             ENDIF
             IF( INDEX(buffer,'species') /= 0 .AND. read_local_atoms) THEN
               !N_EXTRA_ATOMS=i
@@ -3251,6 +3259,9 @@ END SUBROUTINE writeArcFile
       END DO copyloop
               !WRITE(*,*) (TRIM(MASTER_BOTTOM(k)),'  ', k=1, 100)
 
+!
+! WKJEE 10/24 : read rest of master file : e.g., including 'buck', 'poly', 'output' ...
+!
       IF (L_DOUBLE_RUN .OR. JOB_TYPE == 4) THEN ! Copy the rest of the file
         i = 1
         lastloop: DO

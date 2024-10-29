@@ -6,209 +6,234 @@
 #       Description:
 #
 
- # * 07.2023 prototype
+ # * 07.2023 prototype : wkjee
 
-	1. mainly 'libridising GULP 6.1.2'
+    1. mainly 'libridising GULP 6.1.2'
 
-	2. 'gulpklmc_initmax.F90' is added : in order to re-initialise internal GULP variables before each gulp calculations -> essential for running taskfarm on Intel system
+    2. 'gulpklmc_initmax.F90' is added : in order to re-initialise internal GULP variables before each gulp calculations -> essential for running taskfarm on Intel system
 
-	3. portability test done : CRAY CCE / GNU - ARCHER 2 : INTEL - YOUNG # should follow GNU for using FHI-AIMS on the taskfarm (only available option on ARCHER2).
+    3. portability test done : CRAY CCE / GNU - ARCHER 2 : INTEL - YOUNG # should follow GNU for using FHI-AIMS on the taskfarm (only available option on ARCHER2).
 
- # * 08.2023 - 10.23 
+ # * 08.2023 - 10.23 : wkjee
 
-	1. refactoring entire source code
-	
-		! read_input.c          < new      > : in order to seperate read input 'taskfarm.config'
-		! print_message.c       < new      > : printing error messages (used in error.c) / printing messages in 'taskfarm.c' -> main
-		! error.c               < new      > : overall error/warning controls
-		! taskfarm.c            < refactor > :
-		! taskfarm_def.c        < refactor > :
-		! master_worker_task.c  < refactor > :
+    1. refactoring entire source code
+    
+        ! read_input.c          < new      > : in order to seperate read input 'taskfarm.config'
+        ! print_message.c       < new      > : printing error messages (used in error.c) / printing messages in 'taskfarm.c' -> main
+        ! error.c               < new      > : overall error/warning controls
+        ! taskfarm.c            < refactor > :
+        ! taskfarm_def.c        < refactor > :
+        ! master_worker_task.c  < refactor > :
 
-		! + corresponding header files
+        ! + corresponding header files
 
-		* refactoring -> for integration KLMC fortran subroutines later.
+        * refactoring -> for integration KLMC fortran subroutines later.
 
-		* three major changes (visible) :
+        * three major changes (visible) :
 
-			(1) showing nodes and CPUs (processors) configuration : printed out to 'stdout' channel.
-			(2) error handling : showing details of errors where they occured : printed out to 'stderr' channel.
-			(3) details of task messaging log - see 'master.log' and 'workgroup_X.log'.
-				- timing (elapsed / task start - i.e. gulp launch)
-				- shell intstructions
-				- task_id / workgroup_tag
-				- MPI_* function timings ...
+            (1) showing nodes and CPUs (processors) configuration : printed out to 'stdout' channel.
+            (2) error handling : showing details of errors where they occured : printed out to 'stderr' channel.
+            (3) details of task messaging log - see 'master.log' and 'workgroup_X.log'.
+                - timing (elapsed / task start - i.e. gulp launch)
+                - shell intstructions
+                - task_id / workgroup_tag
+                - MPI_* function timings ...
 
-		* '!!! NEXT REFACTORING DIRECTION !!!' :
+        * '!!! NEXT REFACTORING DIRECTION !!!' :
 
-			(1) keep the current features as it is. keep it as an indenpedent mode, for using pre-prepared GULP input files.
+            (1) keep the current features as it is. keep it as an indenpedent mode, for using pre-prepared GULP input files.
 
-			(2) automation of managing tasks : task including * required input files / file count * required commands (i.e. shell instructions) / command count ...
+            (2) automation of managing tasks : task including * required input files / file count * required commands (i.e. shell instructions) / command count ...
 
-			(3) TaskEnvlope / TaskResultEnvelope : types of TaskEnvelopes ? 'really necessary?'
-			
+            (3) TaskEnvlope / TaskResultEnvelope : types of TaskEnvelopes ? 'really necessary?'
+            
 
-	2. 'Essenetial tasks', which are 'not done'
+    2. 'Essenetial tasks', which are 'not done'
 
-		* Modification of 'stopnow.F90' in KLMC3_libgulp : issue found when too many 'optcyc' used if 'core-shell distance' type of error occurs -> taskfarm will hang (wasting time),
-		  or possibility of crash if requested time is not enough to reach the final 'optcyc' to return gulpmain(). -> # KNOWN ISSUE
+        * Modification of 'stopnow.F90' in KLMC3_libgulp : issue found when too many 'optcyc' used if 'core-shell distance' type of error occurs -> taskfarm will hang (wasting time),
+          or possibility of crash if requested time is not enough to reach the final 'optcyc' to return gulpmain(). -> # KNOWN ISSUE
 
-		* Analogous error when using FHI-AIMS - subroutine aims() - the main subroutine.
+        * Analogous error when using FHI-AIMS - subroutine aims() - the main subroutine.
           It is possible to call aims() multilple times using a type of library calls but this issue must be tackled first.
 
-  # * 09.23 - refactoring ReadyInput program
+  # * 09.23 - refactoring ReadyInput program : wkjee
 
-	1. keep 'master_worker_task.c' for using the 'pre-prepared input' method
+    1. keep 'master_worker_task.c' for using the 'pre-prepared input' method
 
-  # * 11.2023 - minor changes: bug fix / new examples (GULP)
+  # * 11.2023 - minor changes: bug fix / new examples (GULP) : wkjee
 
-	1. BUGFIX
-	
-		using single processor workgroup, i.e., setting 'cpus_per_worker 1' in the 'taskfarm.config' input file.
+    1. BUGFIX
+    
+        using single processor workgroup, i.e., setting 'cpus_per_worker 1' in the 'taskfarm.config' input file.
 
-			for the details, see line including '11.2023 bugfix' in taskfarm_def.c
+            for the details, see line including '11.2023 bugfix' in taskfarm_def.c
 
-	2. GULP AlGaN examples (prepared inputfiles for running ready-input taskfarming) added to '$root/Examples'
+    2. GULP AlGaN examples (prepared inputfiles for running ready-input taskfarming) added to '$root/Examples'
 
-			inputfiles originally made for Ga/AlN solid-solution calculations
+            inputfiles originally made for Ga/AlN solid-solution calculations
 
-  # * 11.2023 -  Main Update: Python Interface
+  # * 11.2023 -  Main Update: Python Interface : wkjee
 
-	1. prototype Python interface is added : tested on ARCHER2 (Cray GNU compiler used) with Python version 3.7, 3.8 and 3.11
+    1. prototype Python interface is added : tested on ARCHER2 (Cray GNU compiler used) with Python version 3.7, 3.8 and 3.11
 
-		* Python script designed for 'single processor' (no parallel) can be executed on the taskfarm.
-		  It is ideal for launching python script on multiple processors, assuming that each python run is fully independent.
+        * Python script designed for 'single processor' (no parallel) can be executed on the taskfarm.
+          It is ideal for launching python script on multiple processors, assuming that each python run is fully independent.
 
-		- 'prototype interface has been implemented assuming each python execution does not require any input arguments'.
-			However, this could be modified if there is a request.
+        - 'prototype interface has been implemented assuming each python execution does not require any input arguments'.
+            However, this could be modified if there is a request.
 
-	
-		* change list (for developing reference)
+    
+        * change list (for developing reference)
 
-			changes in root/includes/*.h :	taskfarm_def.h	# see sections 'ifdef USE_PYTHON ... #endif'
-							master_worker_python.h
+            changes in root/includes/*.h :    taskfarm_def.h    # see sections 'ifdef USE_PYTHON ... #endif'
+                            master_worker_python.h
 
-			changes in root/*.c :
-							error.c		#ifdef USE_PYTHON ... #endif
-							taskfarm.c	#ifdef USE_PYTHON ... #endif
-							taskfarm_def.c	#ifdef USE_PYTHON ... #endif
+            changes in root/*.c :
+                            error.c        #ifdef USE_PYTHON ... #endif
+                            taskfarm.c    #ifdef USE_PYTHON ... #endif
+                            taskfarm_def.c    #ifdef USE_PYTHON ... #endif
 
-  # * 12.2023 - Error logging
+  # * 12.2023 - Error logging : wkjee
   
-		[1] Errors with cray compiler (gnu) on archer2 : runtime crash reported when workgroup received '512'th task
-		> this does not care whatever type of taskfarm configuration is used. i.e., whatever the number of procs allocated to workgroup, when
-		  the receive count reaches '512' it crashes.
-		  > identified as BLACS Context leaking - 'fixed' - 07.2024
+        [1] Errors with cray compiler (gnu) on archer2 : runtime crash reported when workgroup received '512'th task
+        > this does not care whatever type of taskfarm configuration is used. i.e., whatever the number of procs allocated to workgroup, when
+          the receive count reaches '512' it crashes.
+          > identified as BLACS Context leaking - 'fixed' - 07.2024
 
-		[2] Errors with intel compiler used taskfarm (tf.xf) : runtime crash reported when using 'gerun' on MMM Young - 'mpirun' command looks fine
-		> tested using AlGaN example 0-499 samples with 2 nodes (80 procs) / 20 procs per workgroup
+        [2] Errors with intel compiler used taskfarm (tf.xf) : runtime crash reported when using 'gerun' on MMM Young - 'mpirun' command looks fine
+        > tested using AlGaN example 0-499 samples with 2 nodes (80 procs) / 20 procs per workgroup
   
-		[3] Possible Errors
-		* Intel compiler :
-		> should use same version (release year) of 'mpi/intel' and 'compiler/intel'.
-			e.g., 'compilers/intel/2019/update4' and 'mpi/intel/2019/update4/intel' on MMM UCL Young
-			
-			possible module loading command,
+        [3] Possible Errors
+        * Intel compiler :
+        > should use same version (release year) of 'mpi/intel' and 'compiler/intel'.
+            e.g., 'compilers/intel/2019/update4' and 'mpi/intel/2019/update4/intel' on MMM UCL Young
+            
+            possible module loading command,
 
-				'$module load gcc-libs/4.9.2 compilers/intel/2019/update4 mpi/intel/2019/update4/intel cmake userscripts/1.4.0'
+                '$module load gcc-libs/4.9.2 compilers/intel/2019/update4 mpi/intel/2019/update4/intel cmake userscripts/1.4.0'
 
-			Otherwise compilation will cause unexpected runtime crash.
+            Otherwise compilation will cause unexpected runtime crash.
 
-		[4] Possible Errors:
-		* If you are using UCL machines
-		> DO NOT USE 'gerun' command, this will cause unexpected runtime crash.
-			must use 'mpirun' command to execute this taskfarming interface.
+        [4] Possible Errors:
+        * If you are using UCL machines
+        > DO NOT USE 'gerun' command, this will cause unexpected runtime crash.
+            must use 'mpirun' command to execute this taskfarming interface.
 
-  # * 01.2024 - Error logging
+  # * 01.2024 - Error logging : wkjee
 
-		[1] Possible errors caused by using different setups of inputfiles
+        [1] Possible errors caused by using different setups of inputfiles
 
-		> changing number of atoms in the system is allowed for no-symmetry GULP calculations
+        > changing number of atoms in the system is allowed for no-symmetry GULP calculations
 
-		> changing number of atoms and interatomic potential are allowed for no-symmetry GULP calculations
+        > changing number of atoms and interatomic potential are allowed for no-symmetry GULP calculations
 
-		> @Error changing symmetry of unit cell (e.g., turning on - turning off - turning on ..) will crash the taskfarm
+        > @Error changing symmetry of unit cell (e.g., turning on - turning off - turning on ..) will crash the taskfarm
 
 
-  # * 05.24 - H5MD update ... see /ch5md
+  # * 05.24 - H5MD update ... see /ch5md : wkjee (not completed)
 
-	[1] * HDF5 standard: using central hdf5 on ARCHER2 require module: 'cray-hdf5/1.12.2.1'
+    [1] * HDF5 standard: using central hdf5 on ARCHER2 require module: 'cray-hdf5/1.12.2.1'
 
-		> https://docs.hdfgroup.org/hdf5/v1_14/v1_14_4/_intro_h_d_f5.html
+        > https://docs.hdfgroup.org/hdf5/v1_14/v1_14_4/_intro_h_d_f5.html
 
-		> source: https://github.com/pdebuyl/ch5md : H5MD specification (reference)
+        > source: https://github.com/pdebuyl/ch5md : H5MD specification (reference)
 
-	[2] * KLMC3 preparation
+    [2] * KLMC3 preparation
 
-		> /h5klmc/ex1/t3.c : source for custom hdf5 dset writer, supporing 1d 2d 3d; int float double
+        > /h5klmc/ex1/t3.c : source for custom hdf5 dset writer, supporing 1d 2d 3d; int float double
 
-  # * 06.2024 - Memory leak error fixed
+  # * 06.2024 - Memory leak error fixed : wkjee
 
-	[1] subroutine "gulpklmc_deallocate_all.F90" added.
+    [1] subroutine "gulpklmc_deallocate_all.F90" added.
 
-		> "gulpklmc_deallocate_all.F90" subroutine is called after 'gulpfinish()' (see gulpklmc.F90), forcing to deallocate pointers used in GULP-library
-		  (SCOREP supporting helps this debugging). This problem is likely to be related with the error reported previously (see '08.12.23' [1]).
-		  To confirm this, a large size task is planned to be tested.
+        > "gulpklmc_deallocate_all.F90" subroutine is called after 'gulpfinish()' (see gulpklmc.F90), forcing to deallocate pointers used in GULP-library
+          (SCOREP supporting helps this debugging). This problem is likely to be related with the error reported previously (see '08.12.23' [1]).
+          To confirm this, a large size task is planned to be tested.
 
-	[2] subroutine "optim.F90" withi GULPlib is modified
-		(see details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log)
+    [2] subroutine "optim.F90" withi GULPlib is modified
+        (see details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log)
 
-	[3] "CMakeLists.txt" is refactored, supporting straightforward build of 'klmc3' as a single file.
+    [3] "CMakeLists.txt" is refactored, supporting straightforward build of 'klmc3' as a single file.
 
-		> Intel on MMM YOUNG, Cray (GNU or CCE) on ARCHER2 (for both using Python interface is available).
+        > Intel on MMM YOUNG, Cray (GNU or CCE) on ARCHER2 (for both using Python interface is available).
 
-		> On ARCHER 2, using SCOREP (scalasca module) is supported. In GULP-lib level use of SCOREP,
-		check the details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log.
-	----
-		
-  # * 06.2024 - Memory leak error fixed - Test calculations
+        > On ARCHER 2, using SCOREP (scalasca module) is supported. In GULP-lib level use of SCOREP,
+        check the details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log.
+    ----
+        
+  # * 06.2024 - Memory leak error fixed - Test calculations : wkjee
 
-		* MMM YOUNG: test for Li2S 1000 calculation done (possibly including BLACS error still)
+        * MMM YOUNG: test for Li2S 1000 calculation done (possibly including BLACS error still)
 
-		* ARCHER 2 CRAY: memory leaking test 
+        * ARCHER 2 CRAY: memory leaking test 
 
-		build klmc3 + gulplib [D]
-		build klmc3 + gulplib + python3 [D]
-		build klmc3 (SCOREP) + gulplib (SCOREP): no leaking [D]
-		build klmc3 (SCOREP) + gulplib (SCOREP) + python3 (SCOREP): no leaking [D]
+        build klmc3 + gulplib [D]
+        build klmc3 + gulplib + python3 [D]
+        build klmc3 (SCOREP) + gulplib (SCOREP): no leaking [D]
+        build klmc3 (SCOREP) + gulplib (SCOREP) + python3 (SCOREP): no leaking [D]
 
-		* large calculation test (extensive tasks) on ARHCER 2
+        * large calculation test (extensive tasks) on ARHCER 2
 
-			/work/e05/e05/wkjee/SolidSolution/Batteries/IronPhospate/ProductionMax72/p48_2 | 199,999 | 128 nodes 24H
-			/work/e05/e05/wkjee/SolidSolution/Batteries/IronPhospate/ProductionMax72/p60_2 | 199,999 | 128 nodes 24H
+            /work/e05/e05/wkjee/SolidSolution/Batteries/IronPhospate/ProductionMax72/p48_2 | 199,999 | 128 nodes 24H
+            /work/e05/e05/wkjee/SolidSolution/Batteries/IronPhospate/ProductionMax72/p60_2 | 199,999 | 128 nodes 24H
 
-			jobs on queue at: 27.06.2024
+            jobs on queue at: 27.06.2024
 
-			> 'Failed' due to BLACS Context (MPI Comm) leaking - 'fixed' - 07.2024
-	----
+            > 'Failed' due to BLACS Context (MPI Comm) leaking - 'fixed' - 07.2024
+    ----
 
-  # * 07.2024 - BLACS Context (or MPI_Comm) leaking fixed
-		
-		* check the details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log.
-		  (changes made: see '/root/subroutines/gulpklmc_deallocate_all.F90' in module parallel section)
+  # * 07.2024 - BLACS Context (or MPI_Comm) leaking fixed : wkjee
+        
+        * check the details at $GULPROOT/Src/_build_libgulp/klmcgulp_lib_dev.log.
+          (changes made: see '/root/subroutines/gulpklmc_deallocate_all.F90' in module parallel section)
 
-		* large calculation test on ARCHER 2
+        * large calculation test on ARCHER 2
 
-			32 nodes (4096 CPUs) - LiFeS 500,000 samples
+            32 nodes (4096 CPUs) - LiFeS 500,000 samples
 
-			[1] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_1	
-				1024 subcomm
-				normal return
-				Elapsed time (s)   : 1032.65150118
-				 4 CPUs per worker | max tasks : w.g. 1012 procssed 633
-			[2] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_2
-				512  subcomm
-				normal return
-				Elapsed time (s)   : 1297.85260105
-				 8 CPUs per worker | max tasks : w.g.  503 procssed 1418
-			[3] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_3
-				256  subcomm
-				normal return
-				Elapsed time (s)   : 1952.75869894
-				16 CPUs per worker | max tasks : w.g.  254 procssed 2375
-			[4] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_4
-				128  subcomm
-				normal return
-				Elapsed time (s)   : 2366.59485602
-				32  CPUs per worker | max tasks : w.g.   9 procssed 5751
+            [1] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_1    
+                1024 subcomm
+                normal return
+                Elapsed time (s)   : 1032.65150118
+                 4 CPUs per worker | max tasks : w.g. 1012 procssed 633
+            [2] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_2
+                512  subcomm
+                normal return
+                Elapsed time (s)   : 1297.85260105
+                 8 CPUs per worker | max tasks : w.g.  503 procssed 1418
+            [3] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_3
+                256  subcomm
+                normal return
+                Elapsed time (s)   : 1952.75869894
+                16 CPUs per worker | max tasks : w.g.  254 procssed 2375
+            [4] /work/e05/e05/wkjee/Software/gulpklmc/klmc3_tf_interface.update.12092023/KLMC3.072024/_build_cray_gnu/reproduce_4
+                128  subcomm
+                normal return
+                Elapsed time (s)   : 2366.59485602
+                32  CPUs per worker | max tasks : w.g.   9 procssed 5751
 
+  
+  # * 10.2024 - CoreShell GULP Fail fixed : wkjee
+
+      [1] see details (update note): https://github.com/sweetmixture/KLMC3-libgulp-6.1.2.git
+          logfile : /root/Src/_build_libgulp/klmcgulp_lib_dev.log
+  
+
+  # * 10.2024 - Python framework added for further development
+
+      * * * * * * * * * * * * * * * * * * * * *
+      * 10.24 wkjee
+      * Worker cases using Python supported sampler - Template
+      * mode 1 : Random-Quenching
+      * mode 2 : Solid-Solution
+      * mode 3 : Basin-Hoping
+      * mode 4 : Simulated-Annealing
+      * mode 5 : Metropolis-MonteCarlo
+      * mode 6 : Lid-MonteCarlo
+      * mode 7 : Surface-Cluster Translation
+      * mode 8 : Genetic-Algorithm
+      * * * * * * * * * * * * * * * * * * * * */
+
+      [1] main changes:
+
+          > taskfarm.c / error.c

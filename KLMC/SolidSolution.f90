@@ -452,6 +452,9 @@ CONTAINS
          CALL updateTrdf(RDF_NEW(1),TRDF_DATA(2))
       ENDIF
 
+!
+! WKJEE 10/24 : only input generation mode kicks in from this point
+!
       CALL printHeaderLine
       IF (old_walker_found) THEN
          CALL printBanner('now starting from PREVIOUS solid solution: E ='//realToChar(energy_old))

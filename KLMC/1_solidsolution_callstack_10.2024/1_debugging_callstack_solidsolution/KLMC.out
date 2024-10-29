@@ -1,0 +1,204 @@
+ *******************************************************************************
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *   /   *    *   *                                     *     *   *****   \    *
+ *  /    *   *    *                                     **   **  *     *   \   *
+ * :     *  *     *         KNOWLEDGE LED MASTER CODE   * * * *  *          :  *
+ * |     ***      *                                     *  *  *  *          |  *
+ * :     *  *     *               version 1.00          *     *  *          :  *
+ *  \    *   *    *                                     *     *  *     *   /   *
+ *   \   *    *   *******                               *     *   *****   /    *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+ *******************************************************************************
+ *                                                                             *
+ *                                   AUTHORS                                   *
+ *                                Scott Woodley                                *
+ *                    Kathleen Lonsdale Materials Chemistry                    *
+ *                                                                             *
+ *                        Matthew Farrow (Sept 2011 - )                        *
+ *                    Kathleen Lonsdale Materials Chemistry                    *
+ *                                                                             *
+ *                       Yee Chow (Oct 2010 - Sept 2011)                       *
+ *                   Molecular Modelling & Materials Science                   *
+ *                       UCL Industrial Doctorate Centre                       *
+ *                                                                             *
+ *                       Tomas Lazauskas (Sept 2014 - )                        *
+ *                    Kathleen Lonsdale Materials Chemistry                    *
+ *                                                                             *
+ *                             CONTRIBUTIONS FROM                              *
+ *          Julian Gale (Curtin University of Technology, Australia)           *
+ *                 Arnulf Mobius (Leibniz Institute, Dresden)                  *
+ *              Christian Schon (Max Planck Institute, Stuttgart)              *
+ *          Alexey Sokol (Kathleen Lonsdale Materials Chemistry, UCL)          *
+ *        Iain Bethune (Edinburgh Parallel Computing Centre, Scotland)         *
+ *                                                                             *
+ *                               MODULES INCLUDE                               *
+ *     Stochastic Cluster Optimisation based on Thermodynamical Techniques     *
+ *                                                                             *
+ *                               INTERFACES WITH                               *
+ *                    GULP, https://projects.ivec.org/gulp/                    *
+ *                FHI-AIMS, https://aimsclub.fhi-berlin.mpg.de/                *
+ *                                                                             *
+ *******************************************************************************
+ *                      *  Last modified 1 April 2013  *                       *
+ *******************************************************************************
+
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *                            Seed set to 131539117                            *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+
+ *******************************************************************************
+ *                             Running job run.job                             *
+ *******************************************************************************
+ *            There is 1 processor available and 0 processing farms            *
+ *******************************************************************************
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *                         INCREASED OUTPUT REQUESTED                          *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+ *                                                                             *
+ *                    will retain all third party I/O files                    *
+ *                                                                             *
+ *******************************************************************************
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *                         ENERGY LANDSCAPE DEFINITION                         *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+ *                                                                             *
+ *         will only call GULP during exploration of energy landscape          *
+ *                                                                             *
+ *                 minimum acceptable energy: -100000.0000 eV                  *
+ *                  maximum acceptable energy: 1000000000. eV                  *
+ *                                                                             *
+ *******************************************************************************
+ *                                                                             *
+ *                        Please note, KLMC will also:                         *
+ *                                                                             *
+ *     1) apply a maximum Gnorm of 0.9999999747E-04 from GULP relaxations      *
+ *                                                                             *
+ *                  2) keep LM even if final refinement fails                  *
+ *                                                                             *
+ *******************************************************************************
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *                               TOP STRUCTURES                                *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+ *                                                                             *
+ *                        Seeking 20 optimal solutions                         *
+ *                  with an energy less than -10.00000000 eV                   *
+ *                                                                             *
+ *******************************************************************************
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *                            FILE LOCATIONS (I/O)                             *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+ *                                                                             *
+ *                    Working Directory   .                                    *
+ *                          Data Folder   data/                                *
+ *                       Relaxed Folder   run/                                 *
+ *                         Final Folder                                        *
+ *                         No Restart Folder Defined!                          *
+ *                    GULP Execute Path                                        *
+ *           Master GULP input filename   Master.gin                           *
+ *                                                                             *
+ *******************************************************************************
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *                                MISCELLANEOUS                                *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+ *                                                                             *
+ *                 Start counter from :   0                                    *
+ *                   Dimensions (pbc) :   0                                    *
+ *                                                                             *
+ *******************************************************************************
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *                  Solid Solutions - go mix some solutions!                   *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+ *                                                                             *
+ *               Atoms (cores) in solid   54                                   *
+ *              Sites in solid solution   64                                   *
+ *          Vacancies in solid solution   10                                   *
+ *            Atoms to export from KLMC   54                                   *
+ *                                                                             *
+ *                        Fix 0 sites in default region                        *
+ *                          Mix 64 sites in region 1                           *
+ *                                                                             *
+ *              Basin Hopping Max Steps   1                                    *
+ *                 Basin Hopping Method   RELAX                                *
+ *                        BH Acceptance   RANDOMISE                            *
+ *                                                                             *
+ *******************************************************************************
+
+ *                                                                             *
+ *                     Creating folder:   run/                                 *
+ *                                                                             *
+ *                                                                             *
+ *              Now checking for files:   top_structures/statistics            *
+ *                                        top_structures/energies              *
+ *                                                                             *
+ *                                                                             *
+ *                     Creating folder:   top_structures/                      *
+ *                                                                             *
+ *******************************************************************************
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *            now starting FIRST solid solution from E =0.000000000            *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+
+ 29/10/2024 13:15:39 >> runSolidSolutions >>  Starting step 1
+ *       Failed to find candidates with energy less than -10.00000000 eV       *
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *              Despite 0 bad step(s), final energy = 0.000000000              *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+
+
+ *******************************************************************************
+ ****                                                                       ****
+ **                                                                           **
+ *                    Global Energy Minimum = -10.00000000                     *
+ **                                                                           **
+ ****                                                                       ****
+ *******************************************************************************
+

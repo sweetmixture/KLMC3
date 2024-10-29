@@ -1,0 +1,18 @@
+ 1 - File.f90           0
+ 2 - File.f90           0
+ Flag 6           0
+ Flag 7   131539117
+ Running job(1):run.job
+                               
+ 3 - File.f90 : run/
+ 4 - File.f90 : run/
+ 5 - File.f90 ------ 
+ 3 - File.f90 : top_structures/
+ 4 - File.f90 : top_structures/
+ 5 - File.f90 ------ 
+ 29/10/2024 13:15:39 >> runSolidSolutions >>  Starting step 1
+ 29/10/2024 13:15:39 >> runSolidSolutions >>  Step 1 Randomising solution.
+ 29/10/2024 13:15:39 >> runSolidSolutions >>  Step 1 Generating output files.
+ 29/10/2024 13:15:39 >> runSolidSolutions >>  Step 1 E =    0.0000000000000000
+ Finished!
+ Run time:   0.80200000002514571       s.
