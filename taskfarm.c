@@ -79,6 +79,9 @@ int main(int argc, char* argv[])
         print_stdout(tfc.brank," Woongkyu Jee, University College London / woong.jee.16@ucl.ac.uk\n");
         print_stdout(tfc.brank," Date: 2023.05 - \n");
         print_stdout(tfc.brank,"\n");
+        print_stdout(tfc.brank," When using KLMC3, please cite the following reference:\n");
+        print_stdout(tfc.brank," https://doi.org/10.1021/acs.chemmater.4c01417\n");
+        print_stdout(tfc.brank,"\n");
         layout_line_stdout(tfc.brank,'-',80);
         print_stdout(tfc.brank,"\n");
         print_stdout(tfc.brank," TaskFarm Configuration\n");

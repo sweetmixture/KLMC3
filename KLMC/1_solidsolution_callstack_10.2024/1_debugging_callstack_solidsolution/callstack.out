@@ -133,6 +133,7 @@
     |        > ssgentstats()
     |            > malloc()/free()
     |        > ssfinalize()
+    |    # below items are in SCOTT.f90 (main)
     |    > mpi_barrier()
     |    > extinctarrays()
     |        > free()
